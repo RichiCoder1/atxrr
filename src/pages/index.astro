@@ -1,0 +1,23 @@
+---
+import MainLayout from '@/layouts/MainLayout.astro';
+import { eventDates } from '@/consts';
+
+const dateFormat = new Intl.DateTimeFormat('en', {
+    year: 'numeric',
+    month: 'short',
+    day: 'numeric',
+});
+---
+
+<MainLayout>
+    <div class="flex items-center justify-center flex-col h-full">
+        <div class="flex items-center text-center lg:text-start lg:items-start justify-center flex-col">
+            <h2 class="text-2xl lg:text-4xl font-semibold lg:pl-6 uppercase">Austin</h2>
+            <h1 class="text-6xl lg:text-8xl xl:text-9xl text-primary font-semibold leading-none m-0 uppercase">Rubber Roundup</h1>
+            <h3 id="event-date" class="self-center mt-12 text-5xl text-alternate font-bold">
+                {dateFormat.formatRange(eventDates.start, eventDates.end)}
+            </h3>
+        </div>
+    </div>
+    <div>image here</div>
+</MainLayout>

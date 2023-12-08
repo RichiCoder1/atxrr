@@ -1,0 +1,17 @@
+---
+import { Image } from 'astro:assets';
+import Logo from '@/../public/logo.svg';
+
+import { NavMenu } from "./NavMenu";
+---
+
+<div class="w-full border-b-2 border-b-accent py-4 px-4">
+    <nav class="flex flex-row container gap-x-4">
+        <div class="flex flex-shrink-0">
+            <Image src={Logo} alt="Austin Rubber Roundup Logo" class="w-12 h-12 my-[-0.25rem]" /> <span class="text-2xl sr-only"> Austin Rubber Roundup</span>
+        </div>
+        <div class="flex-grow flex justify-center flex-row">
+            <NavMenu path={new URL(Astro.url).pathname} client:load />
+        </div>
+    </nav>
+</div>
