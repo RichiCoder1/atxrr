@@ -1,4 +1,4 @@
-import { Menu, MenuGroup, MenuItem, Menubar } from '@/components/ui/menubar';
+import { Menu, MenuItem, Menubar } from '@/components/ui/menubar';
 
 export function NavMenu({ path }: { path: string }) {
     return (

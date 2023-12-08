@@ -33,6 +33,7 @@
     "typescript": "^5.3.3"
   },
   "devDependencies": {
-    "@flydotio/dockerfile": "^0.4.11"
+    "@flydotio/dockerfile": "^0.4.11",
+    "@vercel/og": "^0.5.20"
   }
 }

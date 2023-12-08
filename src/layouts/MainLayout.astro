@@ -5,6 +5,9 @@ import Navbar from '@/components/Navbar.astro';
 import Footer from '@/components/Footer.astro';
 
 import "@fontsource-variable/open-sans";
+
+const title = `Austin Rubber Roundup${Astro.props.title ? ' - ' + Astro.props.title : ''}`
+const description = `Austin Rubber Roundup`;
 ---
 
 <html lang="en">
@@ -13,7 +16,18 @@ import "@fontsource-variable/open-sans";
         <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
         <meta name="viewport" content="width=device-width, initial-scale=1">
         <meta name="generator" content={Astro.generator} />
-        <title>Austin Rubber Roundup</title>
+        <title>{title}</title>
+        <meta name="Description" content={description} />
+
+        <meta property="og:title" content={title} />
+        <meta property="og:description" content={description} />
+        <meta property="og:type" content="site" />
+        <meta property="og:image" content="/public/preview-early-bird.jpg" />
+
+        <meta name="twitter:site" content="@austinrubberroundup" />
+        <meta name="twitter:title" content={title} />
+        <meta name="twitter:description" content={description} />
+        <meta name="twitter:image" content="/public/preview-early-bird.jpg" />
 
         <DarkMode />
     </head>
