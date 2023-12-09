@@ -17,7 +17,7 @@ const NavButton = React.forwardRef<
 	React.ElementRef<typeof ButtonPrimitive>,
 	NavProps
 >(({ href, external, className, label, ...props }, ref) => (
-	<a href={href}>
+	<a href={href} tabIndex={-1}>
 		<ButtonPrimitive
 			variant="ghost"
 			size="lg"
