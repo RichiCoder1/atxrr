@@ -1,0 +1,23 @@
+root = true
+
+insert_final_newline = true
+
+[*]
+indent_style = space
+charset = utf-8
+trim_trailing_whitespace = true
+end_of_line = lf
+
+[*.{ts,tsx,js,mjs,cjs}]
+indent_style = tab
+max_line_legth = 100
+
+[*.{json,jsonc,prettierrc}]
+indent_size = 2
+indent_style = space
+
+[*.{astro,html}]
+indent_style = tab
+
+[*.md]
+trim_trailing_whitespace = false

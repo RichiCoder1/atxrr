@@ -3,19 +3,25 @@ import { Twitter, Instagram, Facebook, Send, Mail } from "lucide-react";
 import { Separator } from "@/components/ui/separator";
 ---
 
-<Separator />
-<footer class="flex items-center justify-between py-4 container">
-  <div class="flex-shrink font-thin text-sm">
+<Separator className="bg-primary/50" />
+<footer class="container flex items-center justify-between py-4">
+  <div class="flex-shrink text-sm font-thin">
     ©️ Austin Rubber Roundup {new Date().getFullYear()}. All Rights Reserved
   </div>
   <div class="flex space-x-4">
     <a href="https://x.com/austinrubberroundup" class="hover:text-primary">
       <Twitter />
     </a>
-    <a href="https://instagram.com/austinrubberroundup" class="hover:text-primary">
+    <a
+      href="https://instagram.com/austinrubberroundup"
+      class="hover:text-primary"
+    >
       <Instagram />
     </a>
-    <a href="https://facebook.com/austinrubberroundup" class="hover:text-primary">
+    <a
+      href="https://facebook.com/austinrubberroundup"
+      class="hover:text-primary"
+    >
       <Facebook />
     </a>
     <a href="https://t.me/austinrubberroundup" class="hover:text-primary">

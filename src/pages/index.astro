@@ -1,22 +1,33 @@
 ---
-import MainLayout from '@/layouts/MainLayout.astro';
-import { eventDates } from '@/consts';
+import MainLayout from "@/layouts/MainLayout.astro";
+import { eventDates } from "@/consts";
 
-const dateFormat = new Intl.DateTimeFormat('en', {
-    year: 'numeric',
-    month: 'short',
-    day: 'numeric',
+const dateFormat = new Intl.DateTimeFormat("en", {
+  year: "numeric",
+  month: "short",
+  day: "numeric",
 });
 ---
 
 <MainLayout>
-    <div class="flex items-center justify-center flex-col h-full">
-        <div class="flex items-center text-center lg:text-start lg:items-start justify-center flex-col">
-            <h2 class="text-2xl lg:text-4xl font-semibold lg:pl-6 uppercase">Austin</h2>
-            <h1 class="text-6xl lg:text-8xl xl:text-9xl text-primary font-semibold leading-none m-0 uppercase">Rubber Roundup</h1>
-            <h3 id="event-date" class="self-center mt-12 text-5xl text-alternate font-bold">
-                {dateFormat.formatRange(eventDates.start, eventDates.end)}
-            </h3>
-        </div>
+  <div class="flex h-full flex-col items-center justify-center">
+    <div
+      class="flex flex-col items-center justify-center text-center lg:items-start lg:text-start"
+    >
+      <h2 class="text-2xl font-semibold uppercase lg:pl-6 lg:text-4xl">
+        Austin
+      </h2>
+      <h1
+        class="m-0 text-6xl font-semibold uppercase leading-none text-primary lg:text-8xl xl:text-9xl"
+      >
+        Rubber Roundup
+      </h1>
+      <h3
+        id="event-date"
+        class="mt-12 self-center text-5xl font-bold text-alternate"
+      >
+        {dateFormat.formatRange(eventDates.start, eventDates.end)}
+      </h3>
     </div>
+  </div>
 </MainLayout>

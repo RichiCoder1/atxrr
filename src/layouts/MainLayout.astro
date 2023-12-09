@@ -1,43 +1,45 @@
 ---
-import '@/styles/globals.css';
-import DarkMode from '@/components/DarkMode.astro';
-import Navbar from '@/components/Navbar.astro';
-import Footer from '@/components/Footer.astro';
+import "@/styles/globals.css";
+import DarkMode from "@/components/DarkMode.astro";
+import Navbar from "@/components/Navbar.astro";
+import Footer from "@/components/Footer.astro";
 
 import "@fontsource-variable/open-sans";
 
-const title = `Austin Rubber Roundup${Astro.props.title ? ' - ' + Astro.props.title : ''}`
+const title = `Austin Rubber Roundup${
+  Astro.props.title ? " - " + Astro.props.title : ""
+}`;
 const description = `Austin Rubber Roundup`;
 ---
 
 <html lang="en" prefix="og: http://ogp.me/ns#">
-    <head>
-        <meta charset="utf-8" />
-        <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
-        <meta name="viewport" content="width=device-width, initial-scale=1">
-        <meta name="generator" content={Astro.generator} />
-        <title>{title}</title>
-        <meta name="Description" content={description} />
+  <head>
+    <meta charset="utf-8" />
+    <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <meta name="generator" content={Astro.generator} />
+    <title>{title}</title>
+    <meta name="Description" content={description} />
 
-        <meta property="og:title" content={title} />
-        <meta property="og:description" content={description} />
-        <meta property="og:type" content="site" />
-        <meta property="og:image" content="/og/preview-early-bird.jpg" />
+    <meta property="og:title" content={title} />
+    <meta property="og:description" content={description} />
+    <meta property="og:type" content="site" />
+    <meta property="og:image" content="/og/preview-early-bird.jpg" />
 
-        <meta name="twitter:site" content="@austinrubberroundup" />
-        <meta name="twitter:title" content={title} />
-        <meta name="twitter:description" content={description} />
-        <meta name="twitter:image" content="/og/preview-early-bird.jpg" />
+    <meta name="twitter:site" content="@austinrubberroundup" />
+    <meta name="twitter:title" content={title} />
+    <meta name="twitter:description" content={description} />
+    <meta name="twitter:image" content="/og/preview-early-bird.jpg" />
 
-        <DarkMode />
-    </head>
-    <body class="flex flex-col h-screen">
-        <header>
-          <Navbar />
-        </header>
-        <main class="container flex-grow">
-          <slot />
-        </main>
-        <Footer />
-    </body>
+    <DarkMode />
+  </head>
+  <body class="flex h-screen flex-col">
+    <header>
+      <Navbar />
+    </header>
+    <main class="container flex-grow">
+      <slot />
+    </main>
+    <Footer />
+  </body>
 </html>
