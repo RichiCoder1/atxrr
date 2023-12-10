@@ -10,5 +10,6 @@ export default defineConfig({
 		applyBaseStyles: false
 	})],
 	output: "server",
-	adapter: cloudflare({ mode: "directory" })
+	adapter: cloudflare({ mode: "directory" }),
+	site: process.env.CF_PAGES_URL ?? 'http://localhost:4321/'
 });
