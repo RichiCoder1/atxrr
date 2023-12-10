@@ -40,7 +40,7 @@ const canonicalURL = new URL(Astro.url.pathname, Astro.site);
     <slot name="head" />
   </head>
   <body class="flex h-screen flex-col">
-    <header>
+    <header class="mr-[calc(0px-var(--scrollbar-width,0))]">
       <Navbar />
     </header>
     <main class="container flex-grow">
