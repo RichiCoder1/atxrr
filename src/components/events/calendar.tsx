@@ -122,10 +122,10 @@ function CalendarWeekday({
 			{events.map((event) => (
 				<Card
 					key={event.id}
-					className="w-full rounded-sm p-4 flex flex-row gap-4"
+					className="w-full rounded-sm p-4 grid grid-cols-[auto_1fr] gap-x-4 gap-y-1"
 				>
 					<div>
-						<div className="text-primary text-2xl font-semibold">
+						<div className="text-primary leading-none text-2xl font-semibold">
 							{event.startPart}
 						</div>
 						<div className="text-sm font-light">{event.endPart}</div>
@@ -135,14 +135,14 @@ function CalendarWeekday({
 						<CardDescription className="pt-1">
 							<p>{event.location}</p>
 						</CardDescription>
-						<CardContent className="pl-0 pt-1">
-							<div
-								dangerouslySetInnerHTML={{
-									__html: marked.parse(event.description),
-								}}
-							></div>
-						</CardContent>
 					</div>
+					<CardContent className="pl-0 col-start-auto col-span-2 md:col-start-2 md:col-span-1">
+						<div
+							dangerouslySetInnerHTML={{
+								__html: marked.parse(event.description),
+							}}
+						></div>
+					</CardContent>
 				</Card>
 			))}
 		</TabsContent>
