@@ -89,9 +89,9 @@ export function MobileMenu({ path }: NavMenuProps) {
 			<Dialog
 				open={open}
 				onClose={() => setOpen(false)}
-				className="fixed left-0 top-0 z-50 m-auto flex h-[fit-content] max-h-[calc(100vh-4.5rem)] w-screen gap-4"
+				className="fixed left-0 top-0 z-50 m-auto flex h-[fit-content] max-h-[calc(100vh-4.5rem)] w-screen gap-4 mt-[4.5rem]"
 			>
-				<div className="mt-[4.5rem] w-screen flex flex-col bg-zinc-900 shadow shadow-zinc-800 md:hidden">
+				<div className=" w-screen flex flex-col bg-zinc-900 shadow shadow-zinc-800 md:hidden">
 					<NavButton href="/" label="Home" aria-current={path === "/"} />
 					<NavButton
 						href="https://www.tickettailor.com/events/boopsocietyctx/1001871"
