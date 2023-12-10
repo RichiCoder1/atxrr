@@ -2,14 +2,17 @@
   "extends": "astro/tsconfigs/strict",
   "compilerOptions": {
     "jsx": "react-jsx",
-    "baseUrl": "C:/src/richicoder1/atxrr",
+    "jsxImportSource": "react",
+    "baseUrl": "./",
     "paths": {
       "@/*": [
         "./src/*"
       ]
     }
   },
-  "include": [
-    "src/**/*"
+  "exclude": [
+    "dist/",
+    "functions/",
+    "node_modules/"
   ]
 }
