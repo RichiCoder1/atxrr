@@ -1,6 +1,4 @@
 ---
-export const prerender = true;
-
 import MainLayout from "@/layouts/MainLayout.astro";
 import { Calendar } from "@/components/events/calendar";
 import { getDirectusClient } from "@/lib/directus";
@@ -8,6 +6,11 @@ import { readItems } from "@directus/sdk";
 
 const directus = getDirectusClient();
 const events = await directus.request(readItems("events"));
+
+Astro.response.headers.append(
+  "Cache-Control",
+  "public, max-age=600, stale-while-revalidate=30",
+);
 ---
 
 <MainLayout title="Events" description="Event Calendar">
