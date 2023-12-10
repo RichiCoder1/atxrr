@@ -17,8 +17,8 @@ const events = await directus.request(readItems("events"));
 
 <MainLayout title="Events" description="Event Calendar">
   <div class="mt-6 flex w-full items-center justify-center lg:mt-9">
-    <div class="container h-fit w-full">
-      <h1 class="text-center text-4xl font-light text-primary">
+    <div class="container h-fit w-full max-w-4xl">
+      <h1 class="text-center text-4xl font-medium text-primary">
         Event Schedule
       </h1>
       <Calendar events={events} params={Astro.params} client:load />

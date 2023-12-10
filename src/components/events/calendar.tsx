@@ -19,11 +19,11 @@ const timeFormatter = new Intl.DateTimeFormat(["en-US"], {
 marked.use({
 	renderer: {
 		link(href, title, text) {
-			return `<a href="${href}" title="${title}" class="${cn(
+			return `<a href="${href}" title="${title ?? ""}" class="${cn(
 				buttonVariants({
 					variant: "link",
 				}),
-				"h-[unset] p-0",
+				"h-[unset] p-0 underline hover:text-primary/80",
 			)}">${text}</a>`;
 		},
 	},
