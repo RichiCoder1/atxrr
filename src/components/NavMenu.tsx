@@ -140,15 +140,12 @@ function MobileDisclosure({
 	...props
 }: ComponentPropsWithoutRef<typeof DisclosureContent> & { label: string }) {
 	const [open, setOpen] = useState(false);
-	const menuStore = useMenuStore({ open, setOpen });
 	const disclosureStore = useDisclosureStore({ open, setOpen });
 	return (
 		<DisclosureProvider>
 			<Disclosure
-				as={Button}
+				render={<Button size="lg" variant="ghost" />}
 				store={disclosureStore}
-				size="lg"
-				variant="ghost"
 				className="group w-full justify-start gap-2 md:w-[unset] md:justify-center"
 			>
 				{label}
