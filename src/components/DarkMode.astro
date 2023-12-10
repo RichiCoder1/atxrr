@@ -1,11 +1,14 @@
 <script type="application/javascript" is:inline>
-  const currentTheme = localStorage.getItem("theme");
+  // Unconditionally use dark for now.
+  document.documentElement.classList.add("dark");
 
-  if (currentTheme) {
-    if (currentTheme === "dark") {
-      document.documentElement.classList.add("dark");
-    }
-  } else if (window.matchMedia("prefers-color-scheme: dark")) {
-    document.documentElement.classList.add("dark");
-  }
+  // const currentTheme = localStorage.getItem("theme");
+
+  // if (currentTheme) {
+  //   if (currentTheme === "dark") {
+  //     document.documentElement.classList.add("dark");
+  //   }
+  // } else if (window.matchMedia("prefers-color-scheme: dark")) {
+  //   document.documentElement.classList.add("dark");
+  // }
 </script>
