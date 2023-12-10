@@ -1,4 +1,5 @@
 ---
+// TODO: There's no reason this page couldn't be split up into "multiple" cached pages.
 import MainLayout from "@/layouts/MainLayout.astro";
 import { Calendar } from "@/components/events/calendar";
 import { getDirectusClient } from "@/lib/directus";
@@ -19,7 +20,11 @@ Astro.response.headers.append(
       <h1 class="text-center text-4xl font-medium text-primary">
         Event Schedule
       </h1>
-      <Calendar events={events} params={Astro.params} client:load />
+      <Calendar
+        events={events}
+        params={Object.fromEntries(Astro.url.searchParams.entries())}
+        client:load
+      />
     </div>
   </div>
 </MainLayout>
