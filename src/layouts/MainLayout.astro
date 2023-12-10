@@ -36,6 +36,8 @@ const canonicalURL = new URL(Astro.url.pathname, Astro.site);
     <meta name="twitter:image" content="/og/preview-early-bird.jpg" />
 
     <DarkMode />
+
+    <slot name="head" />
   </head>
   <body class="flex h-screen flex-col">
     <header>

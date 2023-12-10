@@ -11,5 +11,16 @@ export default defineConfig({
 	})],
 	output: "server",
 	adapter: cloudflare({ mode: "directory" }),
-	site: process.env.CF_PAGES_URL ?? 'http://localhost:4321/'
+	site: process.env.CF_PAGES_URL ?? 'http://localhost:4321/',
+	vite: {
+		server: {
+			proxy: {
+				'^/tt/.*': {
+					target: 'https://cdn.tickettailor.com',
+          changeOrigin: true,
+					rewrite: (path) => path.replace(/^\/tt/, '')
+				}
+			}
+		}
+	}
 });

@@ -1,6 +1,8 @@
 ---
+import { Image } from "astro:assets";
 import MainLayout from "@/layouts/MainLayout.astro";
 import { eventDates } from "@/consts";
+import Bull from "../../public/bull.svg";
 
 const dateFormat = new Intl.DateTimeFormat("en", {
   year: "numeric",
@@ -10,24 +12,55 @@ const dateFormat = new Intl.DateTimeFormat("en", {
 ---
 
 <MainLayout>
-  <div class="flex h-full flex-col items-center justify-center">
+  <div class="flex h-[80vh] flex-col items-center justify-center">
     <div
       class="flex flex-col items-center justify-center text-center lg:items-start lg:text-start"
     >
+      <Image
+        src={Bull}
+        alt="Bull icon"
+        class="mb-[-1rem] mt-[-4rem] w-[16rem] self-center"
+        width={300}
+      />
       <h2 class="text-2xl font-semibold uppercase lg:pl-6 lg:text-4xl">
         Austin
       </h2>
       <h1
-        class="m-0 text-6xl font-semibold uppercase leading-none text-yellow-500 dark:text-yellow-400 lg:text-8xl xl:text-9xl"
+        class="m-0 bg-gradient-to-tr from-yellow-500 via-red-500 to-red-600 bg-clip-text text-6xl font-semibold uppercase leading-none text-transparent lg:text-8xl xl:text-9xl"
       >
         Rubber Roundup
       </h1>
       <h3
         id="event-date"
-        class="mt-12 self-center text-5xl font-bold text-alternate"
+        class="mt-12 self-center bg-gradient-to-tr from-red-600 to-yellow-600 bg-clip-text text-5xl font-bold text-transparent"
       >
         {dateFormat.formatRange(eventDates.start, eventDates.end)}
       </h3>
     </div>
   </div>
+  <p
+    class="m-auto mb-8 max-w-2xl rounded p-4 text-justify text-xl font-light leading-tight tracking-tight"
+  >
+    <span class="text-primary">Austin, Texas:</span> Where the winter is warm,
+    the vibes are good, and the weird is alive and well. We're here bring some
+    more weird (as is tradition) by gathering rubber lovers from all over to
+    learn, socialize, and enjoy their appreciation for rubber. A whole weekend
+    of demos, education, socials, bar nights, and more!
+  </p>
+
+  <div class="mb-4 flex flex-col items-center justify-center">
+    <iframe
+      src="https://www.google.com/maps/embed?pb=!1m14!1m8!1m3!1d6891.750813169571!2d-97.736613!3d30.269130999999998!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x8644b5a69e6e1e83%3A0x6968d4161ce423d8!2sHotel%20Indigo%20Austin%20Downtown%20-%20University%2C%20an%20IHG%20Hotel!5e0!3m2!1sen!2sus!4v1702184308372!5m2!1sen!2sus"
+      width="600"
+      height="450"
+      class="rounded border border-primary contrast-[85%] grayscale invert-[90%] filter"
+      allowfullscreen=""
+      loading="lazy"
+      referrerpolicy="no-referrer-when-downgrade"></iframe>
+    <p class="mt-2 font-light">
+      810 Red River Street, Austin, TX 78701 United States
+    </p>
+  </div>
+
+  <div></div>
 </MainLayout>
