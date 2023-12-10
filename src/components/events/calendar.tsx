@@ -55,7 +55,7 @@ export function Calendar({ events, params: astroParams }: CalendarProps) {
 				];
 				const parts = dateFormatter.formatToParts(start);
 				const timeParts = timeFormatter.formatRangeToParts(start, end);
-				console.log({ timeParts });
+
 				return {
 					...event,
 					weekday: parts.find((part) => part.type === "weekday")!.value,

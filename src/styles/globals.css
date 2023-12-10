@@ -28,7 +28,7 @@
     --ring: 20 14.3% 4.1%;
     --radius: 0.5rem;
   }
- 
+
   .dark {
     --background: 20 14.3% 4.1%;
     --foreground: 60 9.1% 97.8%;
@@ -62,6 +62,6 @@
     min-height: stretch;
   }
   body {
-    @apply bg-background text-foreground font-sans min-h-screen;
+    @apply min-h-screen bg-background font-sans text-foreground;
   }
 }
