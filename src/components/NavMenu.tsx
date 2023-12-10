@@ -6,6 +6,7 @@ import {
 	Disclosure,
 	DisclosureContent,
 	DisclosureProvider,
+	useDialogStore,
 	useDisclosureStore,
 } from "@ariakit/react";
 import { X, Menu as Burger, ChevronDown } from "lucide-react";
@@ -76,6 +77,7 @@ export function DesktopMenu({ path }: NavMenuProps) {
 
 export function MobileMenu({ path }: NavMenuProps) {
 	const [open, setOpen] = useState(false);
+	const dialog = useDialogStore({ animated: true });
 	return (
 		<>
 			<Button
@@ -87,9 +89,10 @@ export function MobileMenu({ path }: NavMenuProps) {
 				{open == false ? <Burger /> : <X />}
 			</Button>
 			<Dialog
+				store={dialog}
 				open={open}
 				onClose={() => setOpen(false)}
-				className="fixed left-0 top-0 z-50 m-auto flex h-[fit-content] max-h-[calc(100vh-4.5rem)] w-screen gap-4 mt-[4.5rem]"
+				className="fixed left-0 top-0 z-50 m-auto flex h-[fit-content] max-h-[calc(100vh-4.5rem)] w-screen gap-4 mt-[4.5rem] transition opacity-50 data-enter:opacity-100 translate-y-2 data-enter:translate-y-0 border-b-2 border-alternate"
 			>
 				<div className=" w-screen flex flex-col bg-zinc-900 shadow shadow-zinc-800 md:hidden">
 					<NavButton href="/" label="Home" aria-current={path === "/"} />
