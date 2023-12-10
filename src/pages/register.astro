@@ -11,7 +11,7 @@ import MainLayout from "@/layouts/MainLayout.astro";
       <div class="tt-widget-fallback">
         <p>
           <a
-            href="https://www.tickettailor.com/checkout/new-session/id/3344893/chk/c3de/"
+            href="https://www.tickettailor.com/checkout/new-session/id/2978517/chk/fa5b/?ref=arr_widget&show_search_filter=true&show_date_filter=true&show_sort=true"
             target="_blank"
           >
             <Button variant="link">Click here to buy tickets</Button>
@@ -30,7 +30,7 @@ import MainLayout from "@/layouts/MainLayout.astro";
         src={import.meta.env.DEV
           ? "/tt/js/widgets/min/widget.js"
           : "https://cdn.tickettailor.com/js/widgets/min/widget.js"}
-        data-url="https://www.tickettailor.com/checkout/new-session/id/3344893/chk/c3de/"
+        data-url="https://www.tickettailor.com/checkout/new-session/id/2978517/chk/fa5b/?ref=arr_widget&show_search_filter=true&show_date_filter=true&show_sort=true"
         data-type="inline"
         crossorigin="anonymous"
         data-inline-minimal="true"
@@ -42,3 +42,9 @@ import MainLayout from "@/layouts/MainLayout.astro";
     <!-- End of Ticket Tailor Widget -->
   </div>
 </MainLayout>
+
+<style>
+  .tt-widget {
+    @apply max-w-xl md:w-[50vw];
+  }
+</style>
