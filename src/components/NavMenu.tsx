@@ -1,7 +1,6 @@
 import { Menu, MenuItem, Menubar } from "@/components/ui/menubar";
 import {
 	Dialog,
-	DialogDismiss,
 	Disclosure,
 	DisclosureContent,
 	DisclosureProvider,
