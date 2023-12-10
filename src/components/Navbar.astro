@@ -2,7 +2,7 @@
 import { Image } from "astro:assets";
 import Logo from "@/../public/logo.svg";
 
-import { NavMenu } from "./NavMenu";
+import { DesktopMenu, MobileMenu } from "./NavMenu";
 ---
 
 <div
@@ -10,15 +10,18 @@ import { NavMenu } from "./NavMenu";
 >
   <nav class="container flex h-full flex-row gap-x-4">
     <div class="flex flex-shrink-0">
-      <Image
-        src={Logo}
-        alt="Austin Rubber Roundup Logo"
-        class="my-[-0.25rem] h-12 w-12"
-      />
+      <a href="/">
+        <Image
+          src={Logo}
+          alt="Austin Rubber Roundup Logo"
+          class="my-[-0.25rem] h-12 w-12"
+        />
+      </a>
       <span class="sr-only text-2xl"> Austin Rubber Roundup</span>
     </div>
     <div class="flex flex-grow flex-row justify-end md:justify-center">
-      <NavMenu path={new URL(Astro.url).pathname} client:load />
+      <DesktopMenu path={new URL(Astro.url).pathname} client:load />
+      <MobileMenu path={new URL(Astro.url).pathname} client:only />
     </div>
   </nav>
 </div>

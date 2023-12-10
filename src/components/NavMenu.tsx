@@ -1,3 +1,5 @@
+import { Button } from "./ui/button";
+import { NavButton } from "./ui/navbutton";
 import { Menu, MenuItem, Menubar } from "@/components/ui/menubar";
 import {
 	Dialog,
@@ -9,23 +11,12 @@ import {
 } from "@ariakit/react";
 import { X, Menu as Burger, ChevronDown } from "lucide-react";
 import { useState, type ComponentPropsWithoutRef } from "react";
-import { Button } from "./ui/button";
-import { NavButton } from "./ui/navbutton";
 
 export type NavMenuProps = {
 	path: string;
 };
 
-export function NavMenu({ path }: NavMenuProps) {
-	return (
-		<>
-			<DesktopMenu path={path} />
-			<MobileMenu path={path} />
-		</>
-	);
-}
-
-function DesktopMenu({ path }: NavMenuProps) {
+export function DesktopMenu({ path }: NavMenuProps) {
 	return (
 		<>
 			<Menubar>
@@ -84,7 +75,7 @@ function DesktopMenu({ path }: NavMenuProps) {
 	);
 }
 
-function MobileMenu({ path }: NavMenuProps) {
+export function MobileMenu({ path }: NavMenuProps) {
 	const [open, setOpen] = useState(false);
 	return (
 		<>
