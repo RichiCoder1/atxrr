@@ -1,0 +1,27 @@
+---
+import MainLayout from "@/layouts/MainLayout.astro";
+
+import { getDirectusClient } from "@/lib/directus";
+import { readItems, readSingleton } from "@directus/sdk";
+
+const directus = getDirectusClient();
+const about = await directus.request(readSingleton("about"));
+const questions = await directus.request(readItems("qna"));
+---
+
+<MainLayout title="About" description="About">
+  <div class="container max-w-2xl">
+    <div class="prose dark:prose-invert mt-10" set:html={about.body} />
+    <div>
+      <h2 class="mt-4 text-2xl text-primary">Frequently Asked Questions</h2>
+      {
+        questions.map((qna, i) => (
+          <details open={i === 0}>
+            <summary>{qna.question}</summary>
+            {qna.answer}
+          </details>
+        ))
+      }
+    </div>
+  </div>
+</MainLayout>

@@ -3,6 +3,7 @@ import { Image } from "astro:assets";
 import MainLayout from "@/layouts/MainLayout.astro";
 import { eventDates } from "@/consts";
 import Bull from "../../public/bull.svg";
+import { Button } from "@/components/ui/button";
 
 const dateFormat = new Intl.DateTimeFormat("en", {
   year: "numeric",
@@ -12,7 +13,7 @@ const dateFormat = new Intl.DateTimeFormat("en", {
 ---
 
 <MainLayout>
-  <div class="flex h-[80vh] flex-col items-center justify-center">
+  <div class="flex h-[80vh] min-h-[600px] flex-col items-center justify-center">
     <div
       class="flex flex-col items-center justify-center text-center lg:items-start lg:text-start"
     >
@@ -36,6 +37,16 @@ const dateFormat = new Intl.DateTimeFormat("en", {
       >
         {dateFormat.formatRange(eventDates.start, eventDates.end)}
       </h3>
+    </div>
+    <div class="mt-[10vh]">
+      <a href="/register">
+        <Button
+          variant="outline"
+          className="border-primary text-xl text-primary"
+        >
+          Register Here!
+        </Button></a
+      >
     </div>
   </div>
   <p

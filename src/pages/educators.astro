@@ -1,14 +1,13 @@
 ---
 // TODO: There's no reason this page couldn't be split up into "multiple" cached pages.
 import MainLayout from "@/layouts/MainLayout.astro";
-import { Calendar } from "@/components/events/calendar";
 import { getDirectusClient } from "@/lib/directus";
 import { readItems } from "@directus/sdk";
 
 const directus = getDirectusClient();
 const events = await directus.request(readItems("events"));
-
 const url = new URL(Astro.request.url);
+
 if (!url.searchParams.has("preview")) {
   Astro.response.headers.append(
     "Cache-Control",
@@ -17,17 +16,4 @@ if (!url.searchParams.has("preview")) {
 }
 ---
 
-<MainLayout title="Events" description="Event Calendar">
-  <div class="mt-6 flex w-full items-center justify-center lg:mt-9">
-    <div class="container h-fit w-full max-w-4xl px-0 md:px-8">
-      <h1 class="text-center text-4xl font-medium text-primary">
-        Event Schedule
-      </h1>
-      <Calendar
-        events={events}
-        params={Object.fromEntries(Astro.url.searchParams.entries())}
-        client:load
-      />
-    </div>
-  </div>
-</MainLayout>
+<MainLayout title="Educators" description="Educators" />

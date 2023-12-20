@@ -9,6 +9,20 @@ export interface Event {
 	tags: string[];
 }
 
+export interface About {
+	id: number;
+	body: string;
+}
+
+export interface Qna {
+	id: number;
+	status: string;
+	question: string;
+	answer: string;
+}
+
 export interface Schema {
 	events: Event[];
+	qna: Qna[];
+	about: About;
 }

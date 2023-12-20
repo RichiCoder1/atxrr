@@ -14,7 +14,14 @@ import MainLayout from "@/layouts/MainLayout.astro";
             href="https://www.tickettailor.com/checkout/new-session/id/2978517/chk/fa5b/?ref=arr_widget&show_search_filter=true&show_date_filter=true&show_sort=true"
             target="_blank"
           >
-            <Button variant="link">Click here to buy tickets</Button>
+            <span class="text-sm"
+              >We're loading the tickets now! If you don't see a form here
+              shortly:</span
+            >
+
+            <Button variant="link" className="inline">
+              Click here to buy tickets
+            </Button>
           </a><br /><small
             ><a
               href="https://www.tickettailor.com?rf=wdg_110073"
@@ -27,9 +34,7 @@ import MainLayout from "@/layouts/MainLayout.astro";
 
       <script
         is:inline
-        src={import.meta.env.DEV
-          ? "/tt/js/widgets/min/widget.js"
-          : "https://cdn.tickettailor.com/js/widgets/min/widget.js"}
+        src="https://cdn.tickettailor.com/js/widgets/min/widget.js"
         data-url="https://www.tickettailor.com/checkout/new-session/id/2978517/chk/fa5b/?ref=arr_widget&show_search_filter=true&show_date_filter=true&show_sort=true"
         data-type="inline"
         crossorigin="anonymous"

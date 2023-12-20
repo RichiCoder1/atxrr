@@ -19,34 +19,23 @@ export type NavMenuProps = {
 export function DesktopMenu({ path }: NavMenuProps) {
 	return (
 		<>
-			<Menubar>
-				<Menu
-					href="/"
-					label="Home"
-					aria-current={path === "/"}
-					className="hidden md:flex"
-				/>
-				<Menu
-					href="https://www.tickettailor.com/events/boopsocietyctx/1001871"
-					label="Register"
-					external
-					className="hidden md:flex"
-				/>
-				<Menu label="Hotel" className="hidden md:flex">
+			<Menubar className="hidden md:flex">
+				<Menu href="/" label="Home" aria-current={path === "/"} />
+				<Menu label="Attend">
+					<MenuItem href="/register" label="Register" />
 					<MenuItem
 						href="https://tinyurl.com/ARRHotelRes"
 						label="Reservations"
-						description="Book with our hotel block"
 						external
 					/>
 					<MenuItem
 						href="https://www.ihg.com/hotelindigo/hotels/us/en/austin/ausit/hoteldetail/amenities"
 						label="Hotel Information"
-						description="Learn about our host hotel and it's amenities"
 						external
 					/>
 				</Menu>
-				<Menu label="Participate" className="hidden md:flex">
+				<Menu href="/events" label="Schedule" />
+				<Menu label="Forms & Volunteer">
 					<MenuItem
 						href="https://docs.google.com/forms/d/e/1FAIpQLSf3H1Wv6Xqnxb5P6Orjb-J1TkTsLdWEA18sPZqpgyClRX2pvQ/viewform?usp=sharing"
 						label="Vendor Application"
@@ -64,12 +53,7 @@ export function DesktopMenu({ path }: NavMenuProps) {
 						external
 					/>
 				</Menu>
-				<Menu
-					href="https://tr.ee/ANAufovI-T"
-					label="Donate"
-					external
-					className="hidden md:flex"
-				/>
+				<Menu href="/about" label="About Us" />
 			</Menubar>
 		</>
 	);
@@ -96,12 +80,8 @@ export function MobileMenu({ path }: NavMenuProps) {
 			>
 				<div className=" w-screen flex flex-col bg-zinc-900 shadow shadow-zinc-800 md:hidden">
 					<NavButton href="/" label="Home" aria-current={path === "/"} />
-					<NavButton
-						href="https://www.tickettailor.com/events/boopsocietyctx/1001871"
-						label="Register"
-						external
-					/>
-					<MobileDisclosure label="Hotel">
+					<MobileDisclosure label="Attend">
+						<NavButton href="/register" label="Register" />
 						<NavButton
 							href="https://tinyurl.com/ARRHotelRes"
 							label="Reservations"

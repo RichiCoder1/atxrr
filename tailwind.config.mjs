@@ -84,5 +84,5 @@ export default {
 		addVariant('disabled', ['&:disabled', "&[aria-disabled=true]"]);
 		addVariant('focus-visible', ['&:focus-visible', '&[data-focus-visible]'])
 		addVariant('current', ["&[aria-current]:not([aria-current=''], [aria-current='false'])"]);
-	}), require("tailwindcss-animate")],
+	}), require("tailwindcss-animate"), require('@tailwindcss/typography')],
 }
