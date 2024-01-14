@@ -23,6 +23,8 @@ export function DesktopMenu({ path }: NavMenuProps) {
 				<Menu href="/" label="Home" aria-current={path === "/"} />
 				<Menu label="Attend">
 					<MenuItem href="/register" label="Register" />
+					<MenuItem href="/events" label="Schedule" />
+					<MenuItem href="/people" label="Educators and Presenters" />
 					<MenuItem
 						href="https://tinyurl.com/ARRHotelRes"
 						label="Reservations"
@@ -34,7 +36,6 @@ export function DesktopMenu({ path }: NavMenuProps) {
 						external
 					/>
 				</Menu>
-				<Menu href="/events" label="Schedule" />
 				<Menu href="/market" label="Vendors" />
 				<Menu label="Forms & Volunteer">
 					<MenuItem
@@ -83,6 +84,8 @@ export function MobileMenu({ path }: NavMenuProps) {
 					<NavButton href="/" label="Home" aria-current={path === "/"} />
 					<MobileDisclosure label="Attend">
 						<NavButton href="/register" label="Register" />
+						<NavButton href="/events" label="Schedule" />
+						<NavButton href="/people" label="Educators and Presenters" />
 						<NavButton
 							href="https://tinyurl.com/ARRHotelRes"
 							label="Reservations"
@@ -94,7 +97,8 @@ export function MobileMenu({ path }: NavMenuProps) {
 							external
 						/>
 					</MobileDisclosure>
-					<MobileDisclosure label="Participate">
+					<NavButton href="/market" label="Vendors" />
+					<MobileDisclosure label="Forms & Volunteer">
 						<NavButton
 							href="https://docs.google.com/forms/d/e/1FAIpQLSf3H1Wv6Xqnxb5P6Orjb-J1TkTsLdWEA18sPZqpgyClRX2pvQ/viewform?usp=sharing"
 							label="Vendor Application"
@@ -111,7 +115,7 @@ export function MobileMenu({ path }: NavMenuProps) {
 							external
 						/>
 					</MobileDisclosure>
-					<NavButton href="https://tr.ee/ANAufovI-T" label="Donate" external />
+					<NavButton href="/about" label="About Us" />
 				</div>
 			</Dialog>
 		</>

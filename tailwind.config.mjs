@@ -80,7 +80,16 @@ export default {
 			},
 		},
 	},
-	plugins: [plugin(({ addVariant }) => {
+	plugins: [plugin(({ addVariant, matchUtilities, theme }) => {
+		matchUtilities({
+			"text-stroke": (value) => ({
+				textStroke: value,
+				'--webkit-text-stroke': value
+			}),
+		},
+			{ values: theme('outlineWidth') }
+		);
+
 		addVariant('disabled', ['&:disabled', "&[aria-disabled=true]"]);
 		addVariant('focus-visible', ['&:focus-visible', '&[data-focus-visible]'])
 		addVariant('current', ["&[aria-current]:not([aria-current=''], [aria-current='false'])"]);
