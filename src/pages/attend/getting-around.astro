@@ -50,11 +50,11 @@ const venues = venuesData
       </ol>
     </nav>
     <hr class="my-6 h-[1px] bg-primary" />
-    <div class="flex flex-col gap-20">
+    <div class="flex flex-col gap-16">
       {
         venues.map((venue) => (
           <div id={venue.slug}>
-            <h3 class="mb-3 text-lg font-semibold underline decoration-gray-500 underline-offset-8">
+            <h3 class="mb-3 mt-4 text-lg font-semibold underline decoration-gray-500 underline-offset-8">
               {venue.title}
             </h3>
             <div class="prose dark:prose-invert" set:html={venue.body} />
