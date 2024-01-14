@@ -1,5 +1,6 @@
 ---
 // TODO: There's no reason this page couldn't be split up into "multiple" cached pages.
+import { PageHeader } from "@/components/PageHeader";
 import { Photo } from "@/components/Photo";
 import MainLayout from "@/layouts/MainLayout.astro";
 import { getDirectusClient } from "@/lib/directus";
@@ -21,11 +22,7 @@ if (!url.searchParams.has("preview")) {
 
 <MainLayout title="Educators" description="Educators">
   <div class="container max-w-4xl">
-    <h1
-      class="rainbow-text text-stroke-[1px_var(--primary)] my-8 text-center text-4xl font-semibold"
-    >
-      Educators and Presentors
-    </h1>
+    <PageHeader>Educators and Presentors</PageHeader>
     <p class="my-6">
       We'd like to recognize and thank the following educators and presentors
       who are volunteering their time this year.

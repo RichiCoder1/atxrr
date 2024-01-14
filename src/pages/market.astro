@@ -1,4 +1,5 @@
 ---
+import { PageHeader } from "@/components/PageHeader";
 import MainLayout from "@/layouts/MainLayout.astro";
 
 import { getDirectusClient } from "@/lib/directus";
@@ -12,9 +13,9 @@ const vendors = await directus.request(readItems("vendors"));
 
 <MainLayout title="Market" description="Market and Vendors Information">
   <div class="container mb-10 max-w-4xl">
-    <h1 class="rainbow-text my-8 text-center text-4xl font-semibold">
+    <PageHeader>
       {vendorProse.title}
-    </h1>
+    </PageHeader>
     <div
       class="prose mx-auto mt-10 dark:prose-invert"
       set:html={vendorProse.body}
