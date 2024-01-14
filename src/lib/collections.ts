@@ -58,6 +58,7 @@ export interface Vendor {
 	website: string;
 	logo: string;
 	info: string;
+	sort: number;
 }
 
 export interface VendorPage {
