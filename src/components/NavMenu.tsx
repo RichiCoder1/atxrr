@@ -22,9 +22,10 @@ export function DesktopMenu({ path }: NavMenuProps) {
 			<Menubar className="hidden md:flex">
 				<Menu href="/" label="Home" aria-current={path === "/"} />
 				<Menu label="Attend">
-					<MenuItem href="/register" label="Register" />
+					<MenuItem href="/attend/register" label="Register" />
 					<MenuItem href="/events" label="Schedule" />
 					<MenuItem href="/people" label="Educators and Presenters" />
+					<MenuItem href="/attend/getting-around" label="Getting Around" />
 					<MenuItem
 						href="https://tinyurl.com/ARRHotelRes"
 						label="Reservations"
@@ -83,9 +84,10 @@ export function MobileMenu({ path }: NavMenuProps) {
 				<div className=" w-screen flex flex-col bg-zinc-900 shadow shadow-zinc-800 md:hidden">
 					<NavButton href="/" label="Home" aria-current={path === "/"} />
 					<MobileDisclosure label="Attend">
-						<NavButton href="/register" label="Register" />
+						<NavButton href="/attend/register" label="Register" />
 						<NavButton href="/events" label="Schedule" />
 						<NavButton href="/people" label="Educators and Presenters" />
+						<NavButton href="/attend/getting-around" label="Getting Around" />
 						<NavButton
 							href="https://tinyurl.com/ARRHotelRes"
 							label="Reservations"

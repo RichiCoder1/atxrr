@@ -1,0 +1,81 @@
+---
+import MainLayout from "@/layouts/MainLayout.astro";
+import { getDirectusClient } from "@/lib/directus";
+import { readItems, readSingleton } from "@directus/sdk";
+import slugify from "@sindresorhus/slugify";
+
+const directus = getDirectusClient();
+const assets = new URL("/assets/", directus.url);
+
+const gettingAround = await directus.request(
+  readSingleton("getting_around_page"),
+);
+const venuesData = await directus.request(readItems("venues"));
+const venues = venuesData
+  .map((venue) => ({
+    ...venue,
+    slug: slugify(venue.title),
+  }))
+  .sort((a, b) => a.sort - b.sort);
+---
+
+<MainLayout
+  title="Getting Around"
+  description="Getting Around for ATX Rubber Roundup"
+>
+  <div class="container mb-10 max-w-4xl">
+    <h1
+      class="rainbow-text my-8 text-center text-4xl font-semibold leading-normal"
+    >
+      Getting Around / Venues
+    </h1>
+    <div class="prose mt-10 dark:prose-invert" set:html={gettingAround.body} />
+    <nav
+      id="venues"
+      class="mb-4 mt-6 inline-block rounded border-[1px] border-primary p-4"
+    >
+      <ol class="list-disc pl-4">
+        {
+          venues.map((venue) => (
+            <li>
+              <a
+                class="font-medium underline underline-offset-4"
+                href={`#${venue.slug}`}
+              >
+                {venue.title}
+              </a>
+            </li>
+          ))
+        }
+      </ol>
+    </nav>
+    <hr class="my-6 h-[1px] bg-primary" />
+    <div class="flex flex-col gap-6">
+      {
+        venues.map((venue) => (
+          <div id={venue.slug}>
+            <h3 class="text-lg font-semibold">{venue.title}</h3>
+            <div class="prose dark:prose-invert" set:html={venue.body} />
+            <div class="flex flex-col gap-2">
+              {venue.address ? (
+                <p class="mt-2 font-light">{venue.address}</p>
+              ) : null}
+              {venue.maps_embed ? (
+                <iframe
+                  src={venue.maps_embed}
+                  width="600"
+                  height="300"
+                  class="w-[60vw] max-w-4xl rounded border border-primary contrast-[85%] grayscale invert-[90%] filter"
+                  allowfullscreen=""
+                  loading="lazy"
+                  title="Google Maps showing Hotel Indigo Austin Downtown Location"
+                  referrerpolicy="no-referrer-when-downgrade"
+                />
+              ) : null}
+            </div>
+          </div>
+        ))
+      }
+    </div>
+  </div>
+</MainLayout>

@@ -38,6 +38,8 @@ export interface Schema {
 	sponsors: Sponsor[];
 	people: Person[];
 	vendor_page: VendorPage;
+	getting_around_page: GettingAroundPage;
+	venues: Venue[];
 }
 
 export interface Sponsor {
@@ -62,4 +64,21 @@ export interface VendorPage {
 	id: number;
 	title: string;
 	body: string;
+}
+
+export interface GettingAroundPage {
+	id: number;
+	date_updated: string;
+	title: string;
+	body: string;
+}
+
+export interface Venue {
+	id: number;
+	status: string;
+	sort: number;
+	title: string;
+	body: string;
+	address: string;
+	maps_embed?: string;
 }
