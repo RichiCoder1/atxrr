@@ -4,6 +4,7 @@ export interface Event {
 	event_start: string;
 	event_end: string;
 	name: string;
+	venue: number | Venue;
 	location?: string;
 	description: string;
 	tags: string[];

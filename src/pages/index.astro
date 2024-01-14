@@ -81,12 +81,16 @@ if (!url.host.includes("localhost") && !url.searchParams.has("preview")) {
     >
       Presenting Sponsors
     </h2>
-    <div class="flex justify-center">
+    <div
+      class="mx-auto mt-8 grid max-w-[80vw] items-center justify-center gap-8 align-middle sm:grid-cols-2 md:mt-0 md:grid-flow-col"
+    >
       {
         sponsors.map((sponsor) => (
-          <a href={sponsor.website}>
+          <a href={sponsor.website} class="flex justify-center">
             <img
-              class={`max-w-lg ${sponsor.invert_logo ? "invert" : "invert-0"}`}
+              class={`max-h-[20vh] ${
+                sponsor.invert_logo ? "invert" : "invert-0"
+              }`}
               src={`${assets}/${sponsor.logo}/${encodeURIComponent(
                 sponsor.name,
               )}.png?key=sponsor`}

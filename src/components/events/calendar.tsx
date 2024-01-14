@@ -1,18 +1,19 @@
 import { buttonVariants } from "../ui/button";
 import { Card, CardContent, CardDescription, CardTitle } from "../ui/card";
 import { Tabs, TabsTrigger, TabsList, TabsContent } from "../ui/tabs";
-import type { Event } from "@/lib/collections";
+import type { Event, Venue } from "@/lib/collections";
 import { cn } from "@/lib/utils";
 import { useStore } from "@nanostores/react";
 import { createSearchParams } from "@nanostores/router";
+import slugify from "@sindresorhus/slugify";
 import { groupBy, sortBy } from "lodash-es";
 import { marked } from "marked";
 import { useMemo } from "react";
 
-const dateFormatter = new Intl.DateTimeFormat(["en-US"], {
+const dateFormatter = new Intl.DateTimeFormat(undefined, {
 	weekday: "long",
 });
-const timeFormatter = new Intl.DateTimeFormat(["en-US"], {
+const timeFormatter = new Intl.DateTimeFormat(undefined, {
 	timeStyle: "short",
 });
 
@@ -56,16 +57,26 @@ export function Calendar({ events, params: astroParams }: CalendarProps) {
 				const parts = dateFormatter.formatToParts(start);
 				const timeParts = timeFormatter.formatRangeToParts(start, end);
 
+				const dayPeriod = timeParts.find(
+					(part) => part.type === "dayPeriod" && part.source === "shared",
+				)?.value;
+
+				const timeStart = timeParts.findIndex(
+					(part) => part.type === "hour" && part.source === "startRange",
+				);
+				timeParts.splice(0, timeStart);
+
 				return {
 					...event,
 					weekday: parts.find((part) => part.type === "weekday")!.value,
 					timeDisplay: timeFormatter.formatRange(start, end),
 					start,
 					end,
-					startPart: timeParts
-						.filter((part) => part.source === "startRange")!
-						.map((part) => part.value)
-						.join(""),
+					startPart:
+						timeParts
+							.filter((part) => part.source === "startRange")!
+							.map((part) => part.value)
+							.join("") + (dayPeriod ? ` ${dayPeriod}` : ""),
 					endPart: timeParts
 						.filter((part) => part.source !== "startRange")!
 						.map((part) => part.value)
@@ -133,7 +144,16 @@ function CalendarWeekday({
 					<div>
 						<CardTitle>{event.name}</CardTitle>
 						<CardDescription className="pt-1">
-							<p>{event.location}</p>
+							<p>
+								<a
+									href={`/attend/getting-around#${slugify(
+										(event.venue as Venue).title,
+									)}`}
+								>
+									{(event.venue as Venue).title}
+								</a>
+								{event.location ? <span> | {event.location}</span> : null}
+							</p>
 						</CardDescription>
 					</div>
 					<CardContent className="pl-0 col-start-auto col-span-2 md:col-start-2 md:col-span-1">

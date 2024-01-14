@@ -7,7 +7,9 @@ import { readItems } from "@directus/sdk";
 import { PageHeader } from "@/components/PageHeader";
 
 const directus = getDirectusClient();
-const events = await directus.request(readItems("events"));
+const events = await directus.request(
+  readItems("events", { fields: ["*", "venue.*"] }),
+);
 
 const url = new URL(Astro.request.url);
 if (!url.searchParams.has("preview")) {
