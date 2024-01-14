@@ -47,6 +47,7 @@ export interface Sponsor {
 	logo: string;
 	info: string;
 	invert_logo: boolean;
+	tags: string[];
 }
 
 export interface Vendor {

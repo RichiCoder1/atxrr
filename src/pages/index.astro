@@ -9,7 +9,8 @@ import { readAssetRaw, readItems } from "@directus/sdk";
 
 const directus = getDirectusClient();
 const assets = new URL("/assets/", directus.url);
-const sponsors = await directus.request(readItems("sponsors"));
+let sponsors = await directus.request(readItems("sponsors"));
+sponsors = sponsors.filter((sponsor) => sponsor.tags.includes("primary"));
 
 const dateFormat = new Intl.DateTimeFormat("en", {
   year: "numeric",
