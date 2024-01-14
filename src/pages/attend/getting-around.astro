@@ -54,7 +54,9 @@ const venues = venuesData
       {
         venues.map((venue) => (
           <div id={venue.slug}>
-            <h3 class="text-lg font-semibold">{venue.title}</h3>
+            <h3 class="mb-3 text-lg font-semibold underline decoration-gray-500 underline-offset-8">
+              {venue.title}
+            </h3>
             <div class="prose dark:prose-invert" set:html={venue.body} />
             <div class="flex flex-col gap-2">
               {venue.address ? (
