@@ -5,24 +5,39 @@ import { getDirectusClient } from "@/lib/directus";
 import { readItems, readSingleton } from "@directus/sdk";
 
 const directus = getDirectusClient();
+const assets = new URL("/assets/", directus.url);
 const vendorProse = await directus.request(readSingleton("vendor_page"));
 const vendors = await directus.request(readItems("vendors"));
 ---
 
 <MainLayout title="Market" description="Market and Vendors Information">
-  <div class="container max-w-2xl">
+  <div class="container mb-10 max-w-4xl">
     <h1 class="rainbow-text my-8 text-center text-4xl font-semibold">
       {vendorProse.title}
     </h1>
     <div class="prose mt-10 dark:prose-invert" set:html={vendorProse.body} />
-    <ul>
+    <ul class="flex flex-col gap-8">
       {
         vendors.map((vendor) => (
-          <li>
-            <a href={vendor.website} class="text-xl">
+          <li class="gap-4 md:grid md:grid-cols-[1fr_2fr]">
+            <a class="col-span-1" href={vendor.website}>
+              <img
+                class="max-h-[300px]"
+                src={`${assets}/${vendor.logo}/`}
+                alt={`${vendor.name} logo`}
+              />
+            </a>
+            <a
+              class="col-span-1 col-start-2  row-start-1"
+              href={vendor.website}
+              class="text-xl"
+            >
               {vendor.name}
             </a>
-            <div class="prose mt-10 dark:prose-invert" set:html={vendor.info} />
+            <div
+              class="prose col-span-1 col-start-2 row-start-1 mt-10 dark:prose-invert"
+              set:html={vendor.info}
+            />
           </li>
         ))
       }
