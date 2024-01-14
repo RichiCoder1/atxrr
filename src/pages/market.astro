@@ -15,7 +15,10 @@ const vendors = await directus.request(readItems("vendors"));
     <h1 class="rainbow-text my-8 text-center text-4xl font-semibold">
       {vendorProse.title}
     </h1>
-    <div class="prose mt-10 dark:prose-invert" set:html={vendorProse.body} />
+    <div
+      class="prose mx-auto mt-10 dark:prose-invert"
+      set:html={vendorProse.body}
+    />
     <ul class="flex flex-col gap-8">
       {
         vendors
