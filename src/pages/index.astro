@@ -4,12 +4,26 @@ import MainLayout from "@/layouts/MainLayout.astro";
 import { eventDates } from "@/consts";
 import Bull from "../../public/bull.svg";
 import { Button } from "@/components/ui/button";
+import { getDirectusClient } from "@/lib/directus";
+import { readAssetRaw, readItems } from "@directus/sdk";
+
+const directus = getDirectusClient();
+const assets = new URL("/assets/", directus.url);
+const sponsors = await directus.request(readItems("sponsors"));
 
 const dateFormat = new Intl.DateTimeFormat("en", {
   year: "numeric",
   month: "short",
   day: "numeric",
 });
+
+const url = new URL(Astro.request.url);
+if (!url.host.includes("localhost") && !url.searchParams.has("preview")) {
+  Astro.response.headers.append(
+    "Cache-Control",
+    "public, max-age=600, stale-while-revalidate=30",
+  );
+}
 ---
 
 <MainLayout>
@@ -27,7 +41,7 @@ const dateFormat = new Intl.DateTimeFormat("en", {
         Austin
       </h2>
       <h1
-        class="m-0 bg-gradient-to-tr from-yellow-500 via-red-500 to-red-600 bg-clip-text text-6xl font-semibold uppercase leading-none text-transparent lg:text-8xl xl:text-9xl"
+        class="rainbow-text m-0 text-6xl font-semibold uppercase leading-none lg:text-8xl xl:text-9xl"
       >
         Rubber Roundup
       </h1>
@@ -49,6 +63,7 @@ const dateFormat = new Intl.DateTimeFormat("en", {
       >
     </div>
   </div>
+
   <p
     class="m-auto mb-8 max-w-2xl rounded p-4 text-justify text-xl font-light leading-tight tracking-tight"
   >
@@ -58,6 +73,29 @@ const dateFormat = new Intl.DateTimeFormat("en", {
     learn, socialize, and enjoy their appreciation for rubber. A whole weekend
     of demos, education, socials, bar nights, and more!
   </p>
+
+  <div id="sponsors" class="my-8">
+    <h2
+      class="rainbow-text my-4 text-center text-4xl font-semibold leading-tight tracking-wide"
+    >
+      Presenting Sponsors
+    </h2>
+    <div class="flex justify-center">
+      {
+        sponsors.map((sponsor) => (
+          <a href={sponsor.website}>
+            <img
+              class={`max-w-lg ${sponsor.invert_logo ? "invert" : "invert-0"}`}
+              src={`${assets}/${sponsor.logo}/${encodeURIComponent(
+                sponsor.name,
+              )}.png?key=sponsor`}
+              alt={sponsor.name}
+            />
+          </a>
+        ))
+      }
+    </div>
+  </div>
 
   <div class="mb-4 flex flex-col items-center justify-center lg:mb-10">
     <iframe

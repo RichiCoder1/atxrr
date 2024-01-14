@@ -35,6 +35,7 @@ export function DesktopMenu({ path }: NavMenuProps) {
 					/>
 				</Menu>
 				<Menu href="/events" label="Schedule" />
+				<Menu href="/market" label="Vendors" />
 				<Menu label="Forms & Volunteer">
 					<MenuItem
 						href="https://docs.google.com/forms/d/e/1FAIpQLSf3H1Wv6Xqnxb5P6Orjb-J1TkTsLdWEA18sPZqpgyClRX2pvQ/viewform?usp=sharing"

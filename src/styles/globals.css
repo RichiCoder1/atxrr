@@ -65,3 +65,9 @@
     @apply min-h-screen bg-background font-sans text-foreground;
   }
 }
+
+@layer components {
+  .rainbow-text {
+    @apply bg-gradient-to-tr from-yellow-500 via-red-500 to-red-600 bg-clip-text text-transparent;
+  }
+}
