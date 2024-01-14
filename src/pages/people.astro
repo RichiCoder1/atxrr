@@ -40,7 +40,7 @@ if (!url.searchParams.has("preview")) {
                 <Photo
                   src={`${assets}/${person.profile_pic}`}
                   alt={person.display_name}
-                  className="max-w-xs max-h-[25vh] float-left mb-2 mr-8 mt-4"
+                  className="max-w-[min(25vw,15rem)] float-left mb-2 mr-8 mt-4"
                 />
                 <h2 class="text-2xl font-bold">{person.display_name}</h2>
                 <hr class="my-4 h-[2px] bg-white" />
