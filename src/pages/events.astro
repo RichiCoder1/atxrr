@@ -8,7 +8,7 @@ import { PageHeader } from "@/components/PageHeader";
 
 const directus = getDirectusClient();
 const events = await directus.request(
-  readItems("events", { fields: ["*", "venue.*"] }),
+  readItems("events", { fields: ["*", "venue.*" as "venue"] }),
 );
 
 const url = new URL(Astro.request.url);
