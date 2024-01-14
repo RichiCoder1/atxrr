@@ -36,7 +36,7 @@ export function DesktopMenu({ path }: NavMenuProps) {
 						external
 					/>
 				</Menu>
-				<Menu href="/market" label="Vendors" />
+				<Menu href="/market" label="Vendor Market" />
 				<Menu label="Forms & Volunteer">
 					<MenuItem
 						href="https://docs.google.com/forms/d/e/1FAIpQLSf3H1Wv6Xqnxb5P6Orjb-J1TkTsLdWEA18sPZqpgyClRX2pvQ/viewform?usp=sharing"
@@ -97,7 +97,7 @@ export function MobileMenu({ path }: NavMenuProps) {
 							external
 						/>
 					</MobileDisclosure>
-					<NavButton href="/market" label="Vendors" />
+					<NavButton href="/market" label="Vendor Market" />
 					<MobileDisclosure label="Forms & Volunteer">
 						<NavButton
 							href="https://docs.google.com/forms/d/e/1FAIpQLSf3H1Wv6Xqnxb5P6Orjb-J1TkTsLdWEA18sPZqpgyClRX2pvQ/viewform?usp=sharing"
