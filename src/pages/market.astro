@@ -22,15 +22,14 @@ const vendors = await directus.request(readItems("vendors"));
           <li class="gap-4 md:grid md:grid-cols-[1fr_2fr]">
             <a class="col-span-1" href={vendor.website}>
               <img
-                class="max-h-[300px]"
+                class="max-h-[300px] rounded-sm"
                 src={`${assets}/${vendor.logo}/`}
                 alt={`${vendor.name} logo`}
               />
             </a>
             <a
-              class="col-span-1 col-start-2  row-start-1"
+              class=" col-span-1 col-start-2 row-start-1 font-semibold underline underline-offset-8 first-line:text-2xl hover:text-primary"
               href={vendor.website}
-              class="text-xl"
             >
               {vendor.name}
             </a>
