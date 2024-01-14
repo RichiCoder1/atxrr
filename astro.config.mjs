@@ -17,7 +17,7 @@ export default defineConfig({
 	adapter: cloudflare({
 		mode: "directory"
 	}),
-	site: process.env.CF_PAGES_URL ?? 'http://localhost:4321/',
+	site: process.env.SITE_URL ?? process.env.CF_PAGES_URL ?? 'http://localhost:4321/',
 	vite: {
 		server: {
 			proxy: {
