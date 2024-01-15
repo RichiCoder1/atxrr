@@ -34,10 +34,10 @@ const ogLarge = new URL("/og/large-summary.jpg", Astro.site);
     <meta property="og:description" content={description} />
     <meta property="og:locale" content="en_US" />
     <meta property="og:type" content="site" />
-    <meta property="og:image" content={logo} />
+    <!-- <meta property="og:image" content={logo} />
     <meta property="og:image:width" content="786" />
     <meta property="og:image:heigth" content="786" />
-    <meta property="og:image:alt" content="Austin Rubber Roundup Logo" />
+    <meta property="og:image:alt" content="Austin Rubber Roundup Logo" /> -->
     <meta property="og:image" content={ogLargeSmol} />
     <meta property="og:image:width" content="1020" />
     <meta property="og:image:heigth" content="510" />
@@ -52,7 +52,7 @@ const ogLarge = new URL("/og/large-summary.jpg", Astro.site);
     <meta name="twitter:site" content="@austinrubberroundup" />
     <meta name="twitter:title" content={title} />
     <meta name="twitter:description" content={description} />
-    <meta name="twitter:image" content={ogLarge} />
+    <meta name="twitter:image" content="/og/large-summary.jpg" />
 
     <DarkMode />
 
