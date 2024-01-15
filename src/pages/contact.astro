@@ -14,7 +14,7 @@ const contactPage = await directus.request(readSingleton("contact_page"));
     <PageHeader>Contact Us</PageHeader>
     <div
       class="prose mx-auto mt-10 dark:prose-invert"
-      set:html={contactPage.body}
+      set:html={contactPage.Information}
     />
   </div>
 </MainLayout>

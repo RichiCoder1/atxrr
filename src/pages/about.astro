@@ -22,7 +22,7 @@ const questions = await directus.request(readItems("qna"));
             <details open={i === 0}>
               <summary class="cursor-pointer">{qna.question}</summary>
               <div
-                class="prose border-l-2 pl-4 pt-2 dark:prose-invert"
+                class="prose border-l-2 border-primary pl-4 pt-2 dark:prose-invert"
                 set:html={qna.answer}
               />
             </details>

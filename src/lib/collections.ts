@@ -95,5 +95,5 @@ export interface SponsorsPage {
 
 export interface ContactPage {
 	id: number;
-	body: string;
+	Information: string;
 }
