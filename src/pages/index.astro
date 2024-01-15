@@ -91,9 +91,7 @@ if (!url.host.includes("localhost") && !url.searchParams.has("preview")) {
               class={`max-h-[20vh] ${
                 sponsor.invert_logo ? "invert" : "invert-0"
               }`}
-              src={`${assets}/${sponsor.logo}/${encodeURIComponent(
-                sponsor.name,
-              )}.png?key=sponsor`}
+              src={`${assets}/${sponsor.logo}?key=sponsor`}
               alt={sponsor.name}
             />
           </a>
