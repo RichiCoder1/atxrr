@@ -1,0 +1,51 @@
+---
+import { PageHeader } from "@/components/PageHeader";
+import MainLayout from "@/layouts/MainLayout.astro";
+
+import { getDirectusClient } from "@/lib/directus";
+import { readItems, readSingleton } from "@directus/sdk";
+
+const directus = getDirectusClient();
+const assets = new URL("/assets/", directus.url);
+const sponsorProse = await directus.request(readSingleton("sponsors_page"));
+const sponsors = await directus.request(readItems("sponsors"));
+---
+
+<MainLayout title="Sponsors" description="Sponsors and Social Hosts">
+  <div class="container max-w-4xl">
+    <PageHeader>Sponsors and Social Hosts</PageHeader>
+    <div
+      class="prose mx-auto mt-10 dark:prose-invert"
+      set:html={sponsorProse.body}
+    />
+    <ul class="flex flex-col gap-8">
+      {
+        sponsors
+          .sort((a, b) => a.sort - b.sort)
+          .map((sponsor) => (
+            <li class="gap-4 md:grid md:grid-cols-[1fr_2fr]">
+              <a class="col-span-1" href={sponsor.website}>
+                <img
+                  class={`max-h-[300px] rounded-sm ${
+                    sponsor.invert_logo ? "invert" : "invert-0"
+                  }`}
+                  src={`${assets}/${sponsor.logo}/`}
+                  alt={`${sponsor.name} logo`}
+                />
+              </a>
+              <a
+                class=" col-span-1 col-start-2 row-start-1 font-semibold underline underline-offset-8 first-line:text-2xl hover:text-primary"
+                href={sponsor.website}
+              >
+                {sponsor.name}
+              </a>
+              <div
+                class="prose col-span-1 col-start-2 row-start-1 mt-10 dark:prose-invert"
+                set:html={sponsor.info}
+              />
+            </li>
+          ))
+      }
+    </ul>
+  </div>
+</MainLayout>

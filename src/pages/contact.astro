@@ -1,0 +1,20 @@
+---
+import { PageHeader } from "@/components/PageHeader";
+import MainLayout from "@/layouts/MainLayout.astro";
+
+import { getDirectusClient } from "@/lib/directus";
+import { readItems, readSingleton } from "@directus/sdk";
+
+const directus = getDirectusClient();
+const contactPage = await directus.request(readSingleton("contact_page"));
+---
+
+<MainLayout title="About" description="About">
+  <div class="container max-w-2xl">
+    <PageHeader>Contact Us</PageHeader>
+    <div
+      class="prose mx-auto mt-10 dark:prose-invert"
+      set:html={contactPage.body}
+    />
+  </div>
+</MainLayout>

@@ -19,7 +19,7 @@ import { DesktopMenu, MobileMenu } from "./NavMenu";
       </a>
       <span class="sr-only text-2xl"> Austin Rubber Roundup</span>
     </div>
-    <div class="flex flex-grow flex-row justify-end md:justify-center">
+    <div class="flex flex-grow flex-row justify-end lg:justify-center">
       <DesktopMenu path={new URL(Astro.url).pathname} client:load />
       <MobileMenu path={new URL(Astro.url).pathname} client:only />
     </div>

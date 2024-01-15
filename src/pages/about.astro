@@ -20,7 +20,7 @@ const questions = await directus.request(readItems("qna"));
         questions.map((qna, i) => (
           <details open={i === 0}>
             <summary>{qna.question}</summary>
-            {qna.answer}
+            <span class="prose dark:prose-invert" set:html={qna.answer} />
           </details>
         ))
       }

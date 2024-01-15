@@ -41,10 +41,13 @@ export interface Schema {
 	vendor_page: VendorPage;
 	getting_around_page: GettingAroundPage;
 	venues: Venue[];
+	sponsors_page: SponsorsPage;
+	contact_page: ContactPage;
 }
 
 export interface Sponsor {
 	id: number;
+	sort: number;
 	name: string;
 	website: string;
 	logo: string;
@@ -83,4 +86,14 @@ export interface Venue {
 	body: string;
 	address: string;
 	maps_embed?: string;
+}
+
+export interface SponsorsPage {
+	id: number;
+	body: string;
+}
+
+export interface ContactPage {
+	id: number;
+	body: string;
 }

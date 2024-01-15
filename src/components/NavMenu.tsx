@@ -19,7 +19,7 @@ export type NavMenuProps = {
 export function DesktopMenu({ path }: NavMenuProps) {
 	return (
 		<>
-			<Menubar className="hidden md:flex">
+			<Menubar className="hidden lg:flex">
 				<Menu href="/" label="Home" aria-current={path === "/"} />
 				<Menu label="Attend">
 					<MenuItem href="/attend/register" label="Register" />
@@ -38,6 +38,7 @@ export function DesktopMenu({ path }: NavMenuProps) {
 					/>
 				</Menu>
 				<Menu href="/market" label="Vendor Market" />
+				<Menu href="/sponsors" label="Sponsors and Social Hosts" />
 				<Menu label="Forms & Volunteer">
 					<MenuItem
 						href="https://forms.gle/UNz3EBRhsxLDwxAB9"
@@ -63,6 +64,7 @@ export function DesktopMenu({ path }: NavMenuProps) {
 					/>
 				</Menu>
 				<Menu href="/about" label="About Us" />
+				<Menu href="/contact" label="Contact Us" />
 			</Menubar>
 		</>
 	);
@@ -74,7 +76,7 @@ export function MobileMenu({ path }: NavMenuProps) {
 	return (
 		<>
 			<Button
-				className="inline-block md:hidden"
+				className="inline-block lg:hidden"
 				variant="ghost"
 				title={!open ? "Expand Navigation Menu" : "Collapse Navigation Menu"}
 				onClick={() => setOpen(true)}
@@ -87,12 +89,13 @@ export function MobileMenu({ path }: NavMenuProps) {
 				onClose={() => setOpen(false)}
 				className="fixed left-0 top-0 z-50 m-auto flex h-[fit-content] max-h-[calc(100vh-4.5rem)] w-screen gap-4 mt-[4.5rem] transition opacity-50 data-enter:opacity-100 translate-y-2 data-enter:translate-y-0 border-b-2 border-alternate"
 			>
-				<div className=" w-screen flex flex-col bg-zinc-900 shadow shadow-zinc-800 md:hidden">
+				<div className=" w-screen flex flex-col bg-zinc-900 shadow shadow-zinc-800 lg:hidden">
 					<NavButton href="/" label="Home" aria-current={path === "/"} />
 					<MobileDisclosure label="Attend">
 						<NavButton href="/attend/register" label="Register" />
 						<NavButton href="/events" label="Schedule" />
 						<NavButton href="/people" label="Educators and Presenters" />
+						<NavButton href="/sponsors" label="Sponsors and Social Hosts" />
 						<NavButton href="/attend/getting-around" label="Getting Around" />
 						<NavButton
 							href="https://tinyurl.com/ARRHotelRes"
@@ -106,6 +109,7 @@ export function MobileMenu({ path }: NavMenuProps) {
 						/>
 					</MobileDisclosure>
 					<NavButton href="/market" label="Vendor Market" />
+					<NavButton href="/sponsors" label="Sponsors and Social Hosts" />
 					<MobileDisclosure label="Forms & Volunteer">
 						<NavButton
 							href="https://forms.gle/UNz3EBRhsxLDwxAB9"
@@ -129,6 +133,7 @@ export function MobileMenu({ path }: NavMenuProps) {
 						/>
 					</MobileDisclosure>
 					<NavButton href="/about" label="About Us" />
+					<NavButton href="/contact" label="Contact Us" />
 				</div>
 			</Dialog>
 		</>
@@ -146,7 +151,7 @@ function MobileDisclosure({
 			<Disclosure
 				render={<Button size="lg" variant="ghost" />}
 				store={disclosureStore}
-				className="group w-full justify-start gap-2 md:w-[unset] md:justify-center"
+				className="group w-full justify-start gap-2 lg:w-[unset] lg:justify-center"
 			>
 				{label}
 				<ChevronDown className="transition-transform group-aria-expanded:rotate-180" />
