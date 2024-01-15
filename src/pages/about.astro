@@ -16,14 +16,19 @@ const questions = await directus.request(readItems("qna"));
     <div class="prose mx-auto mt-10 dark:prose-invert" set:html={about.body} />
     <div>
       <h2 class="mt-4 text-2xl text-primary">Frequently Asked Questions</h2>
-      {
-        questions.map((qna, i) => (
-          <details open={i === 0}>
-            <summary>{qna.question}</summary>
-            <span class="prose dark:prose-invert" set:html={qna.answer} />
-          </details>
-        ))
-      }
+      <div class="mt-2 flex flex-col gap-4">
+        {
+          questions.map((qna, i) => (
+            <details open={i === 0}>
+              <summary class="cursor-pointer">{qna.question}</summary>
+              <div
+                class="prose border-l-2 pl-4 pt-2 dark:prose-invert"
+                set:html={qna.answer}
+              />
+            </details>
+          ))
+        }
+      </div>
     </div>
   </div>
 </MainLayout>
