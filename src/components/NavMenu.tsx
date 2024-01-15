@@ -38,7 +38,7 @@ export function DesktopMenu({ path }: NavMenuProps) {
 					/>
 				</Menu>
 				<Menu href="/market" label="Vendor Market" />
-				<Menu href="/sponsors" label="Sponsors and Social Hosts" />
+				<Menu href="/sponsors" label="Sponsors &amp; Social Hosts" />
 				<Menu label="Forms & Volunteer">
 					<MenuItem
 						href="https://forms.gle/UNz3EBRhsxLDwxAB9"
@@ -95,7 +95,7 @@ export function MobileMenu({ path }: NavMenuProps) {
 						<NavButton href="/attend/register" label="Register" />
 						<NavButton href="/events" label="Schedule" />
 						<NavButton href="/people" label="Educators and Presenters" />
-						<NavButton href="/sponsors" label="Sponsors and Social Hosts" />
+						<NavButton href="/sponsors" label="Sponsors &amp; Social Hosts" />
 						<NavButton href="/attend/getting-around" label="Getting Around" />
 						<NavButton
 							href="https://tinyurl.com/ARRHotelRes"
