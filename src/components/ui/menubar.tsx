@@ -1,8 +1,8 @@
+import { cn } from "@/lib/utils";
+import * as Ariakit from "@ariakit/react";
+import { ExternalLink } from "lucide-react";
 import * as React from "react";
 import type { Dispatch, ReactNode, SetStateAction } from "react";
-import * as Ariakit from "@ariakit/react";
-import { cn } from "@/lib/utils";
-import { ExternalLink } from "lucide-react";
 
 export type { MenuProviderProps } from "@ariakit/react";
 export { MenuProvider } from "@ariakit/react";
@@ -121,7 +121,7 @@ export const Menu = React.forwardRef<
 			blurOnHoverEnd={false}
 			{...props}
 			className={cn(
-				"group flex h-10 cursor-pointer items-center gap-2 whitespace-nowrap rounded px-5 underline-offset-4 outline outline-2 outline-transparent transition-colors hover:bg-accent hover:text-accent-foreground aria-expanded:bg-accent/50 aria-expanded:text-accent-foreground focus-visible:bg-accent/80",
+				"group flex h-10 cursor-pointer items-center gap-2 whitespace-nowrap rounded px-3 underline-offset-4 outline outline-2 outline-transparent transition-colors hover:bg-accent hover:text-accent-foreground aria-expanded:bg-accent/50 aria-expanded:text-accent-foreground focus-visible:bg-accent/80",
 				props.className,
 			)}
 			render={href ? <a href={href} /> : undefined}
