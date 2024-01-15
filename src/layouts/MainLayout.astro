@@ -32,10 +32,6 @@ const logo = new URL("/logo-786.png", Astro.site);
     <meta property="og:description" content={description} />
     <meta property="og:locale" content="en_US" />
     <meta property="og:type" content="site" />
-    <meta property="og:image" content={logo} />
-    <meta property="og:image:width" content="786" />
-    <meta property="og:image:heigth" content="786" />
-    <meta property="og:image:alt" content="Austin Rubber Roundup Logo" />
     <meta property="og:image" content="/og/large-summary.jpg" />
     <meta property="og:image:width" content="1020" />
     <meta property="og:image:heigth" content="510" />
@@ -43,6 +39,10 @@ const logo = new URL("/logo-786.png", Astro.site);
       property="og:image:alt"
       content="Austin Rubber Roundup Summary Card Image"
     />
+    <meta property="og:image" content={logo} />
+    <meta property="og:image:width" content="786" />
+    <meta property="og:image:heigth" content="786" />
+    <meta property="og:image:alt" content="Austin Rubber Roundup Logo" />
     <meta property="og:site_name" content="ATX Rubber Roundup" />
     <meta property="og:url" content={canonicalURL} />
 
