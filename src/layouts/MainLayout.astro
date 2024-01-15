@@ -28,12 +28,14 @@ const canonicalURL = new URL(Astro.url.pathname, Astro.site);
     <meta property="og:title" content={title} />
     <meta property="og:description" content={description} />
     <meta property="og:type" content="site" />
-    <meta property="og:image" content="/og/preview-early-bird.jpg" />
+    <meta property="og:image" content="/logo.png" />
+    <meta property="og:site_name" content="ATX Rubber Roundup" />
+    <meta property="og:url" content={canonicalURL} />
 
     <meta name="twitter:site" content="@austinrubberroundup" />
     <meta name="twitter:title" content={title} />
     <meta name="twitter:description" content={description} />
-    <meta name="twitter:image" content="/og/preview-early-bird.jpg" />
+    <meta name="twitter:image" content="/logo.png" />
 
     <DarkMode />
 
