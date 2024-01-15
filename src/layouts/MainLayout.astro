@@ -9,7 +9,9 @@ import "@fontsource-variable/open-sans";
 const title = `Austin Rubber Roundup${
   Astro.props.title ? " - " + Astro.props.title : ""
 }`;
-const description = `Austin Rubber Roundup - Feb 23-25, 2024`;
+const description = Astro.props.description
+  ? `Feb 23-25, 2024 | ${Astro.props.description}`
+  : `Join us Feb 23-25, 2024 for the Austin Rubber Roundup!`;
 const canonicalURL = new URL(Astro.url.pathname, Astro.site);
 ---
 
