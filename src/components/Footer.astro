@@ -1,5 +1,5 @@
 ---
-import { Twitter, Instagram, Facebook, Send, Mail } from "lucide-react";
+import { Twitter, Instagram, Facebook, Send, Mail, Sun } from "lucide-react";
 import { Separator } from "@/components/ui/separator";
 ---
 
@@ -9,25 +9,40 @@ import { Separator } from "@/components/ui/separator";
     ©️ Austin Rubber Roundup {new Date().getFullYear()}. All Rights Reserved
   </div>
   <div class="flex space-x-4">
-    <a href="https://x.com/austinrubberroundup" class="hover:text-primary">
+    <a
+      href="https://x.com/austinrubberroundup"
+      class="inline-flex items-center hover:text-primary"
+    >
       <Twitter />
     </a>
     <a
+      href="https://bsky.app/profile/atxrubberroundup.bsky.social"
+      class="text-xl text-transparent [text-shadow:0px_0px_0px_#fff] hover:[text-shadow:0px_0px_0px_hsl(var(--primary))]"
+    >
+      🦋</a
+    >
+    <a
       href="https://instagram.com/austinrubberroundup"
-      class="hover:text-primary"
+      class="inline-flex items-center hover:text-primary"
     >
       <Instagram />
     </a>
     <a
       href="https://facebook.com/austinrubberroundup"
-      class="hover:text-primary"
+      class="inline-flex items-center hover:text-primary"
     >
       <Facebook />
     </a>
-    <a href="https://t.me/austinrubberroundup" class="hover:text-primary">
+    <a
+      href="https://t.me/austinrubberroundup"
+      class="inline-flex items-center hover:text-primary"
+    >
       <Send />
     </a>
-    <a href="mailto:atxrubberroundup@gmail.com" class="hover:text-primary">
+    <a
+      href="mailto:atxrubberroundup@gmail.com"
+      class="inline-flex items-center hover:text-primary"
+    >
       <Mail />
     </a>
   </div>

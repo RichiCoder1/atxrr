@@ -64,7 +64,7 @@ export function DesktopMenu({ path }: NavMenuProps) {
 					/>
 				</Menu>
 				<Menu href="/about" label="About Us" />
-				<Menu href="/contact" label="Contact Us" />
+				<Menu href="/contact" label="Contact" />
 			</Menubar>
 		</>
 	);
@@ -133,7 +133,7 @@ export function MobileMenu({ path }: NavMenuProps) {
 						/>
 					</MobileDisclosure>
 					<NavButton href="/about" label="About Us" />
-					<NavButton href="/contact" label="Contact Us" />
+					<NavButton href="/contact" label="Contact" />
 				</div>
 			</Dialog>
 		</>
