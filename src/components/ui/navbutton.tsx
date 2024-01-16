@@ -1,8 +1,7 @@
-import * as React from "react";
 import { Button as ButtonPrimitive } from "@/components/ui/button";
-
 import { cn } from "@/lib/utils";
 import { ExternalLink } from "lucide-react";
+import * as React from "react";
 
 export type NavProps = Omit<
 	React.ComponentPropsWithoutRef<typeof ButtonPrimitive> & {
@@ -23,7 +22,7 @@ const NavButton = React.forwardRef<
 			size="lg"
 			ref={ref}
 			className={cn(
-				"w-full justify-start md:w-[unset] md:justify-center",
+				"w-full justify-start lg:w-[unset] lg:justify-center",
 				className,
 			)}
 			{...props}

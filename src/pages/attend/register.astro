@@ -5,6 +5,15 @@ import MainLayout from "@/layouts/MainLayout.astro";
 ---
 
 <MainLayout title="Events" description="Event Calendar">
+  <link slot="head" rel="preconnect" href="https://www.tickettailor.com" />
+  <link
+    slot="head"
+    rel="preload"
+    href="https://cdn.tickettailor.com/js/widgets/min/widget.js"
+    as="script"
+    crossorigin="anonymous"
+  />
+
   <div class="mt-6 flex w-full items-center justify-center lg:mt-9">
     <!-- Ticket Tailor Widget. Paste this into your website where you want the widget to appear. Do not change the code or the widget may not work properly. -->
     <div class="tt-widget">
