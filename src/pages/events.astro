@@ -5,19 +5,17 @@ import { Calendar } from "@/components/events/calendar";
 import { getDirectusClient } from "@/lib/directus";
 import { readItems } from "@directus/sdk";
 import { PageHeader } from "@/components/PageHeader";
+import { getCollectionCache } from "@/lib/cache";
 
 const directus = getDirectusClient();
-const events = await directus.request(
-  readItems("events", { fields: ["*", "venue.*" as "venue"] }),
+const events = await getCollectionCache(
+  Astro,
+  "events",
+  async () =>
+    await directus.request(
+      readItems("events", { fields: ["*", "venue.*" as "venue"] }),
+    ),
 );
-
-const url = new URL(Astro.request.url);
-if (!url.searchParams.has("preview")) {
-  Astro.response.headers.append(
-    "Cache-Control",
-    "public, max-age=600, stale-while-revalidate=30",
-  );
-}
 ---
 
 <MainLayout title="Events" description="Event Calendar">

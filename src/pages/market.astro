@@ -1,14 +1,13 @@
 ---
 import { PageHeader } from "@/components/PageHeader";
 import MainLayout from "@/layouts/MainLayout.astro";
-
+import { loadItems, loadSingleton } from "@/lib/cache";
 import { getDirectusClient } from "@/lib/directus";
-import { readItems, readSingleton } from "@directus/sdk";
 
 const directus = getDirectusClient();
 const assets = new URL("/assets/", directus.url);
-const vendorProse = await directus.request(readSingleton("vendor_page"));
-const vendors = await directus.request(readItems("vendors"));
+const vendorProse = await loadSingleton(Astro, directus, "vendor_page");
+const vendors = await loadItems(Astro, directus, "vendors");
 ---
 
 <MainLayout title="Market" description="Market and Vendors Information">

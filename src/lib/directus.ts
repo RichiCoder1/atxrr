@@ -1,5 +1,5 @@
-import { createDirectus, rest, staticToken } from "@directus/sdk";
 import { type Schema } from "./collections";
+import { createDirectus, rest, staticToken } from "@directus/sdk";
 
 export function getDirectusClient() {
 	let directus = createDirectus<Schema>(import.meta.env.PUBLIC_DIRECTUS_URL);
@@ -11,3 +11,5 @@ export function getDirectusClient() {
 	}
 	return directus.with(rest());
 }
+
+export type DirectusClient = ReturnType<typeof getDirectusClient>;

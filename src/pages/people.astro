@@ -3,12 +3,12 @@
 import { PageHeader } from "@/components/PageHeader";
 import { Photo } from "@/components/Photo";
 import MainLayout from "@/layouts/MainLayout.astro";
+import { loadItems } from "@/lib/cache";
 import { getDirectusClient } from "@/lib/directus";
-import { readItems } from "@directus/sdk";
 import slugify from "@sindresorhus/slugify";
 
 const directus = getDirectusClient();
-const people = await directus.request(readItems("people"));
+const people = await loadItems(Astro, directus, "people");
 const url = new URL(Astro.request.url);
 const assets = new URL("/assets/", directus.url);
 

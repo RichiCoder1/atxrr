@@ -1,17 +1,18 @@
 ---
 import { PageHeader } from "@/components/PageHeader";
 import MainLayout from "@/layouts/MainLayout.astro";
+import { loadItems, loadSingleton } from "@/lib/cache";
 import { getDirectusClient } from "@/lib/directus";
-import { readItems, readSingleton } from "@directus/sdk";
 import slugify from "@sindresorhus/slugify";
 
 const directus = getDirectusClient();
-const assets = new URL("/assets/", directus.url);
 
-const gettingAround = await directus.request(
-  readSingleton("getting_around_page"),
+const gettingAround = await loadSingleton(
+  Astro,
+  directus,
+  "getting_around_page",
 );
-const venuesData = await directus.request(readItems("venues"));
+const venuesData = await loadItems(Astro, directus, "venues");
 const venues = venuesData
   .map((venue) => ({
     ...venue,

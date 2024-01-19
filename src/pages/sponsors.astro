@@ -1,6 +1,7 @@
 ---
 import { PageHeader } from "@/components/PageHeader";
 import MainLayout from "@/layouts/MainLayout.astro";
+import { loadItems } from "@/lib/cache";
 
 import { getDirectusClient } from "@/lib/directus";
 import { readItems, readSingleton } from "@directus/sdk";
@@ -8,7 +9,7 @@ import { readItems, readSingleton } from "@directus/sdk";
 const directus = getDirectusClient();
 const assets = new URL("/assets/", directus.url);
 const sponsorProse = await directus.request(readSingleton("sponsors_page"));
-const sponsors = await directus.request(readItems("sponsors"));
+const sponsors = await loadItems(Astro, directus, "sponsors");
 ---
 
 <MainLayout title="Sponsors" description="Sponsors and Social Hosts">

@@ -5,11 +5,11 @@ import { eventDates } from "@/consts";
 import Bull from "../../public/bull.svg";
 import { Button } from "@/components/ui/button";
 import { getDirectusClient } from "@/lib/directus";
-import { readAssetRaw, readItems } from "@directus/sdk";
+import { loadItems } from "@/lib/cache";
 
 const directus = getDirectusClient();
 const assets = new URL("/assets/", directus.url);
-let sponsors = await directus.request(readItems("sponsors"));
+let sponsors = await loadItems(Astro, directus, "sponsors");
 sponsors = sponsors.filter((sponsor) => sponsor.tags.includes("primary"));
 
 const dateFormat = new Intl.DateTimeFormat("en", {
@@ -17,14 +17,6 @@ const dateFormat = new Intl.DateTimeFormat("en", {
   month: "short",
   day: "numeric",
 });
-
-const url = new URL(Astro.request.url);
-if (!url.host.includes("localhost") && !url.searchParams.has("preview")) {
-  Astro.response.headers.append(
-    "Cache-Control",
-    "public, max-age=600, stale-while-revalidate=30",
-  );
-}
 ---
 
 <MainLayout>

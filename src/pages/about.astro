@@ -1,13 +1,12 @@
 ---
 import { PageHeader } from "@/components/PageHeader";
 import MainLayout from "@/layouts/MainLayout.astro";
-
+import { loadItems, loadSingleton } from "@/lib/cache";
 import { getDirectusClient } from "@/lib/directus";
-import { readItems, readSingleton } from "@directus/sdk";
 
 const directus = getDirectusClient();
-const about = await directus.request(readSingleton("about"));
-const questions = await directus.request(readItems("qna"));
+const about = await loadSingleton(Astro, directus, "about");
+const questions = await loadItems(Astro, directus, "qna");
 ---
 
 <MainLayout title="About" description="About">
