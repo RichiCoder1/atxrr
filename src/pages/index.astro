@@ -8,7 +8,7 @@ import { getDirectusClient } from "@/lib/directus";
 import { loadItems } from "@/lib/cache";
 
 const directus = getDirectusClient();
-const assets = new URL("/assets/", directus.url);
+const assets = new URL("/assets", directus.url);
 let sponsors = await loadItems(Astro, directus, "sponsors");
 sponsors = sponsors.filter((sponsor) => sponsor.tags.includes("primary"));
 
