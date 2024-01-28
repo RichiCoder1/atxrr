@@ -10,7 +10,9 @@ import { loadItems } from "@/lib/cache";
 const directus = getDirectusClient();
 const assets = new URL("/assets", directus.url);
 let sponsors = await loadItems(Astro, directus, "sponsors");
-sponsors = sponsors.filter((sponsor) => sponsor.tags.includes("primary"));
+sponsors = sponsors.filter(
+  (sponsor) => sponsor.tags?.includes("primary") ?? false,
+);
 
 const dateFormat = new Intl.DateTimeFormat("en", {
   year: "numeric",
