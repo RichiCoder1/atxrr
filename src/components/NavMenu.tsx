@@ -41,12 +41,6 @@ export function DesktopMenu({ path }: NavMenuProps) {
 				<Menu href="/sponsors" label="Sponsors &amp; Social Hosts" />
 				<Menu label="Forms & Volunteer">
 					<MenuItem
-						href="https://forms.gle/UNz3EBRhsxLDwxAB9"
-						label="Fashion Show Application"
-						description="Participate in our Rubber Fashion Show!"
-						external
-					/>
-					<MenuItem
 						href="https://docs.google.com/forms/d/e/1FAIpQLSf3H1Wv6Xqnxb5P6Orjb-J1TkTsLdWEA18sPZqpgyClRX2pvQ/viewform?usp=sharing"
 						label="Vendor Application"
 						external
@@ -111,11 +105,6 @@ export function MobileMenu({ path }: NavMenuProps) {
 					<NavButton href="/market" label="Vendor Market" />
 					<NavButton href="/sponsors" label="Sponsors and Social Hosts" />
 					<MobileDisclosure label="Forms & Volunteer">
-						<NavButton
-							href="https://forms.gle/UNz3EBRhsxLDwxAB9"
-							label="Fashion Show Application"
-							external
-						/>
 						<NavButton
 							href="https://docs.google.com/forms/d/e/1FAIpQLSf3H1Wv6Xqnxb5P6Orjb-J1TkTsLdWEA18sPZqpgyClRX2pvQ/viewform?usp=sharing"
 							label="Vendor Application"
