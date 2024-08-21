@@ -4,7 +4,7 @@ import { Tabs, TabsTrigger, TabsList, TabsContent } from "../ui/tabs";
 import type { Event, Venue } from "@/lib/collections";
 import { cn } from "@/lib/utils";
 import { useStore } from "@nanostores/react";
-import { createSearchParams } from "@nanostores/router";
+import { createRouter, openPage } from "@nanostores/router";
 import slugify from "@sindresorhus/slugify";
 import { groupBy, sortBy } from "lodash-es";
 import { marked } from "marked";
@@ -19,7 +19,7 @@ const timeFormatter = new Intl.DateTimeFormat(undefined, {
 
 marked.use({
 	renderer: {
-		link(href, title, text) {
+		link({ href, title, text }) {
 			return `<a href="${href}" title="${title ?? ""}" class="${cn(
 				buttonVariants({
 					variant: "link",
@@ -44,7 +44,13 @@ type CalendarEvent = Event & {
 	endPart: string;
 };
 
-const $searchParams = createSearchParams();
+const $router = createRouter(
+	{
+		home: "/",
+		events: "/events",
+	},
+	{ links: false },
+);
 
 export function Calendar({ events, params: astroParams }: CalendarProps) {
 	const weekdays = useMemo(() => {
@@ -88,8 +94,8 @@ export function Calendar({ events, params: astroParams }: CalendarProps) {
 	}, [events]);
 	const weekdayKeys = Object.keys(weekdays);
 
-	const params = useStore($searchParams);
-	const merged = { ...astroParams, ...params };
+	const page = useStore($router);
+	const merged = { ...astroParams, ...page?.search };
 	const selectedWeekday =
 		merged.day && weekdayKeys.includes(merged.day)
 			? merged.day
@@ -99,7 +105,7 @@ export function Calendar({ events, params: astroParams }: CalendarProps) {
 		<Tabs
 			defaultValue={selectedWeekday}
 			onValueChange={(newValue) =>
-				$searchParams.open({ ...params, day: newValue })
+				openPage($router, "events", {}, { ...page?.search, day: newValue })
 			}
 			className="flex flex-col items-center my-4"
 		>

@@ -34,7 +34,6 @@ export const Menubar = React.forwardRef<HTMLDivElement, MenubarProps>(
 				<SetShiftContext.Provider value={setShift}>
 					<SetPlacementContext.Provider value={setPlacement}>
 						<Ariakit.MenuProvider
-							animated
 							placement={placement}
 							showTimeout={100}
 							hideTimeout={250}
@@ -191,6 +190,7 @@ export const MenuItem = React.forwardRef<
 	const id = React.useId();
 	const labelId = `${id}-label`;
 	const descriptionId = `${id}-description`;
+	const { external, ...menuProps } = props;
 	return (
 		<Ariakit.MenuItem
 			ref={ref}
@@ -199,7 +199,7 @@ export const MenuItem = React.forwardRef<
 			focusOnHover={false}
 			aria-labelledby={labelId}
 			aria-describedby={props.description ? descriptionId : undefined}
-			{...props}
+			{...menuProps}
 			className={cn(
 				"flex cursor-pointer flex-col items-start gap-1 rounded-sm p-4 hover:bg-accent hover:text-accent-foreground focus:bg-accent focus:text-accent-foreground focus:outline-none",
 				props.className,
@@ -208,7 +208,7 @@ export const MenuItem = React.forwardRef<
 		>
 			<div id={labelId} className="inline-flex items-center font-medium">
 				{props.label}
-				{!!props.external && (
+				{!!external && (
 					<ExternalLink
 						className="inline-block pl-1 text-foreground/50"
 						size="1rem"

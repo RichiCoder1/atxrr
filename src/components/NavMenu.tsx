@@ -1,6 +1,7 @@
 import { Button } from "./ui/button";
 import { NavButton } from "./ui/navbutton";
 import { Menu, MenuItem, Menubar } from "@/components/ui/menubar";
+import type { NavigationItem } from "@/lib/collections";
 import {
 	Dialog,
 	Disclosure,
@@ -14,57 +15,39 @@ import { useState, type ComponentPropsWithoutRef } from "react";
 
 export type NavMenuProps = {
 	path: string;
+	items: NavigationItem[];
 };
 
-export function DesktopMenu({ path }: NavMenuProps) {
+export function DesktopMenu({ path, items }: NavMenuProps) {
 	return (
 		<>
 			<Menubar className="hidden lg:flex">
-				<Menu href="/" label="Home" aria-current={path === "/"} />
-				<Menu label="Attend">
-					<MenuItem href="/attend/register" label="Register" />
-					<MenuItem href="/events" label="Schedule" />
-					<MenuItem href="/people" label="Educators and Presenters" />
-					<MenuItem href="/attend/getting-around" label="Getting Around" />
-					<MenuItem
-						href="https://tinyurl.com/2025ARRHotelBlock"
-						label="Reservations"
-						external
-					/>
-					<MenuItem
-						href="https://www.ihg.com/hotelindigo/hotels/us/en/austin/ausit/hoteldetail/amenities"
-						label="Hotel Information"
-						external
-					/>
-				</Menu>
-				<Menu href="/market" label="Vendor Market" />
-				<Menu href="/sponsors" label="Sponsors &amp; Social Hosts" />
-				<Menu label="Forms & Volunteer">
-					<MenuItem
-						href="https://forms.gle/Q2FMAt9ZfQDUXgDy8"
-						label="Vendor Application"
-						external
-					/>
-					<MenuItem
-						href="https://forms.gle/EK1aZgha1D5Tpnh98"
-						label="Educators Application"
-						external
-					/>
-					<MenuItem
-						href="https://signup.com/go/XLfizhE"
-						label="Volunteer Application"
-						description="Sign up to help out! (6 hours for entry | 8 for keynote added)"
-						external
-					/>
-				</Menu>
-				<Menu href="/about" label="About Us" />
-				<Menu href="/contact" label="Contact" />
+				{items.map((item) => (
+					<Menu
+						key={item.id}
+						href={item.href}
+						label={item.name}
+						aria-current={item.href != null && path === item.href}
+					>
+						{item?.children.length === 0
+							? undefined
+							: item.children?.map((child) => (
+									<MenuItem
+										key={child.id}
+										href={child.href}
+										label={child.name}
+										description={child.description}
+										external={child.is_external === true}
+									/>
+								))}
+					</Menu>
+				))}
 			</Menubar>
 		</>
 	);
 }
 
-export function MobileMenu({ path }: NavMenuProps) {
+export function MobileMenu({ path, items }: NavMenuProps) {
 	const [open, setOpen] = useState(false);
 	const dialog = useDialogStore({ animated: true });
 	return (
@@ -84,45 +67,27 @@ export function MobileMenu({ path }: NavMenuProps) {
 				className="fixed left-0 top-0 z-50 m-auto flex h-[fit-content] max-h-[calc(100vh-4.5rem)] w-screen gap-4 mt-[4.5rem] transition opacity-50 data-enter:opacity-100 translate-y-2 data-enter:translate-y-0 border-b-2 border-alternate"
 			>
 				<div className=" w-screen flex flex-col bg-zinc-900 shadow shadow-zinc-800 lg:hidden">
-					<NavButton href="/" label="Home" aria-current={path === "/"} />
-					<MobileDisclosure label="Attend">
-						<NavButton href="/attend/register" label="Register" />
-						<NavButton href="/events" label="Schedule" />
-						<NavButton href="/people" label="Educators and Presenters" />
-						<NavButton href="/sponsors" label="Sponsors &amp; Social Hosts" />
-						<NavButton href="/attend/getting-around" label="Getting Around" />
-						<NavButton
-							href="https://tinyurl.com/ARRHotelRes"
-							label="Reservations"
-							external
-						/>
-						<NavButton
-							href="https://www.ihg.com/hotelindigo/hotels/us/en/austin/ausit/hoteldetail/amenities"
-							label="Hotel Information"
-							external
-						/>
-					</MobileDisclosure>
-					<NavButton href="/market" label="Vendor Market" />
-					<NavButton href="/sponsors" label="Sponsors and Social Hosts" />
-					<MobileDisclosure label="Forms & Volunteer">
-						<NavButton
-							href="https://docs.google.com/forms/d/e/1FAIpQLSf3H1Wv6Xqnxb5P6Orjb-J1TkTsLdWEA18sPZqpgyClRX2pvQ/viewform?usp=sharing"
-							label="Vendor Application"
-							external
-						/>
-						<NavButton
-							href="https://docs.google.com/forms/d/e/1FAIpQLSdqkhzz24s1DVNlzAcSy6Er3sig5WJ7JOOp-i2tp20bx1PsNw/viewform?usp=sharing"
-							label="Educators Application"
-							external
-						/>
-						<NavButton
-							href="https://signup.com/go/kpKjZsJ"
-							label="Volunteer Application"
-							external
-						/>
-					</MobileDisclosure>
-					<NavButton href="/about" label="About Us" />
-					<NavButton href="/contact" label="Contact" />
+					{items.map((item) =>
+						item.children?.length > 0 ? (
+							<MobileDisclosure key={item.id} label={item.name}>
+								{item.children.map((child) => (
+									<NavButton
+										key={item.id}
+										href={child.href!}
+										label={child.name}
+										external={child.is_external === true}
+									/>
+								))}
+							</MobileDisclosure>
+						) : (
+							<NavButton
+								key={item.id}
+								href={item.href!}
+								label={item.name}
+								aria-current={item.href != null && path === item.href}
+							/>
+						),
+					)}
 				</div>
 			</Dialog>
 		</>

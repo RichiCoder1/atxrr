@@ -32,7 +32,7 @@ export async function getCollectionCache<
 	TData,
 	Collection extends keyof Schema,
 >(astro: AstroGlobal, collection: Collection, cacheFn: () => Promise<TData>) {
-	if (astro.locals.runtime == null) {
+	if (astro.locals.runtime == null || astro.locals.runtime.env.CACHE == null) {
 		console.info(
 			`Skipping cache due to running outside wrangler or in preview environment. Use pages:dev to test cache.`,
 		);

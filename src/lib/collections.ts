@@ -1,3 +1,18 @@
+export interface Schema {
+	events: Event[];
+	qna: Qna[];
+	about: About;
+	vendors: Vendor[];
+	sponsors: Sponsor[];
+	people: Person[];
+	vendor_page: VendorPage;
+	getting_around_page: GettingAroundPage;
+	venues: Venue[];
+	sponsors_page: SponsorsPage;
+	contact_page: ContactPage;
+	navigation: NavigationItem[];
+}
+
 export interface Event {
 	id: number;
 	status: string;
@@ -29,20 +44,6 @@ export interface Qna {
 	status: string;
 	question: string;
 	answer: string;
-}
-
-export interface Schema {
-	events: Event[];
-	qna: Qna[];
-	about: About;
-	vendors: Vendor[];
-	sponsors: Sponsor[];
-	people: Person[];
-	vendor_page: VendorPage;
-	getting_around_page: GettingAroundPage;
-	venues: Venue[];
-	sponsors_page: SponsorsPage;
-	contact_page: ContactPage;
 }
 
 export interface Sponsor {
@@ -96,4 +97,15 @@ export interface SponsorsPage {
 export interface ContactPage {
 	id: number;
 	Information: string;
+}
+
+export interface NavigationItem {
+	id: number;
+	sort: number;
+	name: string;
+	description?: string;
+	href?: string;
+	children: NavigationItem[];
+	parent_id?: number;
+	is_external?: boolean;
 }
