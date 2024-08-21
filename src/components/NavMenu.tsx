@@ -41,17 +41,17 @@ export function DesktopMenu({ path }: NavMenuProps) {
 				<Menu href="/sponsors" label="Sponsors &amp; Social Hosts" />
 				<Menu label="Forms & Volunteer">
 					<MenuItem
-						href="https://docs.google.com/forms/d/e/1FAIpQLSf3H1Wv6Xqnxb5P6Orjb-J1TkTsLdWEA18sPZqpgyClRX2pvQ/viewform?usp=sharing"
+						href="https://forms.gle/Q2FMAt9ZfQDUXgDy8"
 						label="Vendor Application"
 						external
 					/>
 					<MenuItem
-						href="https://docs.google.com/forms/d/e/1FAIpQLSdqkhzz24s1DVNlzAcSy6Er3sig5WJ7JOOp-i2tp20bx1PsNw/viewform?usp=sharing"
+						href="https://forms.gle/EK1aZgha1D5Tpnh98"
 						label="Educators Application"
 						external
 					/>
 					<MenuItem
-						href="https://signup.com/go/kpKjZsJ"
+						href="https://signup.com/go/XLfizhE"
 						label="Volunteer Application"
 						description="Sign up to help out! (6 hours for entry | 8 for keynote added)"
 						external
