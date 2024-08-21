@@ -16,44 +16,38 @@ import MainLayout from "@/layouts/MainLayout.astro";
 
   <div class="mt-6 flex w-full items-center justify-center lg:mt-9">
     <!-- Ticket Tailor Widget. Paste this into your website where you want the widget to appear. Do not change the code or the widget may not work properly. -->
-    <div class="tt-widget">
-      <div class="tt-widget-fallback">
-        <p>
-          <a
-            href="https://www.tickettailor.com/checkout/new-session/id/2978517/chk/fa5b/?ref=arr_widget&show_search_filter=true&show_date_filter=true&show_sort=true"
-            target="_blank"
-          >
-            <span class="text-sm"
-              >We're loading the tickets now! If you don't see a form here
-              shortly:</span
-            >
-
-            <Button variant="link" className="inline">
-              Click here to buy tickets
-            </Button>
-          </a><br /><small
-            ><a
-              href="https://www.tickettailor.com?rf=wdg_110073"
-              class="tt-widget-powered"
-              >Sell tickets online with Ticket Tailor</a
-            ></small
-          >
-        </p>
-      </div>
-
-      <script
-        is:inline
-        src="https://cdn.tickettailor.com/js/widgets/min/widget.js"
-        data-url="https://www.tickettailor.com/checkout/new-session/id/2978517/chk/fa5b/?ref=arr_widget&show_search_filter=true&show_date_filter=true&show_sort=true"
-        data-type="inline"
-        crossorigin="anonymous"
-        data-inline-minimal="true"
-        data-inline-show-logo="false"
-        data-inline-bg-fill="false"
-        data-inline-inherit-ref-from-url-param=""
-        data-inline-ref=""></script>
-    </div>
-    <!-- End of Ticket Tailor Widget -->
+		<div class="tt-widget">
+			<div class="tt-widget-fallback">
+				<p>
+					<a 
+						href="https://www.tickettailor.com/all-tickets/atxrubberroundup/?ref=website_widget&show_search_filter=true&show_date_filter=true&show_sort=true" 
+						target="_blank"
+					>
+						Click here to buy tickets
+					</a>
+					<br />
+					<small>
+						<a 
+							href="https://www.tickettailor.com?rf=wdg_190192" 
+							class="tt-widget-powered"
+						>
+							Sell tickets online with Ticket Tailor
+						</a>
+					</small>
+				</p>
+			</div>
+			<script 
+				src="https://cdn.tickettailor.com/js/widgets/min/widget.js" 
+				data-url="https://www.tickettailor.com/all-tickets/atxrubberroundup/?ref=website_widget&show_search_filter=true&show_date_filter=true&show_sort=true" 
+				data-type="inline" 
+				data-inline-minimal="true" 
+				data-inline-show-logo="false" 
+				data-inline-bg-fill="false" 
+				data-inline-inherit-ref-from-url-param="" 
+				data-inline-ref="website_widget"
+			>
+			</script>
+		</div><!-- End of Ticket Tailor Widget -->
   </div>
 </MainLayout>
 
