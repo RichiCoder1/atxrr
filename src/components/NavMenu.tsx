@@ -27,7 +27,7 @@ export function DesktopMenu({ path }: NavMenuProps) {
 					<MenuItem href="/people" label="Educators and Presenters" />
 					<MenuItem href="/attend/getting-around" label="Getting Around" />
 					<MenuItem
-						href="https://tinyurl.com/ARRHotelRes"
+						href="https://tinyurl.com/2025ARRHotelBlock"
 						label="Reservations"
 						external
 					/>
