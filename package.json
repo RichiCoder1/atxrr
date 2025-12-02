@@ -17,6 +17,7 @@
     "@astrojs/react": "^4.4.2",
     "@directus/sdk": "^20.2.0",
     "@fontsource-variable/open-sans": "^5.2.7",
+    "@icons-pack/react-simple-icons": "^13.8.0",
     "@nanostores/react": "^1.0.0",
     "@nanostores/router": "^1.0.0",
     "@radix-ui/react-navigation-menu": "^1.2.14",

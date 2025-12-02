@@ -13,7 +13,7 @@ export type NavProps = Omit<
 >;
 
 const NavButton = React.forwardRef<
-	React.ElementRef<typeof ButtonPrimitive>,
+	React.ComponentRef<typeof ButtonPrimitive>,
 	NavProps
 >(({ href, external, className, label, ...props }, ref) => (
 	<a href={href} tabIndex={-1}>

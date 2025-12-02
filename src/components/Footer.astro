@@ -1,5 +1,6 @@
 ---
-import { Twitter, Instagram, Facebook, Send, Mail } from 'lucide-react';
+import { Mail } from 'lucide-react';
+import { SiX, SiInstagram, SiFacebook, SiTelegram, SiBluesky } from '@icons-pack/react-simple-icons';
 import { Separator } from '@/components/ui/separator';
 ---
 
@@ -10,22 +11,22 @@ import { Separator } from '@/components/ui/separator';
 	</div>
 	<div class="flex space-x-4">
 		<a href="https://x.com/austinrubberroundup" class="inline-flex items-center hover:text-primary">
-			<Twitter />
+			<SiX />
 		</a>
 		<a
 			href="https://bsky.app/profile/atxrubberroundup.bsky.social"
-			class="text-xl text-transparent [text-shadow:0px_0px_0px_#fff] hover:[text-shadow:0px_0px_0px_var(--primary)]"
+			class="inline-flex items-center hover:text-primary"
 		>
-			🦋</a
+			<SiBluesky /> </a
 		>
 		<a href="https://instagram.com/austinrubberroundup" class="inline-flex items-center hover:text-primary">
-			<Instagram />
+			<SiInstagram />
 		</a>
 		<a href="https://facebook.com/austinrubberroundup" class="inline-flex items-center hover:text-primary">
-			<Facebook />
+			<SiFacebook />
 		</a>
 		<a href="https://t.me/austinrubberroundup" class="inline-flex items-center hover:text-primary">
-			<Send />
+			<SiTelegram />
 		</a>
 		<a href="mailto:atxrubberroundup@gmail.com" class="inline-flex items-center hover:text-primary">
 			<Mail />
