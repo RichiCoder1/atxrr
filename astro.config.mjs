@@ -16,7 +16,6 @@ export default defineConfig({
 	],
 	output: "server",
 	adapter: cloudflare({
-		mode: "directory",
 		platformProxy: {
 			enabled: true,
 		},
@@ -27,6 +26,12 @@ export default defineConfig({
 		process.env.CF_PAGES_URL ??
 		"http://localhost:4321/",
 	vite: {
+		resolve: {
+			alias: import.meta.env.PROD && {
+				"react-dom/server": "react-dom/server.edge",
+			},
+		},
+
 		server: {
 			proxy: {
 				"^/tt/.*": {
@@ -34,6 +39,12 @@ export default defineConfig({
 					changeOrigin: true,
 					rewrite: (path) => path.replace(/^\/tt/, ""),
 				},
+			},
+		},
+
+		ssr: {
+			resolve: {
+				conditions: ["workerd", "worker", "browser"],
 			},
 		},
 
