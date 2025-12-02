@@ -2,9 +2,10 @@
 
 type KVNamespace = import("@cloudflare/workers-types").KVNamespace;
 type ENV = {
-	// replace `MY_KV` with your KV namespace
 	CACHE: KVNamespace;
 	ENVIRONMENT?: string;
+	PUBLIC_DIRECTUS_URL: string;
+	DIRECTUS_STATIC_TOKEN?: string;
 };
 
 // Depending on your adapter mode

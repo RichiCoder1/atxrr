@@ -4,7 +4,7 @@ import MainLayout from "@/layouts/MainLayout.astro";
 import { loadItems, loadSingleton } from "@/lib/cache";
 import { getDirectusClient } from "@/lib/directus";
 
-const directus = getDirectusClient();
+const directus = getDirectusClient(Astro);
 const assets = new URL("/assets/", directus.url);
 const vendorProse = await loadSingleton(Astro, directus, "vendor_page");
 const vendors = await loadItems(Astro, directus, "vendors");

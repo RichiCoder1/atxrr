@@ -4,7 +4,7 @@ import MainLayout from "@/layouts/MainLayout.astro";
 import { loadSingleton } from "@/lib/cache";
 import { getDirectusClient } from "@/lib/directus";
 
-const directus = getDirectusClient();
+const directus = getDirectusClient(Astro);
 const contactPage = await loadSingleton(Astro, directus, "contact_page");
 ---
 

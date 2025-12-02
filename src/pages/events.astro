@@ -7,7 +7,7 @@ import { readItems } from "@directus/sdk";
 import { PageHeader } from "@/components/PageHeader";
 import { getCollectionCache } from "@/lib/cache";
 
-const directus = getDirectusClient();
+const directus = getDirectusClient(Astro);
 const events = await getCollectionCache(
   Astro,
   "events",

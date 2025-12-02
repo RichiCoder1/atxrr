@@ -6,7 +6,7 @@ import { loadItems } from '@/lib/cache';
 import { getDirectusClient } from '@/lib/directus';
 import { readSingleton } from '@directus/sdk';
 
-const directus = getDirectusClient();
+const directus = getDirectusClient(Astro);
 const assets = new URL('/assets/', directus.url);
 const sponsorProse = await directus.request(readSingleton('sponsors_page'));
 const sponsors = await loadItems(Astro, directus, 'sponsors');

@@ -48,7 +48,7 @@ export const Menubar = React.forwardRef<HTMLDivElement, MenubarProps>(
 								tabIndex={-1}
 								unmountOnHide
 								className={cn(
-									"relative z-50 max-h-[var(--popover-available-height)] max-w-[var(--popover-available-width)] rounded-md border border-solid bg-popover p-4 opacity-0 transition-opacity data-enter:opacity-100 data-enter:animate-in data-enter:zoom-in-90 focus-visible:text-primary",
+									"relative z-50 max-h-(--popover-available-height) max-w-(--popover-available-width) rounded-md border border-solid bg-popover p-4 opacity-0 transition-opacity data-enter:opacity-100 data-enter:animate-in data-enter:zoom-in-90 focus-visible:text-primary",
 									props.className,
 								)}
 							>
@@ -120,7 +120,7 @@ export const Menu = React.forwardRef<
 			blurOnHoverEnd={false}
 			{...props}
 			className={cn(
-				"group flex h-10 cursor-pointer items-center gap-2 whitespace-nowrap rounded px-3 underline-offset-4 outline outline-2 outline-transparent transition-colors hover:bg-accent hover:text-accent-foreground aria-expanded:bg-accent/50 aria-expanded:text-accent-foreground focus-visible:bg-accent/80",
+				"group flex h-10 cursor-pointer items-center gap-2 whitespace-nowrap rounded px-3 underline-offset-4 outline-solid outline-2 outline-transparent transition-colors hover:bg-accent hover:text-accent-foreground aria-expanded:bg-accent/50 aria-expanded:text-accent-foreground focus-visible:bg-accent/80",
 				props.className,
 			)}
 			render={href ? <a href={href} /> : undefined}
@@ -201,7 +201,7 @@ export const MenuItem = React.forwardRef<
 			aria-describedby={props.description ? descriptionId : undefined}
 			{...menuProps}
 			className={cn(
-				"flex cursor-pointer flex-col items-start gap-1 rounded-sm p-4 hover:bg-accent hover:text-accent-foreground focus:bg-accent focus:text-accent-foreground focus:outline-none",
+				"flex cursor-pointer flex-col items-start gap-1 rounded-sm p-4 hover:bg-accent hover:text-accent-foreground focus:bg-accent focus:text-accent-foreground focus:outline-hidden",
 				props.className,
 			)}
 			render={props.href ? <a href={props.href} /> : undefined}

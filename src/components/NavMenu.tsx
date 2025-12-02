@@ -64,9 +64,9 @@ export function MobileMenu({ path, items }: NavMenuProps) {
 				store={dialog}
 				open={open}
 				onClose={() => setOpen(false)}
-				className="fixed left-0 top-0 z-50 m-auto flex h-[fit-content] max-h-[calc(100vh-4.5rem)] w-screen gap-4 mt-[4.5rem] transition opacity-50 data-enter:opacity-100 translate-y-2 data-enter:translate-y-0 border-b-2 border-alternate"
+				className="fixed left-0 top-0 z-50 m-auto flex h-fit max-h-[calc(100vh-4.5rem)] w-screen gap-4 mt-18 transition opacity-50 data-enter:opacity-100 translate-y-2 data-enter:translate-y-0 border-b-2 border-alternate"
 			>
-				<div className=" w-screen flex flex-col bg-zinc-900 shadow shadow-zinc-800 lg:hidden">
+				<div className=" w-screen flex flex-col bg-zinc-900 shadow-sm shadow-zinc-800 lg:hidden">
 					{items.map((item) =>
 						item.children?.length > 0 ? (
 							<MobileDisclosure key={item.id} label={item.name}>

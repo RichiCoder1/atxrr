@@ -1,6 +1,5 @@
 ---
 // TODO: There's no reason this page couldn't be split up into "multiple" cached pages.
-import { Button } from '@/components/ui/button';
 import MainLayout from '@/layouts/MainLayout.astro';
 ---
 
@@ -49,6 +48,8 @@ import MainLayout from '@/layouts/MainLayout.astro';
 </MainLayout>
 
 <style>
+	@reference "tailwindcss";
+
 	.tt-widget {
 		@apply max-w-xl md:w-[50vw];
 	}

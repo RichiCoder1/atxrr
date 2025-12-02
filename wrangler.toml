@@ -1,8 +1,12 @@
 name = "atxrr"
-pages_build_output_dir = "dist"
+main = "dist/_worker.js/index.js"
 compatibility_date = "2025-12-01"
-compatibility_flags = ["nodejs_compat"]
+compatibility_flags = ["nodejs_compat", "global_fetch_strictly_public"]
 upload_source_maps = true
+
+[assets]
+binding = "ASSETS"
+directory = "./dist/"
 
 [placement]
 mode = "smart"
@@ -17,3 +21,6 @@ SITE_URL = "https://atxrubberroundup.com"
 [[env.production.kv_namespaces]]
 id = "93531e2f397b4411b1c673e240ca7ffd"
 binding = "CACHE"
+
+[observability]
+enabled = true

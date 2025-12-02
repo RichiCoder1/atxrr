@@ -5,7 +5,7 @@ import { loadItems, loadSingleton } from "@/lib/cache";
 import { getDirectusClient } from "@/lib/directus";
 import slugify from "@sindresorhus/slugify";
 
-const directus = getDirectusClient();
+const directus = getDirectusClient(Astro);
 
 const gettingAround = await loadSingleton(
   Astro,
@@ -30,7 +30,7 @@ const venues = venuesData
     <div class="prose mt-10 dark:prose-invert" set:html={gettingAround.body} />
     <nav
       id="venues"
-      class="mb-4 mt-6 inline-block rounded border-[1px] border-primary p-4"
+      class="mb-4 mt-6 inline-block rounded border border-primary p-4"
     >
       <h2 class="text-lg">Event Locations:</h2>
       <ol class="list-disc pl-4">
@@ -48,7 +48,7 @@ const venues = venuesData
         }
       </ol>
     </nav>
-    <hr class="my-6 h-[1px] bg-primary" />
+    <hr class="my-6 h-px bg-primary" />
     <div class="flex flex-col gap-16">
       {
         venues.map((venue) => (
@@ -66,7 +66,7 @@ const venues = venuesData
                   src={venue.maps_embed}
                   width="600"
                   height="300"
-                  class="w-[60vw] max-w-4xl rounded border border-primary contrast-[85%] grayscale invert-[90%] filter"
+                  class="w-[60vw] max-w-4xl rounded border border-primary contrast-85 grayscale invert-90 filter"
                   allowfullscreen=""
                   loading="lazy"
                   title="Google Maps showing Hotel Indigo Austin Downtown Location"

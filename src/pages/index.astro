@@ -7,7 +7,7 @@ import { Button } from "@/components/ui/button";
 import { getDirectusClient } from "@/lib/directus";
 import { loadItems } from "@/lib/cache";
 
-const directus = getDirectusClient();
+const directus = getDirectusClient(Astro);
 const assets = new URL("/assets", directus.url);
 let sponsors = await loadItems(Astro, directus, "sponsors");
 sponsors = sponsors.filter(
@@ -29,7 +29,7 @@ const dateFormat = new Intl.DateTimeFormat("en", {
       <Image
         src={Bull}
         alt="Bull icon"
-        class="mb-[-1rem] mt-[-4rem] w-[16rem] self-center"
+        class="-mb-4 -mt-16 w-[16rem] self-center"
         width={300}
       />
       <h2 class="text-2xl font-semibold uppercase lg:pl-6 lg:text-4xl">
@@ -42,7 +42,7 @@ const dateFormat = new Intl.DateTimeFormat("en", {
       </h1>
       <h3
         id="event-date"
-        class="mt-12 self-center bg-gradient-to-tr from-red-600 to-yellow-600 bg-clip-text text-5xl font-bold text-transparent"
+        class="mt-12 self-center bg-linear-to-tr from-red-600 to-yellow-600 bg-clip-text text-5xl font-bold text-transparent"
       >
         {dateFormat.formatRange(eventDates.start, eventDates.end)}
       </h3>
@@ -99,7 +99,7 @@ const dateFormat = new Intl.DateTimeFormat("en", {
       src="https://www.google.com/maps/embed?pb=!1m14!1m8!1m3!1d6891.750813169571!2d-97.736613!3d30.269130999999998!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x8644b5a69e6e1e83%3A0x6968d4161ce423d8!2sHotel%20Indigo%20Austin%20Downtown%20-%20University%2C%20an%20IHG%20Hotel!5e0!3m2!1sen!2sus!4v1702184308372!5m2!1sen!2sus"
       width="600"
       height="450"
-      class="w-[90vw] max-w-6xl rounded border border-primary contrast-[85%] grayscale invert-[90%] filter"
+      class="w-[90vw] max-w-6xl rounded border border-primary contrast-85 grayscale invert-90 filter"
       allowfullscreen=""
       loading="lazy"
       title="Google Maps showing Hotel Indigo Austin Downtown Location"

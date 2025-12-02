@@ -8,7 +8,7 @@ import { getDirectusClient } from '@/lib/directus';
 import { readItems } from '@directus/sdk';
 import type { NavigationItem } from '@/lib/collections';
 
-const client = getDirectusClient();
+const client = getDirectusClient(Astro);
 const navigationItems = await client.request(
 	readItems('navigation', { fields: ['*', { children: ['*', { children: ['*'] }] }] })
 );
@@ -17,16 +17,16 @@ const menuItems = navRoot.children as NavigationItem[];
 ---
 
 <div
-	class="h-[4.5rem] w-full border-b-2 border-b-alternate/50 px-4 py-4 pr-[var(--scrollbar-width,0)] shadow-md shadow-alternate/20"
+	class="h-18 w-full border-b-2 border-b-alternate/50 px-4 py-4 pr-(--scrollbar-width,0) shadow-md shadow-alternate/20"
 >
 	<nav class="container flex h-full flex-row gap-x-4">
-		<div class="flex flex-shrink-0">
+		<div class="flex shrink-0">
 			<a href="/">
-				<Image src={Logo} alt="Austin Rubber Roundup Logo" class="my-[-0.25rem] h-12 w-12" />
+				<Image src={Logo} alt="Austin Rubber Roundup Logo" class="-my-1 h-12 w-12" />
 			</a>
 			<span class="sr-only text-2xl"> Austin Rubber Roundup</span>
 		</div>
-		<div class="flex flex-grow flex-row justify-end lg:justify-center">
+		<div class="flex grow flex-row justify-end lg:justify-center">
 			<DesktopMenu path={new URL(Astro.url).pathname} items={menuItems} client:only="react" />
 			<MobileMenu path={new URL(Astro.url).pathname} items={menuItems} client:visible />
 		</div>
