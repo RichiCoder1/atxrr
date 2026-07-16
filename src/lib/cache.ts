@@ -7,6 +7,7 @@ import {
 	type SingletonCollections,
 } from "@directus/sdk";
 import type { AstroGlobal } from "astro";
+import { env } from "cloudflare:workers";
 
 const TwoDays = 60 * 60 * 24 * 2;
 
@@ -32,9 +33,9 @@ export async function getCollectionCache<
 	TData,
 	Collection extends keyof Schema,
 >(astro: AstroGlobal, collection: Collection, cacheFn: () => Promise<TData>) {
-	if (astro.locals.runtime == null || astro.locals.runtime.env.CACHE == null) {
+	if (env.CACHE == null) {
 		console.info(
-			`Skipping cache due to running outside wrangler or in preview environment. Use pages:dev to test cache.`,
+			`Skipping cache due to running outside wrangler or in preview environment.`,
 		);
 		return await cacheFn();
 	}
@@ -43,7 +44,7 @@ export async function getCollectionCache<
 		return await cacheFn();
 	}
 
-	const cache = astro.locals.runtime.env.CACHE;
+	const cache = env.CACHE;
 
 	const cacheKey = astro.url.hostname.endsWith("atxrr.pages.dev")
 		? astro.url.hostname.replace(".atxrr.pages.dev", "__") + collection

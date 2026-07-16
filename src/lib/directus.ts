@@ -1,9 +1,8 @@
 import { type Schema } from "./collections";
 import { createDirectus, rest, staticToken } from "@directus/sdk";
-import type { AstroGlobal } from "astro";
+import { env } from "cloudflare:workers";
 
-export function getDirectusClient(astro: AstroGlobal) {
-	const env = astro.locals.runtime.env;
+export function getDirectusClient() {
 	let directus = createDirectus<Schema>(env.PUBLIC_DIRECTUS_URL);
 
 	if (env.DIRECTUS_STATIC_TOKEN) {

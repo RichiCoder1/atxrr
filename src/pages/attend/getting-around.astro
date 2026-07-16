@@ -5,7 +5,7 @@ import { loadItems, loadSingleton } from "@/lib/cache";
 import { getDirectusClient } from "@/lib/directus";
 import slugify from "@sindresorhus/slugify";
 
-const directus = getDirectusClient(Astro);
+const directus = getDirectusClient();
 
 const gettingAround = await loadSingleton(
   Astro,

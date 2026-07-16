@@ -16,9 +16,6 @@ export default defineConfig({
 	],
 	output: "server",
 	adapter: cloudflare({
-		platformProxy: {
-			enabled: true,
-		},
 		imageService: "compile",
 	}),
 	site:

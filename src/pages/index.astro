@@ -7,7 +7,7 @@ import { Button } from "@/components/ui/button";
 import { getDirectusClient } from "@/lib/directus";
 import { loadItems } from "@/lib/cache";
 
-const directus = getDirectusClient(Astro);
+const directus = getDirectusClient();
 const assets = new URL("/assets", directus.url);
 let sponsors = await loadItems(Astro, directus, "sponsors");
 sponsors = sponsors.filter(

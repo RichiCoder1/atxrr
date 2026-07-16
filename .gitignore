@@ -21,3 +21,10 @@ pnpm-debug.log*
 
 # macOS-specific files
 .DS_Store
+
+# local wrangler/miniflare state
+.wrangler/
+
+# migration checkpoint (contains prod media map)
+scripts/migrate/.checkpoint.json
+migration-report.json

@@ -8,7 +8,7 @@ import { getDirectusClient } from '@/lib/directus';
 import { readItems } from '@directus/sdk';
 import type { NavigationItem } from '@/lib/collections';
 
-const client = getDirectusClient(Astro);
+const client = getDirectusClient();
 const navigationItems = await client.request(
 	readItems('navigation', { fields: ['*', { children: ['*', { children: ['*'] }] }] })
 );

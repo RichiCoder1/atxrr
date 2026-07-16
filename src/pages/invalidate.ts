@@ -1,4 +1,5 @@
 import type { APIRoute } from "astro";
+import { env } from "cloudflare:workers";
 import * as v from "valibot";
 
 const directusSchema = v.variant("event", [
@@ -27,13 +28,11 @@ const directusSchema = v.variant("event", [
 	}),
 ]);
 
-export const POST: APIRoute = async ({ request, locals }) => {
-	const { CACHE } = locals.runtime.env;
-
+export const POST: APIRoute = async ({ request }) => {
 	const body = await request.json();
 	const eventBody = v.parse(directusSchema, body);
 
-	await CACHE.delete(eventBody.collection);
+	await env.CACHE?.delete(eventBody.collection);
 
 	return new Response(null, { status: 204 });
 };
