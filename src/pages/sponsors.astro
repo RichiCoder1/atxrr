@@ -1,46 +1,45 @@
 ---
 import { PageHeader } from '@/components/PageHeader';
+import RichText from '@/components/RichText.astro';
 import MainLayout from '@/layouts/MainLayout.astro';
-import { loadItems } from '@/lib/cache';
+import { bySort, getCollection, getPage, setContentCacheHeaders } from '@/lib/content';
+import { Image as MediaImage } from 'emdash/ui';
 
-import { getDirectusClient } from '@/lib/directus';
-import { readSingleton } from '@directus/sdk';
+const { page: sponsorProse, isPreview } = await getPage('sponsors');
+const sponsors = (await getCollection('sponsors')).sort(bySort);
 
-const directus = getDirectusClient();
-const assets = new URL('/assets/', directus.url);
-const sponsorProse = await directus.request(readSingleton('sponsors_page'));
-const sponsors = await loadItems(Astro, directus, 'sponsors');
+setContentCacheHeaders(Astro, { isPreview });
 ---
 
 <MainLayout title="Sponsors" description="Sponsors and Social Hosts">
 	<div class="container max-w-4xl">
 		<PageHeader>Sponsors and Social Hosts</PageHeader>
-		<div class="prose mx-auto my-10 dark:prose-invert" set:html={sponsorProse.body} />
+		<div class="prose mx-auto my-10 dark:prose-invert">
+			<RichText value={sponsorProse.data.content} />
+		</div>
 		<ul class="flex flex-col gap-8">
 			{
-				sponsors
-					.sort((a, b) => a.sort - b.sort)
-					.map((sponsor) => (
-						<li class="gap-4 md:grid md:grid-cols-[1fr_2fr]">
-							<a class="col-span-1" href={sponsor.website}>
-								<img
-									class={`max-h-[300px] rounded-sm ${sponsor.invert_logo ? 'invert' : 'invert-0'}`}
-									src={`${assets}/${sponsor.logo}/`}
-									alt={`${sponsor.name} logo`}
-								/>
-							</a>
-							<a
-								class="col-span-1 col-start-2 row-start-1 font-semibold underline underline-offset-8 first-line:text-2xl hover:text-primary"
-								href={sponsor.website}
-							>
-								{sponsor.name}
-							</a>
-							<div
-								class="prose col-span-1 col-start-2 row-start-1 mt-10 dark:prose-invert"
-								set:html={sponsor.info}
+				sponsors.map((sponsor) => (
+					<li class="gap-4 md:grid md:grid-cols-[1fr_2fr]">
+						<a class="col-span-1" href={sponsor.data.website}>
+							<MediaImage
+								class={`max-h-[300px] rounded-sm ${sponsor.data.invert_logo ? 'invert' : 'invert-0'}`}
+								image={sponsor.data.logo}
+								width={600}
+								alt={`${sponsor.data.name} logo`}
 							/>
-						</li>
-					))
+						</a>
+						<a
+							class="col-span-1 col-start-2 row-start-1 font-semibold underline underline-offset-8 first-line:text-2xl hover:text-primary"
+							href={sponsor.data.website}
+						>
+							{sponsor.data.name}
+						</a>
+						<div class="prose col-span-1 col-start-2 row-start-1 mt-10 dark:prose-invert">
+							<RichText value={sponsor.data.info} />
+						</div>
+					</li>
+				))
 			}
 		</ul>
 	</div>

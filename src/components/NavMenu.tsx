@@ -1,7 +1,6 @@
 import { Button } from "./ui/button";
 import { NavButton } from "./ui/navbutton";
 import { Menu, MenuItem, Menubar } from "@/components/ui/menubar";
-import type { NavigationItem } from "@/lib/collections";
 import {
 	Dialog,
 	Disclosure,
@@ -13,9 +12,19 @@ import {
 import { X, Menu as Burger, ChevronDown } from "lucide-react";
 import { useState, type ComponentPropsWithoutRef } from "react";
 
+/** EmDash menu item shape (matches `MenuItem` from the emdash package). */
+export type NavItem = {
+	id: string;
+	label: string;
+	url: string;
+	target?: string;
+	titleAttr?: string;
+	children: NavItem[];
+};
+
 export type NavMenuProps = {
 	path: string;
-	items: NavigationItem[];
+	items: NavItem[];
 };
 
 export function DesktopMenu({ path, items }: NavMenuProps) {
@@ -25,19 +34,19 @@ export function DesktopMenu({ path, items }: NavMenuProps) {
 				{items.map((item) => (
 					<Menu
 						key={item.id}
-						href={item.href}
-						label={item.name}
-						aria-current={item.href != null && path === item.href}
+						href={item.url}
+						label={item.label}
+						aria-current={item.url != null && path === item.url}
 					>
 						{item?.children.length === 0
 							? undefined
 							: item.children?.map((child) => (
 									<MenuItem
 										key={child.id}
-										href={child.href}
-										label={child.name}
-										description={child.description}
-										external={child.is_external === true}
+										href={child.url}
+										label={child.label}
+										description={child.titleAttr}
+										external={child.target === "_blank"}
 									/>
 								))}
 					</Menu>
@@ -69,22 +78,22 @@ export function MobileMenu({ path, items }: NavMenuProps) {
 				<div className=" w-screen flex flex-col bg-zinc-900 shadow-sm shadow-zinc-800 lg:hidden">
 					{items.map((item) =>
 						item.children?.length > 0 ? (
-							<MobileDisclosure key={item.id} label={item.name}>
+							<MobileDisclosure key={item.id} label={item.label}>
 								{item.children.map((child) => (
 									<NavButton
-										key={item.id}
-										href={child.href!}
-										label={child.name}
-										external={child.is_external === true}
+										key={child.id}
+										href={child.url}
+										label={child.label}
+										external={child.target === "_blank"}
 									/>
 								))}
 							</MobileDisclosure>
 						) : (
 							<NavButton
 								key={item.id}
-								href={item.href!}
-								label={item.name}
-								aria-current={item.href != null && path === item.href}
+								href={item.url}
+								label={item.label}
+								aria-current={item.url != null && path === item.url}
 							/>
 						),
 					)}

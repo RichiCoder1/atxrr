@@ -1,29 +1,31 @@
 ---
 import { PageHeader } from "@/components/PageHeader";
+import RichText from "@/components/RichText.astro";
 import MainLayout from "@/layouts/MainLayout.astro";
-import { loadItems, loadSingleton } from "@/lib/cache";
-import { getDirectusClient } from "@/lib/directus";
+import { getCollection, getPage, setContentCacheHeaders } from "@/lib/content";
 
-const directus = getDirectusClient();
-const about = await loadSingleton(Astro, directus, "about");
-const questions = await loadItems(Astro, directus, "qna");
+const { page: about, isPreview } = await getPage("about");
+const questions = await getCollection("qna");
+
+setContentCacheHeaders(Astro, { isPreview });
 ---
 
 <MainLayout title="About" description="About">
   <div class="container max-w-2xl">
     <PageHeader>About Us</PageHeader>
-    <div class="prose mx-auto mt-10 dark:prose-invert" set:html={about.body} />
+    <div class="prose mx-auto mt-10 dark:prose-invert">
+      <RichText value={about.data.content} />
+    </div>
     <div>
       <h2 class="mt-4 text-2xl text-primary">Frequently Asked Questions</h2>
       <div class="mt-2 flex flex-col gap-4">
         {
           questions.map((qna, i) => (
             <details open={i === 0}>
-              <summary class="cursor-pointer">{qna.question}</summary>
-              <div
-                class="prose border-l-2 border-primary pl-4 pt-2 dark:prose-invert"
-                set:html={qna.answer}
-              />
+              <summary class="cursor-pointer">{qna.data.question}</summary>
+              <div class="prose border-l-2 border-primary pl-4 pt-2 dark:prose-invert">
+                <RichText value={qna.data.answer} />
+              </div>
             </details>
           ))
         }

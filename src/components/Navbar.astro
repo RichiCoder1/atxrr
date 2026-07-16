@@ -1,19 +1,12 @@
 ---
-export const prerender = true;
 import { Image } from 'astro:assets';
 import Logo from '@/../public/logo.svg';
 
 import { DesktopMenu, MobileMenu } from './NavMenu';
-import { getDirectusClient } from '@/lib/directus';
-import { readItems } from '@directus/sdk';
-import type { NavigationItem } from '@/lib/collections';
+import { getMenu } from 'emdash';
 
-const client = getDirectusClient();
-const navigationItems = await client.request(
-	readItems('navigation', { fields: ['*', { children: ['*', { children: ['*'] }] }] })
-);
-const navRoot = navigationItems.find((item) => item.name === 'root')!;
-const menuItems = navRoot.children as NavigationItem[];
+const menu = await getMenu('primary');
+const menuItems = menu?.items ?? [];
 ---
 
 <div

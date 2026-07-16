@@ -1,19 +1,19 @@
 ---
 import { PageHeader } from "@/components/PageHeader";
+import RichText from "@/components/RichText.astro";
 import MainLayout from "@/layouts/MainLayout.astro";
-import { loadSingleton } from "@/lib/cache";
-import { getDirectusClient } from "@/lib/directus";
+import { getPage, setContentCacheHeaders } from "@/lib/content";
 
-const directus = getDirectusClient();
-const contactPage = await loadSingleton(Astro, directus, "contact_page");
+const { page: contactPage, isPreview } = await getPage("contact");
+
+setContentCacheHeaders(Astro, { isPreview });
 ---
 
 <MainLayout title="About" description="About">
   <div class="container max-w-2xl">
     <PageHeader>Contact Us</PageHeader>
-    <div
-      class="prose mx-auto mt-10 dark:prose-invert"
-      set:html={contactPage.Information}
-    />
+    <div class="prose mx-auto mt-10 dark:prose-invert">
+      <RichText value={contactPage.data.content} />
+    </div>
   </div>
 </MainLayout>

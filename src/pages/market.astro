@@ -1,49 +1,52 @@
 ---
 import { PageHeader } from "@/components/PageHeader";
+import RichText from "@/components/RichText.astro";
 import MainLayout from "@/layouts/MainLayout.astro";
-import { loadItems, loadSingleton } from "@/lib/cache";
-import { getDirectusClient } from "@/lib/directus";
+import {
+  bySort,
+  getCollection,
+  getPage,
+  setContentCacheHeaders,
+} from "@/lib/content";
+import { Image as MediaImage } from "emdash/ui";
 
-const directus = getDirectusClient();
-const assets = new URL("/assets/", directus.url);
-const vendorProse = await loadSingleton(Astro, directus, "vendor_page");
-const vendors = await loadItems(Astro, directus, "vendors");
+const { page: vendorProse, isPreview } = await getPage("market");
+const vendors = (await getCollection("vendors")).sort(bySort);
+
+setContentCacheHeaders(Astro, { isPreview });
 ---
 
 <MainLayout title="Market" description="Market and Vendors Information">
   <div class="container max-w-4xl">
     <PageHeader>
-      {vendorProse.title}
+      {vendorProse.data.title}
     </PageHeader>
-    <div
-      class="prose mx-auto mt-10 dark:prose-invert"
-      set:html={vendorProse.body}
-    />
+    <div class="prose mx-auto mt-10 dark:prose-invert">
+      <RichText value={vendorProse.data.content} />
+    </div>
     <ul class="flex flex-col gap-8">
       {
-        vendors
-          .sort((a, b) => a.sort - b.sort)
-          .map((vendor) => (
-            <li class="gap-4 md:grid md:grid-cols-[1fr_2fr]">
-              <a class="col-span-1" href={vendor.website}>
-                <img
-                  class="max-h-[300px] rounded-sm"
-                  src={`${assets}/${vendor.logo}/`}
-                  alt={`${vendor.name} logo`}
-                />
-              </a>
-              <a
-                class=" col-span-1 col-start-2 row-start-1 font-semibold underline underline-offset-8 first-line:text-2xl hover:text-primary"
-                href={vendor.website}
-              >
-                {vendor.name}
-              </a>
-              <div
-                class="prose col-span-1 col-start-2 row-start-1 mt-10 dark:prose-invert"
-                set:html={vendor.info}
+        vendors.map((vendor) => (
+          <li class="gap-4 md:grid md:grid-cols-[1fr_2fr]">
+            <a class="col-span-1" href={vendor.data.website}>
+              <MediaImage
+                class="max-h-[300px] rounded-sm"
+                image={vendor.data.logo}
+                width={600}
+                alt={`${vendor.data.name} logo`}
               />
-            </li>
-          ))
+            </a>
+            <a
+              class=" col-span-1 col-start-2 row-start-1 font-semibold underline underline-offset-8 first-line:text-2xl hover:text-primary"
+              href={vendor.data.website}
+            >
+              {vendor.data.name}
+            </a>
+            <div class="prose col-span-1 col-start-2 row-start-1 mt-10 dark:prose-invert">
+              <RichText value={vendor.data.info} />
+            </div>
+          </li>
+        ))
       }
     </ul>
   </div>

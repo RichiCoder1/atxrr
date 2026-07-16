@@ -1,13 +1,13 @@
 import { buttonVariants } from "../ui/button";
 import { Card, CardContent, CardDescription, CardTitle } from "../ui/card";
 import { Tabs, TabsTrigger, TabsList, TabsContent } from "../ui/tabs";
-import type { Event, Venue } from "@/lib/collections";
 import { cn } from "@/lib/utils";
 import { useStore } from "@nanostores/react";
 import { createRouter, openPage } from "@nanostores/router";
+import { PortableText, type PortableTextComponents } from "@portabletext/react";
+import type { TypedObject } from "@portabletext/types";
 import slugify from "@sindresorhus/slugify";
 import { groupBy, sortBy } from "lodash-es";
-import { marked } from "marked";
 import { useMemo } from "react";
 
 const dateFormatter = new Intl.DateTimeFormat(undefined, {
@@ -17,25 +17,40 @@ const timeFormatter = new Intl.DateTimeFormat(undefined, {
 	timeStyle: "short",
 });
 
-marked.use({
-	renderer: {
-		link({ href, title, text }) {
-			return `<a href="${href}" title="${title ?? ""}" class="${cn(
-				buttonVariants({
-					variant: "link",
-				}),
-				"h-[unset] p-0 underline hover:text-primary/80",
-			)}">${text}</a>`;
-		},
+const richTextComponents: PortableTextComponents = {
+	marks: {
+		link: ({ value, children }) => (
+			<a
+				href={value?.href}
+				className={cn(
+					buttonVariants({
+						variant: "link",
+					}),
+					"h-[unset] p-0 underline hover:text-primary/80",
+				)}
+			>
+				{children}
+			</a>
+		),
 	},
-});
+};
+
+export type CalendarEventItem = {
+	id: string;
+	name: string;
+	event_start: string;
+	event_end: string;
+	location?: string;
+	venueTitle: string;
+	description: TypedObject[];
+};
 
 export type CalendarProps = {
-	events: Event[];
+	events: CalendarEventItem[];
 	params: Record<string, string | undefined>;
 };
 
-type CalendarEvent = Event & {
+type CalendarEvent = CalendarEventItem & {
 	weekday: string;
 	timeDisplay: string;
 	start: Date;
@@ -151,23 +166,22 @@ function CalendarWeekday({
 						<CardTitle>{event.name}</CardTitle>
 						<CardDescription className="pt-1">
 							<p>
-								<a
-									href={`/attend/getting-around#${slugify(
-										(event.venue as Venue).title,
-									)}`}
-								>
-									{(event.venue as Venue).title}
-								</a>
+								{event.venueTitle ? (
+									<a href={`/attend/getting-around#${slugify(event.venueTitle)}`}>
+										{event.venueTitle}
+									</a>
+								) : null}
 								{event.location ? <span> | {event.location}</span> : null}
 							</p>
 						</CardDescription>
 					</div>
 					<CardContent className="pl-0 col-start-auto col-span-2 md:col-start-2 md:col-span-1">
-						<div
-							dangerouslySetInnerHTML={{
-								__html: marked.parse(event.description),
-							}}
-						></div>
+						<div>
+							<PortableText
+								value={event.description}
+								components={richTextComponents}
+							/>
+						</div>
 					</CardContent>
 				</Card>
 			))}

@@ -1,24 +1,22 @@
 ---
 import { PageHeader } from "@/components/PageHeader";
+import RichText from "@/components/RichText.astro";
 import MainLayout from "@/layouts/MainLayout.astro";
-import { loadItems, loadSingleton } from "@/lib/cache";
-import { getDirectusClient } from "@/lib/directus";
+import {
+  bySort,
+  getCollection,
+  getPage,
+  setContentCacheHeaders,
+} from "@/lib/content";
 import slugify from "@sindresorhus/slugify";
 
-const directus = getDirectusClient();
+const { page: gettingAround, isPreview } = await getPage("getting-around");
+const venues = (await getCollection("venues")).sort(bySort).map((venue) => ({
+  ...venue,
+  anchor: slugify(venue.data.title),
+}));
 
-const gettingAround = await loadSingleton(
-  Astro,
-  directus,
-  "getting_around_page",
-);
-const venuesData = await loadItems(Astro, directus, "venues");
-const venues = venuesData
-  .map((venue) => ({
-    ...venue,
-    slug: slugify(venue.title),
-  }))
-  .sort((a, b) => a.sort - b.sort);
+setContentCacheHeaders(Astro, { isPreview });
 ---
 
 <MainLayout
@@ -27,7 +25,9 @@ const venues = venuesData
 >
   <div class="container max-w-4xl">
     <PageHeader>Getting Around / Venues</PageHeader>
-    <div class="prose mt-10 dark:prose-invert" set:html={gettingAround.body} />
+    <div class="prose mt-10 dark:prose-invert">
+      <RichText value={gettingAround.data.content} />
+    </div>
     <nav
       id="venues"
       class="mb-4 mt-6 inline-block rounded border border-primary p-4"
@@ -39,9 +39,9 @@ const venues = venuesData
             <li>
               <a
                 class="font-medium underline underline-offset-4"
-                href={`#${venue.slug}`}
+                href={`#${venue.anchor}`}
               >
-                {venue.title}
+                {venue.data.title}
               </a>
             </li>
           ))
@@ -52,24 +52,26 @@ const venues = venuesData
     <div class="flex flex-col gap-16">
       {
         venues.map((venue) => (
-          <div id={venue.slug}>
+          <div id={venue.anchor}>
             <h3 class="mb-3 mt-4 text-lg font-semibold underline decoration-gray-500 underline-offset-8">
-              {venue.title}
+              {venue.data.title}
             </h3>
-            <div class="prose dark:prose-invert" set:html={venue.body} />
+            <div class="prose dark:prose-invert">
+              <RichText value={venue.data.body} />
+            </div>
             <div class="flex flex-col gap-2">
-              {venue.address ? (
-                <p class="mt-2 font-light">{venue.address}</p>
+              {venue.data.address ? (
+                <p class="mt-2 font-light">{venue.data.address}</p>
               ) : null}
-              {venue.maps_embed ? (
+              {venue.data.maps_embed ? (
                 <iframe
-                  src={venue.maps_embed}
+                  src={venue.data.maps_embed}
                   width="600"
                   height="300"
                   class="w-[60vw] max-w-4xl rounded border border-primary contrast-85 grayscale invert-90 filter"
                   allowfullscreen=""
                   loading="lazy"
-                  title="Google Maps showing Hotel Indigo Austin Downtown Location"
+                  title={`Google Maps showing ${venue.data.title} location`}
                   referrerpolicy="no-referrer-when-downgrade"
                 />
               ) : null}

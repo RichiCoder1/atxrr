@@ -1,21 +1,30 @@
 ---
-// TODO: There's no reason this page couldn't be split up into "multiple" cached pages.
 import MainLayout from "@/layouts/MainLayout.astro";
-import { Calendar } from "@/components/events/calendar";
-import { getDirectusClient } from "@/lib/directus";
-import { readItems } from "@directus/sdk";
+import { Calendar, type CalendarEventItem } from "@/components/events/calendar";
 import { PageHeader } from "@/components/PageHeader";
-import { getCollectionCache } from "@/lib/cache";
+import { getCollection, setContentCacheHeaders } from "@/lib/content";
 
-const directus = getDirectusClient();
-const events = await getCollectionCache(
-  Astro,
-  "events",
-  async () =>
-    await directus.request(
-      readItems("events", { fields: ["*", "venue.*" as "venue"] }),
-    ),
+const [events, venues] = await Promise.all([
+  getCollection("events"),
+  getCollection("venues"),
+]);
+
+// Reference fields store raw entry ids — join venues manually.
+const venueTitleById = new Map(
+  venues.map((venue) => [venue.id, venue.data.title]),
 );
+
+const calendarEvents: CalendarEventItem[] = events.map((event) => ({
+  id: event.id,
+  name: event.data.name,
+  event_start: event.data.event_start,
+  event_end: event.data.event_end,
+  location: event.data.location,
+  venueTitle: (event.data.venue && venueTitleById.get(event.data.venue)) || "",
+  description: event.data.description ?? [],
+}));
+
+setContentCacheHeaders(Astro);
 ---
 
 <MainLayout title="Events" description="Event Calendar">
@@ -23,7 +32,7 @@ const events = await getCollectionCache(
     <div class="container h-fit w-full max-w-4xl px-0 md:px-8">
       <PageHeader>Event Schedule</PageHeader>
       <Calendar
-        events={events}
+        events={calendarEvents}
         params={Object.fromEntries(Astro.url.searchParams.entries())}
         client:load
       />

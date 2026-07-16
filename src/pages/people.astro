@@ -1,23 +1,13 @@
 ---
-// TODO: There's no reason this page couldn't be split up into "multiple" cached pages.
 import { PageHeader } from "@/components/PageHeader";
-import { Photo } from "@/components/Photo";
 import MainLayout from "@/layouts/MainLayout.astro";
-import { loadItems } from "@/lib/cache";
-import { getDirectusClient } from "@/lib/directus";
+import { bySort, getCollection, setContentCacheHeaders } from "@/lib/content";
 import slugify from "@sindresorhus/slugify";
+import { Image as MediaImage } from "emdash/ui";
 
-const directus = getDirectusClient();
-const people = await loadItems(Astro, directus, "people");
-const url = new URL(Astro.request.url);
-const assets = new URL("/assets/", directus.url);
+const people = (await getCollection("people")).sort(bySort);
 
-if (!url.searchParams.has("preview")) {
-  Astro.response.headers.append(
-    "Cache-Control",
-    "public, max-age=600, stale-while-revalidate=30",
-  );
-}
+setContentCacheHeaders(Astro);
 ---
 
 <MainLayout title="Educators" description="Educators">
@@ -29,22 +19,21 @@ if (!url.searchParams.has("preview")) {
     </p>
     <ul class="mt-4 flex flex-col gap-4">
       {
-        people
-          .sort((a, b) => a.sort - b.sort)
-          .map((person) => (
-            <li id={slugify(person.display_name)}>
-              <div>
-                <Photo
-                  src={`${assets}/${person.profile_pic}`}
-                  alt={person.display_name}
-                  className="max-w-[min(25vw,15rem)] float-left mb-2 mr-8 mt-4"
-                />
-                <h2 class="text-2xl font-bold">{person.display_name}</h2>
-                <hr class="my-4 h-[2px] bg-white" />
-                <span class="prose-base">{person.bio}</span>
-              </div>
-            </li>
-          ))
+        people.map((person) => (
+          <li id={slugify(person.data.display_name)}>
+            <div>
+              <MediaImage
+                image={person.data.profile_pic}
+                width={480}
+                alt={person.data.display_name}
+                class="float-left mb-2 mr-8 mt-4 max-w-[min(25vw,15rem)] rounded-2xl border-2 border-primary shadow-[1rem_-1rem_0_0_var(--tw-shadow)] shadow-alternate"
+              />
+              <h2 class="text-2xl font-bold">{person.data.display_name}</h2>
+              <hr class="my-4 h-[2px] bg-white" />
+              <span class="prose-base">{person.data.bio}</span>
+            </div>
+          </li>
+        ))
       }
     </ul>
   </div>

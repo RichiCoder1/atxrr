@@ -4,15 +4,14 @@ import MainLayout from "@/layouts/MainLayout.astro";
 import { eventDates } from "@/consts";
 import Bull from "../../public/bull.svg";
 import { Button } from "@/components/ui/button";
-import { getDirectusClient } from "@/lib/directus";
-import { loadItems } from "@/lib/cache";
+import { bySort, getCollection, setContentCacheHeaders } from "@/lib/content";
+import { Image as MediaImage } from "emdash/ui";
 
-const directus = getDirectusClient();
-const assets = new URL("/assets", directus.url);
-let sponsors = await loadItems(Astro, directus, "sponsors");
-sponsors = sponsors.filter(
-  (sponsor) => sponsor.tags?.includes("primary") ?? false,
-);
+const sponsors = (await getCollection("sponsors"))
+  .filter((sponsor) => sponsor.data.tags?.includes("primary") ?? false)
+  .sort(bySort);
+
+setContentCacheHeaders(Astro);
 
 const dateFormat = new Intl.DateTimeFormat("en", {
   year: "numeric",
@@ -80,13 +79,14 @@ const dateFormat = new Intl.DateTimeFormat("en", {
     >
       {
         sponsors.map((sponsor) => (
-          <a href={sponsor.website} class="flex justify-center">
-            <img
+          <a href={sponsor.data.website} class="flex justify-center">
+            <MediaImage
               class={`max-h-[20vh] ${
-                sponsor.invert_logo ? "invert" : "invert-0"
+                sponsor.data.invert_logo ? "invert" : "invert-0"
               }`}
-              src={`${assets}/${sponsor.logo}?key=sponsor`}
-              alt={sponsor.name}
+              image={sponsor.data.logo}
+              width={600}
+              alt={sponsor.data.name}
             />
           </a>
         ))
