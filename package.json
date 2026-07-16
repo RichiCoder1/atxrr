@@ -8,6 +8,8 @@
     "build": "astro check && astro build",
     "preview": "astro preview",
     "astro": "astro",
+    "migrate:content": "tsx scripts/migrate/index.ts",
+    "migrate:test": "vitest run scripts/migrate",
     "pages:dev": "wrangler pages dev --compatibility-date=2024-01-17 -- astro dev"
   },
   "dependencies": {
@@ -44,15 +46,13 @@
   },
   "devDependencies": {
     "@cloudflare/workers-types": "^5.20260716.1",
+    "@emdash-cms/gutenberg-to-portable-text": "0.29.0",
     "@flydotio/dockerfile": "^0.7.10",
-    "@portabletext/block-tools": "^5.1.11",
     "@portabletext/types": "^4.0.2",
-    "@sanity/schema": "^6.5.0",
-    "@sanity/types": "^6.5.0",
     "@tailwindcss/typography": "^0.5.19",
     "@trivago/prettier-plugin-sort-imports": "^6.0.0",
+    "@types/node": "^26.1.1",
     "@vercel/og": "^0.8.5",
-    "jsdom": "^29.1.1",
     "marked": "^18.0.6",
     "prettier": "^3.7.3",
     "prettier-plugin-astro": "^0.14.1",
