@@ -6,6 +6,7 @@ import {
 	isPublished,
 	makeSlug,
 	navigationToMenuItems,
+	normalizeSortOrder,
 	rewriteAssetUrls,
 	richTextToPortableText,
 	toImageFieldValue,
@@ -118,6 +119,21 @@ describe("makeSlug", () => {
 	});
 });
 
+describe("normalizeSortOrder", () => {
+	it("replicates null-as-zero stable sort and bakes in sequential values", () => {
+		// Mirrors the venues case: nulls sort before explicit 1/2, in fetch order.
+		const items = [
+			{ id: "indigo", sort: 1 },
+			{ id: "eagle", sort: 2 },
+			{ id: "sanctuary", sort: null },
+			{ id: "pelons", sort: null },
+		];
+		const result = normalizeSortOrder(items);
+		expect(result.map((i) => i.id)).toEqual(["sanctuary", "pelons", "indigo", "eagle"]);
+		expect(result.map((i) => i.sort)).toEqual([0, 1, 2, 3]);
+	});
+});
+
 describe("isPublished", () => {
 	it("treats missing status as published", () => {
 		expect(isPublished(undefined)).toBe(true);
@@ -132,6 +148,30 @@ describe("dataEquals", () => {
 		expect(dataEquals({ a: 1, b: [1, 2], c: undefined }, { b: [1, 2], a: 1 })).toBe(true);
 		expect(dataEquals({ a: 1 }, { a: 2 })).toBe(false);
 		expect(dataEquals({ a: { x: 1, y: 2 } }, { a: { y: 2, x: 1 } })).toBe(true);
+	});
+
+	it("treats booleans as equal to SQLite 0/1", () => {
+		expect(dataEquals({ invert_logo: false }, { invert_logo: 0 })).toBe(true);
+		expect(dataEquals({ invert_logo: true }, { invert_logo: 1 })).toBe(true);
+		expect(dataEquals({ invert_logo: true }, { invert_logo: 0 })).toBe(false);
+	});
+
+	it("compares media values by id+alt, ignoring server enrichment", () => {
+		const generated = { id: "M1", src: "/_emdash/api/media/file/x.png", alt: "Logo", width: 100, height: 50 };
+		const stored = {
+			id: "M1",
+			alt: "Logo",
+			provider: "local",
+			blurhash: "LPJ...",
+			dominantColor: "rgb(1,2,3)",
+			filename: "x.png",
+			mimeType: "image/png",
+			width: 100,
+			height: 50,
+			meta: { storageKey: "x.png" },
+		};
+		expect(dataEquals({ logo: generated }, { logo: stored })).toBe(true);
+		expect(dataEquals({ logo: generated }, { logo: { ...stored, id: "M2" } })).toBe(false);
 	});
 });
 

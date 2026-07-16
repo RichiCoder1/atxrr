@@ -5,12 +5,49 @@
 
 import type { ContentBylineCredit, TaxonomyTerm, PortableTextBlock } from "emdash";
 
+export interface Event {
+  id: string;
+  slug: string | null;
+  status: string;
+  name: string;
+  event_start: string;
+  event_end: string;
+  venue?: string;
+  location?: string;
+  description?: PortableTextBlock[];
+  tags?: string[];
+  sort?: number;
+  directus_id?: number;
+  createdAt: Date;
+  updatedAt: Date;
+  publishedAt: Date | null;
+  bylines?: ContentBylineCredit[];
+  terms?: Record<string, TaxonomyTerm[]>;
+}
+
 export interface Page {
   id: string;
   slug: string | null;
   status: string;
   title: string;
   content?: PortableTextBlock[];
+  createdAt: Date;
+  updatedAt: Date;
+  publishedAt: Date | null;
+  bylines?: ContentBylineCredit[];
+  terms?: Record<string, TaxonomyTerm[]>;
+}
+
+export interface People {
+  id: string;
+  slug: string | null;
+  status: string;
+  display_name: string;
+  bio?: string;
+  profile_pic?: { id: string; src?: string; alt?: string; width?: number; height?: number; provider?: string; previewUrl?: string; meta?: Record<string, unknown> };
+  tags?: string[];
+  sort?: number;
+  directus_id?: number;
   createdAt: Date;
   updatedAt: Date;
   publishedAt: Date | null;
@@ -33,9 +70,83 @@ export interface Post {
   terms?: Record<string, TaxonomyTerm[]>;
 }
 
+export interface Qna {
+  id: string;
+  slug: string | null;
+  status: string;
+  question: string;
+  answer?: PortableTextBlock[];
+  sort?: number;
+  directus_id?: number;
+  createdAt: Date;
+  updatedAt: Date;
+  publishedAt: Date | null;
+  bylines?: ContentBylineCredit[];
+  terms?: Record<string, TaxonomyTerm[]>;
+}
+
+export interface Sponsor {
+  id: string;
+  slug: string | null;
+  status: string;
+  name: string;
+  website?: string;
+  logo?: { id: string; src?: string; alt?: string; width?: number; height?: number; provider?: string; previewUrl?: string; meta?: Record<string, unknown> };
+  info?: PortableTextBlock[];
+  invert_logo?: boolean;
+  tags?: string[];
+  sort?: number;
+  directus_id?: number;
+  createdAt: Date;
+  updatedAt: Date;
+  publishedAt: Date | null;
+  bylines?: ContentBylineCredit[];
+  terms?: Record<string, TaxonomyTerm[]>;
+}
+
+export interface Vendor {
+  id: string;
+  slug: string | null;
+  status: string;
+  name: string;
+  website?: string;
+  logo?: { id: string; src?: string; alt?: string; width?: number; height?: number; provider?: string; previewUrl?: string; meta?: Record<string, unknown> };
+  info?: PortableTextBlock[];
+  sort?: number;
+  directus_id?: number;
+  createdAt: Date;
+  updatedAt: Date;
+  publishedAt: Date | null;
+  bylines?: ContentBylineCredit[];
+  terms?: Record<string, TaxonomyTerm[]>;
+}
+
+export interface Venue {
+  id: string;
+  slug: string | null;
+  status: string;
+  title: string;
+  body?: PortableTextBlock[];
+  address?: string;
+  maps_embed?: string;
+  sort?: number;
+  directus_id?: number;
+  createdAt: Date;
+  updatedAt: Date;
+  publishedAt: Date | null;
+  bylines?: ContentBylineCredit[];
+  terms?: Record<string, TaxonomyTerm[]>;
+}
+
 declare module "emdash" {
   interface EmDashCollections {
+    events: Event;
     pages: Page;
+    people: People;
     posts: Post;
+    qna: Qna;
+    sponsors: Sponsor;
+    vendors: Vendor;
+    venues: Venue;
   }
 }

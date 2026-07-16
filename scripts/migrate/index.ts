@@ -27,6 +27,7 @@ import {
 	isPublished,
 	makeSlug,
 	navigationToMenuItems,
+	normalizeSortOrder,
 	richTextToPortableText,
 	toImageFieldValue,
 	type DesiredMenuItem,
@@ -169,11 +170,14 @@ async function main() {
 			directus.fetchItems<DQna>(directusConfig, "qna"),
 			directus.fetchNavigation(directusConfig),
 		]);
+	// NOTE: getting_around_page has no title field in Directus (the page header
+	// was hardcoded), and contact_page.Social_Media_Links is not consumed by
+	// the site (the footer is hardcoded) — intentionally not migrated.
 	const [about, vendorPage, gettingAroundPage, sponsorsPage, contactPage] =
 		await Promise.all([
 			directus.fetchSingleton<{ body: string }>(directusConfig, "about"),
-			directus.fetchSingleton<{ title: string; body: string }>(directusConfig, "vendor_page"),
-			directus.fetchSingleton<{ title: string; body: string }>(directusConfig, "getting_around_page"),
+			directus.fetchSingleton<{ title?: string; body: string }>(directusConfig, "vendor_page"),
+			directus.fetchSingleton<{ title?: string; body: string }>(directusConfig, "getting_around_page"),
 			directus.fetchSingleton<{ body: string }>(directusConfig, "sponsors_page"),
 			directus.fetchSingleton<{ Information: string }>(directusConfig, "contact_page"),
 		]);
@@ -227,7 +231,7 @@ async function main() {
 
 	const venueIdMap = await upsertCollection(
 		"venues",
-		venues,
+		normalizeSortOrder(venues),
 		(v) => v.title,
 		(v) => ({
 			title: v.title,
@@ -260,7 +264,7 @@ async function main() {
 
 	await upsertCollection(
 		"sponsors",
-		sponsors,
+		normalizeSortOrder(sponsors),
 		(s) => s.name,
 		(s) => ({
 			name: s.name,
@@ -277,7 +281,7 @@ async function main() {
 
 	await upsertCollection(
 		"vendors",
-		vendors,
+		normalizeSortOrder(vendors),
 		(v) => v.name,
 		(v) => ({
 			name: v.name,
@@ -292,7 +296,7 @@ async function main() {
 
 	await upsertCollection(
 		"people",
-		people,
+		normalizeSortOrder(people),
 		(p) => p.display_name,
 		(p) => ({
 			display_name: p.display_name,
@@ -320,9 +324,9 @@ async function main() {
 
 	await upsertPages([
 		{ slug: "about", title: "About Us", html: about.body },
-		{ slug: "market", title: vendorPage.title, html: vendorPage.body },
+		{ slug: "market", title: vendorPage.title ?? "Vendor Market", html: vendorPage.body },
 		{ slug: "sponsors", title: "Sponsors and Social Hosts", html: sponsorsPage.body },
-		{ slug: "getting-around", title: gettingAroundPage.title, html: gettingAroundPage.body },
+		{ slug: "getting-around", title: gettingAroundPage.title ?? "Getting Around", html: gettingAroundPage.body },
 		{ slug: "contact", title: "Contact Us", html: contactPage.Information },
 	], mediaMap);
 
@@ -376,8 +380,7 @@ function imageField(
 }
 
 async function ensureSchema(plan: CollectionPlan[]) {
-	const existingRaw = await emdash.listCollections(emdashConfig);
-	const existing = Array.isArray(existingRaw) ? existingRaw : existingRaw.collections;
+	const existing = await emdash.listCollections(emdashConfig);
 	const existingSlugs = new Set(existing.map((c) => c.slug));
 
 	if (!existingSlugs.has("pages")) {
@@ -393,8 +396,7 @@ async function ensureSchema(plan: CollectionPlan[]) {
 				labelSingular: collection.labelSingular,
 			});
 		}
-		const fieldsRaw = await emdash.listFields(emdashConfig, collection.slug);
-		const fields = Array.isArray(fieldsRaw) ? fieldsRaw : fieldsRaw.fields;
+		const fields = await emdash.listFields(emdashConfig, collection.slug);
 		const fieldSlugs = new Set(fields.map((f) => f.slug));
 		let sortOrder = fields.length;
 		for (const field of collection.fields) {
@@ -474,6 +476,9 @@ async function upsertCollection<T extends { id: number }>(
 		const data = toData(item, index);
 		const current = byDirectusId.get(item.id);
 		let entryId: string;
+		// PUT writes a draft revision; published output only changes on
+		// (re-)publish. So any create or update must be followed by publish.
+		let needsPublish = shouldPublish(item);
 		if (!current) {
 			const slug = makeSlug(nameOf(item), item.id, takenSlugs);
 			const created = await emdash.createContent(emdashConfig, collection, {
@@ -490,13 +495,17 @@ async function upsertCollection<T extends { id: number }>(
 			);
 			if (dataEquals(currentSubset, data)) {
 				report.entries.unchanged += 1;
+				needsPublish = needsPublish && current.status !== "published";
 			} else {
+				const changed = Object.keys(data).filter(
+					(k) => !dataEquals(current.data[k], data[k]),
+				);
+				console.log(`    ~ ${collection}/${current.slug}: ${changed.join(", ")}`);
 				await emdash.updateContent(emdashConfig, collection, entryId, { data });
 				report.entries.updated += 1;
 			}
 		}
-		const wasPublished = current?.status === "published";
-		if (shouldPublish(item) && !wasPublished) {
+		if (needsPublish) {
 			await emdash.publishContent(emdashConfig, collection, entryId);
 			report.entries.published += 1;
 		}
@@ -520,6 +529,7 @@ async function upsertPages(
 		};
 		const current = bySlug.get(page.slug);
 		let entryId: string;
+		let needsPublish = true;
 		if (!current) {
 			const created = await emdash.createContent(emdashConfig, "pages", {
 				data,
@@ -532,12 +542,13 @@ async function upsertPages(
 			const currentSubset = { title: current.data.title, content: current.data.content };
 			if (dataEquals(currentSubset, data)) {
 				report.entries.unchanged += 1;
+				needsPublish = current.status !== "published";
 			} else {
 				await emdash.updateContent(emdashConfig, "pages", entryId, { data });
 				report.entries.updated += 1;
 			}
 		}
-		if (current?.status !== "published") {
+		if (needsPublish) {
 			await emdash.publishContent(emdashConfig, "pages", entryId);
 			report.entries.published += 1;
 		}
@@ -545,22 +556,34 @@ async function upsertPages(
 }
 
 async function migrateMenu(navigation: directus.DirectusNavigationItem[]) {
-	const desired = navigationToMenuItems(navigation);
+	// Items without an href (dropdown parents) get "/" — apply before both
+	// compare and create so re-runs see identical trees.
+	const applyUrlFallback = (items: DesiredMenuItem[]): DesiredMenuItem[] =>
+		items.map((item) => ({
+			...item,
+			url: item.url || "/",
+			children: applyUrlFallback(item.children),
+		}));
+	const desired = applyUrlFallback(navigationToMenuItems(navigation));
 	const countItems = (items: DesiredMenuItem[]): number =>
 		items.reduce((n, item) => n + 1 + countItems(item.children), 0);
 	report.menu.sourceItems = countItems(desired);
 
 	const existing = await emdash.getMenu(emdashConfig, "primary");
 	if (existing) {
-		const normalize = (items: emdash.EmDashMenuItemOut[]): DesiredMenuItem[] =>
-			items.map((item) => ({
-				label: item.label,
-				url: item.url ?? "",
-				target: item.target || undefined,
-				titleAttr: item.titleAttr || undefined,
-				children: normalize(item.children ?? []),
-			}));
-		if (dataEquals(normalize(existing.items), desired)) {
+		// The admin route returns a flat list; rebuild the tree for comparison.
+		const buildTree = (parentId: string | null): DesiredMenuItem[] =>
+			existing.items
+				.filter((item) => (item.parentId ?? null) === parentId)
+				.sort((a, b) => a.sortOrder - b.sortOrder)
+				.map((item) => ({
+					label: item.label,
+					url: item.customUrl ?? "",
+					target: item.target || undefined,
+					titleAttr: item.titleAttr || undefined,
+					children: buildTree(item.id),
+				}));
+		if (dataEquals(buildTree(null), desired)) {
 			console.log("  menu unchanged");
 			report.menu.destinationItems = report.menu.sourceItems;
 			return;

@@ -73,7 +73,12 @@ export function richTextToPortableText(
 	const html =
 		format === "markdown" ? (marked.parse(value, { async: false }) as string) : value;
 	const { html: rewritten, unresolved } = rewriteAssetUrls(html, mediaMap);
-	const blocks = htmlToPortableText(rewritten);
+	// Deterministic keys so re-running the migration produces byte-identical
+	// blocks (random keys would defeat the idempotent-upsert comparison).
+	let keyCounter = 0;
+	const blocks = htmlToPortableText(rewritten, {
+		keyGenerator: () => `mig-${(keyCounter++).toString(36)}`,
+	});
 	// Attach media ids to image blocks the converter produced from <img> tags
 	// so they reference the EmDash media library instead of bare URLs.
 	const urlToMedia = new Map(
@@ -126,6 +131,23 @@ export function makeSlug(
 	return slug;
 }
 
+/**
+ * Replicate the site's display order (stable sort by `sort ?? 0`, i.e. how
+ * the old pages sorted Directus items with null sorts) and bake it into
+ * explicit sequential sort values, so ordering is deterministic in EmDash.
+ */
+export function normalizeSortOrder<T extends { sort?: number | null }>(
+	items: T[],
+): Array<T & { sort: number }> {
+	return [...items]
+		.map((item, index) => ({ item, index }))
+		.sort(
+			(a, b) =>
+				(a.item.sort ?? 0) - (b.item.sort ?? 0) || a.index - b.index,
+		)
+		.map(({ item }, position) => ({ ...item, sort: position }));
+}
+
 /** Directus status → should the EmDash entry be published? */
 export function isPublished(status: string | null | undefined): boolean {
 	// Directus defaults: published | draft | archived. Collections without a
@@ -174,7 +196,13 @@ export function navigationToMenuItems(
 		.map(convert);
 }
 
-/** Stable deep-ish equality for migrated data objects (JSON semantics). */
+/**
+ * Equality between the data we generate and what EmDash stores, tolerant of
+ * the server's normalizations:
+ * - booleans are persisted as SQLite 0/1
+ * - image/media values are enriched (provider, blurhash, filename, meta …)
+ *   and `src` is dropped — only `id` and `alt` are compared for those
+ */
 export function dataEquals(a: unknown, b: unknown): boolean {
 	return canonicalJson(a) === canonicalJson(b);
 }
@@ -183,11 +211,23 @@ function canonicalJson(value: unknown): string {
 	return JSON.stringify(sortKeys(value));
 }
 
+function isMediaValue(value: Record<string, unknown>): boolean {
+	return (
+		typeof value.id === "string" &&
+		(typeof value.src === "string" || typeof value.provider === "string")
+	);
+}
+
 function sortKeys(value: unknown): unknown {
 	if (Array.isArray(value)) return value.map(sortKeys);
+	if (typeof value === "boolean") return value ? 1 : 0;
 	if (value !== null && typeof value === "object") {
+		const record = value as Record<string, unknown>;
+		if (isMediaValue(record)) {
+			return { id: record.id, alt: record.alt ?? undefined };
+		}
 		return Object.fromEntries(
-			Object.entries(value as Record<string, unknown>)
+			Object.entries(record)
 				.filter(([, v]) => v !== undefined)
 				.sort(([a], [b]) => a.localeCompare(b))
 				.map(([k, v]) => [k, sortKeys(v)]),

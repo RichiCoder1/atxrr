@@ -68,12 +68,15 @@ async function api<T>(
 
 // ---- Schema ----
 
-export async function listCollections(config: EmDashConfig) {
-	return api<{ collections: EmDashCollectionInfo[] } | EmDashCollectionInfo[]>(
+export async function listCollections(
+	config: EmDashConfig,
+): Promise<EmDashCollectionInfo[]> {
+	const result = await api<{ items: EmDashCollectionInfo[] }>(
 		config,
 		"GET",
 		"/schema/collections",
 	);
+	return result.items;
 }
 
 export async function createCollection(
@@ -83,12 +86,16 @@ export async function createCollection(
 	return api(config, "POST", "/schema/collections", input);
 }
 
-export async function listFields(config: EmDashConfig, collection: string) {
-	return api<{ fields: EmDashField[] } | EmDashField[]>(
+export async function listFields(
+	config: EmDashConfig,
+	collection: string,
+): Promise<EmDashField[]> {
+	const result = await api<{ items: EmDashField[] }>(
 		config,
 		"GET",
 		`/schema/collections/${collection}/fields`,
 	);
+	return result.items;
 }
 
 export async function createField(
@@ -108,7 +115,8 @@ export async function listAllContent(
 	const items: EmDashContentItem[] = [];
 	let cursor: string | undefined;
 	do {
-		const query = new URLSearchParams({ limit: "100", status: "all" });
+		// No status filter: a token with content:read_drafts sees all statuses.
+		const query = new URLSearchParams({ limit: "100" });
 		if (cursor) query.set("cursor", cursor);
 		const page = await api<{ items: EmDashContentItem[]; nextCursor?: string }>(
 			config,
@@ -199,13 +207,15 @@ export async function uploadMedia(
 
 // ---- Menus ----
 
+/** Flat item shape returned by the admin menus REST route. */
 export interface EmDashMenuItemOut {
 	id: string;
+	parentId: string | null;
+	sortOrder: number;
 	label: string;
-	url?: string;
-	target?: string;
-	titleAttr?: string;
-	children?: EmDashMenuItemOut[];
+	customUrl: string | null;
+	target: string | null;
+	titleAttr: string | null;
 }
 
 export async function getMenu(
