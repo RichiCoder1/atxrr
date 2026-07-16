@@ -1,17 +1,22 @@
 import cloudflare from "@astrojs/cloudflare";
 import react from "@astrojs/react";
+import { d1, r2 } from "@emdash-cms/cloudflare";
 import tailwindcss from "@tailwindcss/vite";
 import { defineConfig } from "astro/config";
-import million from "million/compiler";
+import emdash from "emdash/astro";
 
 // https://astro.build/config
 export default defineConfig({
 	integrations: [
 		react(),
-		million.vite({
-			mode: "react",
-			server: true,
-			auto: true,
+		emdash({
+			// NOTE: d1 session mode must stay disabled — "auto" is incompatible
+			// with the global_fetch_strictly_public compatibility flag (silent
+			// SSR hangs; see emdash-cms/emdash#1273).
+			database: d1({ binding: "DB" }),
+			storage: r2({ binding: "MEDIA" }),
+			// Client-delivered editor toolbar so public HTML stays cacheable.
+			toolbar: "client",
 		}),
 	],
 	output: "server",

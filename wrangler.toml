@@ -7,12 +7,30 @@ upload_source_maps = true
 [placement]
 mode = "smart"
 
+[[d1_databases]]
+binding = "DB"
+database_name = "atxrr-cms"
+database_id = "00000000-0000-0000-0000-000000000000" # placeholder — replaced after `wrangler d1 create atxrr-cms`
+
+[[r2_buckets]]
+binding = "MEDIA"
+bucket_name = "atxrr-media"
+
 [vars]
 PUBLIC_DIRECTUS_URL = "https://directus.atxrubberroundup.com/"
 
 [env.production.vars]
 PUBLIC_DIRECTUS_URL = "https://directus.atxrubberroundup.com/"
 SITE_URL = "https://atxrubberroundup.com"
+
+[[env.production.d1_databases]]
+binding = "DB"
+database_name = "atxrr-cms"
+database_id = "00000000-0000-0000-0000-000000000000" # placeholder — replaced after `wrangler d1 create atxrr-cms`
+
+[[env.production.r2_buckets]]
+binding = "MEDIA"
+bucket_name = "atxrr-media"
 
 [[env.production.kv_namespaces]]
 id = "93531e2f397b4411b1c673e240ca7ffd"

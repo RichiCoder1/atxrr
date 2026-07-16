@@ -1,0 +1,25 @@
+diff --git a/src/astro/integration/shims/use-sync-external-store-with-selector.js b/src/astro/integration/shims/use-sync-external-store-with-selector.js
+index e873426943835da00a222f48d30fdd3c6f5e4c75..ae5a9d27f1d1b9085882e48e9eb483a306b5f096 100644
+--- a/src/astro/integration/shims/use-sync-external-store-with-selector.js
++++ b/src/astro/integration/shims/use-sync-external-store-with-selector.js
+@@ -69,3 +69,7 @@ export function useSyncExternalStoreWithSelector(
+ 	React.useDebugValue(value);
+ 	return value;
+ }
++
++// Default export mirrors the CJS interop shape of the real
++// use-sync-external-store/shim/with-selector for default-importing consumers.
++export default { useSyncExternalStoreWithSelector };
+diff --git a/src/astro/integration/shims/use-sync-external-store.js b/src/astro/integration/shims/use-sync-external-store.js
+index d82a3b35d2d7f184b3255c497e6d40cc7babb75c..a9f47482e51639d12d73847434c550fbf8d3214d 100644
+--- a/src/astro/integration/shims/use-sync-external-store.js
++++ b/src/astro/integration/shims/use-sync-external-store.js
+@@ -1 +1,7 @@
+-export { useSyncExternalStore } from "react";
++import { useSyncExternalStore } from "react";
++export { useSyncExternalStore };
++// Default export mirrors the CJS interop shape of the real
++// use-sync-external-store/shim so default-importing consumers
++// (e.g. @ariakit/react-core) keep working when EmDash aliases
++// this module.
++export default { useSyncExternalStore };
