@@ -39,34 +39,33 @@ const timeFormatter = new Intl.DateTimeFormat("en-US", {
 /**
  * Split an event's time range into the large start label and the smaller end
  * label shown beside it.
- *
- * The subtlety is `formatRange`: given a range that stays inside one day it
- * collapses the shared meridiem ("6:00 – 8:00 PM"), but the moment the range
- * crosses midnight it silently switches to including the *calendar date* on
- * both sides — "2/20/2026, 10:00 PM – 2/21/2026, 2:00 AM" — even though this
- * formatter only asked for `timeStyle`. That string is roughly three times
- * longer than the same-day one and blew out the fixed `auto` time column.
- *
- * So the collapsing path is used only when it is actually safe (same day), and
- * day-crossing events format each endpoint on its own. `crossesMidnight` is
- * returned so the caller can label the end time as landing on the next day —
- * dropping the date entirely would otherwise make a 10 PM–2 AM party read as a
- * sixteen-hour one.
  */
-function formatTimeRange(start: Date, end: Date) {
+function formatTimeRange(start: Date, end: Date, eventName: string) {
+	// Every event is required to have a real duration. A missing or malformed
+	// `event_end` parses to an instant equal to (or before) the start, which
+	// used to render as a bare " PM" with no end time — a broken card that
+	// looked like a styling bug rather than the content error it is. Fail loudly
+	// so it surfaces at the source instead.
+	if (!(end.getTime() > start.getTime())) {
+		throw new Error(
+			`Event "${eventName}" has no duration: event_end (${end.toISOString()}) ` +
+				`must be after event_start (${start.toISOString()}).`,
+		);
+	}
+
 	// Compared in UTC because event times are parsed as UTC wall-clock; see
 	// `parseEventTime`. Using local getters here would reintroduce the drift.
 	const crossesMidnight =
 		start.toISOString().slice(0, 10) !== end.toISOString().slice(0, 10);
-	const isInstant = start.getTime() === end.getTime();
 
-	if (crossesMidnight || isInstant) {
+	if (crossesMidnight) {
+		// `formatRange` starts including the calendar date once a range spans a
+		// day boundary — "2/21/2026, 2:00 AM" — even though this formatter only
+		// asked for `timeStyle`. That is ~3x longer than the same-day string and
+		// overflowed the fixed time column, so format each endpoint separately.
 		return {
 			startPart: timeFormatter.format(start),
-			// A zero-length event has no meaningful end to show. `formatRange`
-			// used to emit the whole range here, leaving the start label as a
-			// bare " PM", because its start-of-range lookup found no hour part.
-			endPart: isInstant ? "" : `– ${timeFormatter.format(end)}`,
+			endPart: `– ${timeFormatter.format(end)}`,
 			crossesMidnight,
 		};
 	}
@@ -185,6 +184,7 @@ export function Calendar({ events, params: astroParams }: CalendarProps) {
 				const { startPart, endPart, crossesMidnight } = formatTimeRange(
 					start,
 					end,
+					event.name,
 				);
 
 				return {
@@ -254,7 +254,9 @@ export function Calendar({ events, params: astroParams }: CalendarProps) {
 	// renders. Falling back to the first available day means a search that only
 	// matches Sunday switches to Sunday instead of showing an empty Friday.
 	const selectedWeekday =
-		merged.day && weekdayKeys.includes(merged.day) ? merged.day : weekdayKeys[0];
+		merged.day && weekdayKeys.includes(merged.day)
+			? merged.day
+			: weekdayKeys[0];
 
 	// `merged` can carry undefined values (Astro params are optional); the router
 	// only accepts defined ones.
@@ -342,9 +344,21 @@ export function Calendar({ events, params: astroParams }: CalendarProps) {
 					}
 					className="flex w-full flex-col items-center"
 				>
-					<TabsList>
+					{/* The shadcn defaults are sized for dense app chrome — an h-8 strip
+					    of text-sm. This is the primary control on the page, so it gets
+					    the roomier sizing the Radix version had, and the selected day
+					    picks up the same amber as the event times beside it. */}
+					<TabsList className="h-10 p-1">
 						{weekdayKeys.map((weekday) => (
-							<TabsTrigger key={weekday} id={weekday}>
+							<TabsTrigger
+								key={weekday}
+								id={weekday}
+								// The dark: pair is required: tabs.tsx carries
+								// `dark:data-selected:text-foreground`, and tailwind-merge
+								// does not dedupe across the `dark:` boundary, so a bare
+								// `data-selected:text-primary` loses in dark mode.
+								className="px-3 py-1.5 text-base data-selected:text-primary dark:data-selected:text-primary"
+							>
 								{weekday}
 							</TabsTrigger>
 						))}
