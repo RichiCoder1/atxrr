@@ -36,7 +36,7 @@ export function DesktopMenu({ path, items }: NavMenuProps) {
 						key={item.id}
 						href={item.url}
 						label={item.label}
-						aria-current={item.url != null && path === item.url}
+						aria-current={item.url != null && path === item.url ? "page" : undefined}
 					>
 						{item?.children.length === 0
 							? undefined
@@ -64,10 +64,11 @@ export function MobileMenu({ path, items }: NavMenuProps) {
 			<Button
 				className="inline-block lg:hidden"
 				variant="ghost"
+				aria-expanded={open}
 				aria-label={
 					!open ? "Expand Navigation Menu" : "Collapse Navigation Menu"
 				}
-				onClick={() => setOpen(true)}
+				onClick={() => setOpen((wasOpen) => !wasOpen)}
 			>
 				{open == false ? <Burger /> : <X />}
 			</Button>
@@ -95,7 +96,7 @@ export function MobileMenu({ path, items }: NavMenuProps) {
 								key={item.id}
 								href={item.url}
 								label={item.label}
-								aria-current={item.url != null && path === item.url}
+								aria-current={item.url != null && path === item.url ? "page" : undefined}
 							/>
 						),
 					)}
