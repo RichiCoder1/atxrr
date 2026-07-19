@@ -58,6 +58,14 @@ name = "EMAIL"
 [env.production.vars]
 SITE_URL = "https://atxrubberroundup.com"
 
+[[env.production.routes]]
+pattern = "atxrubberroundup.com"
+custom_domain = true
+
+[[env.production.routes]]
+pattern = "www.atxrubberroundup.com"
+custom_domain = true
+
 [[env.production.d1_databases]]
 binding = "DB"
 database_name = "atxrr-cms"
