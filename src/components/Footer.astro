@@ -7,7 +7,16 @@ import { Separator } from '@/components/ui/separator';
 <Separator className="bg-alternate/50" />
 <footer class="container flex items-center justify-between py-4">
 	<div class="shrink text-sm font-thin">
-		©️ Austin Rubber Roundup {new Date().getFullYear()}. All Rights Reserved
+		{/*
+		 * Plain U+00A9, not "©️". The latter carries the U+FE0F variation
+		 * selector, which forces *emoji* presentation — so the glyph came from
+		 * the colour emoji font and rendered purple, ignoring `color` entirely.
+		 * Without the selector it is an ordinary text glyph and takes the amber
+		 * the social icons use on hover.
+		 */}
+		<span class="text-primary">&#169;</span> Austin Rubber Roundup {
+			new Date().getFullYear()
+		}. All Rights Reserved
 	</div>
 	<div class="flex space-x-4">
 		<a href="https://x.com/austinrubberroundup" class="inline-flex items-center hover:text-primary">

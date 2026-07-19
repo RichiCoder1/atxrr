@@ -27,6 +27,17 @@
   --accent: oklch(0.967 0.001 286.375);
   --accent-foreground: oklch(0.21 0.006 285.885);
   --destructive: oklch(0.577 0.245 27.325);
+  /*
+   * The rose accent used by the nav border, footer separator and the people
+   * page's image shadow. Defined in HSL since the original build and dropped by
+   * accident in b0e4c50, the HSL-to-oklch theme conversion — tailwind.config.js
+   * kept mapping `alternate` to these variables, so the utilities went on
+   * resolving to nothing rather than erroring, and the accent was invisible for
+   * seven months. These are the historical values converted exactly:
+   * hsl(346.8 77.2% 49.8%) = #e11d48 and hsl(355.7 100% 97.3%) = #fff1f2.
+   */
+  --alternate: oklch(0.586 0.222 17.555);
+  --alternate-foreground: oklch(0.97 0.015 12.4);
   --border: oklch(0.92 0.004 286.32);
   --input: oklch(0.92 0.004 286.32);
   --ring: oklch(0.852 0.199 91.936);
@@ -61,6 +72,9 @@
   --accent: oklch(0.274 0.006 286.033);
   --accent-foreground: oklch(0.985 0 0);
   --destructive: oklch(0.704 0.191 22.216);
+  /* Historically identical in both themes; kept that way. */
+  --alternate: oklch(0.586 0.222 17.555);
+  --alternate-foreground: oklch(0.97 0.015 12.4);
   --border: oklch(1 0 0 / 10%);
   --input: oklch(1 0 0 / 15%);
   --ring: oklch(0.421 0.095 57.708);
@@ -141,6 +155,8 @@
   --color-input: var(--input);
   --color-border: var(--border);
   --color-destructive: var(--destructive);
+  --color-alternate: var(--alternate);
+  --color-alternate-foreground: var(--alternate-foreground);
   --color-accent-foreground: var(--accent-foreground);
   --color-accent: var(--accent);
   --color-muted-foreground: var(--muted-foreground);
