@@ -7,10 +7,9 @@ export function cn(...inputs: ClassValue[]) {
 }
 
 /**
- * Size a CMS image to `width`, deriving the height from its intrinsic aspect
- * ratio. EmDash's <Image> falls back to the image's *original* height when only
- * a width is passed, which asks the resize endpoint for e.g. 600x3000 from a
- * 3000x3000 logo — a genuinely squashed file, not just a bad box.
+ * Size a CMS image to `width`, deriving height from its aspect ratio. Passing
+ * width alone makes EmDash's <Image> keep the original height, which returns a
+ * genuinely squashed file (600x3000 from a 3000x3000 logo).
  */
 export function fitWidth(image: MediaValue | undefined | null, width: number) {
   if (!image?.width || !image?.height) return { width }

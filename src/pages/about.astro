@@ -1,4 +1,5 @@
 ---
+import { Faq } from "@/components/Faq";
 import { PageHeader } from "@/components/PageHeader";
 import RichText from "@/components/RichText.astro";
 import MainLayout from "@/layouts/MainLayout.astro";
@@ -23,17 +24,15 @@ setContentCacheHeaders(Astro, { isPreview });
     </div>
     <div>
       <h2 class="mt-4 text-2xl text-primary">Frequently Asked Questions</h2>
-      <div class="mt-2 flex flex-col gap-4">
-        {
-          questions.map((qna, i) => (
-            <details open={i === 0}>
-              <summary class="cursor-pointer">{qna.data.question}</summary>
-              <div class="prose border-l-2 border-primary pl-4 pt-2 dark:prose-invert">
-                <RichText value={qna.data.answer} />
-              </div>
-            </details>
-          ))
-        }
+      <div class="mt-2">
+        <Faq
+          client:visible
+          items={questions.map((qna) => ({
+            id: qna.id,
+            question: qna.data.question,
+            answer: qna.data.answer ?? [],
+          }))}
+        />
       </div>
     </div>
   </div>

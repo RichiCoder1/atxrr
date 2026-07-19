@@ -25,8 +25,11 @@ pnpm-debug.log*
 # local wrangler/miniflare state
 .wrangler/
 
-# personal claude code settings
-.claude/settings.local.json
+# claude code / agent tooling
+.claude/
+.agents/
+.playwright-mcp/
+skills-lock.json
 
 # migration checkpoint (contains prod media map)
 scripts/migrate/.checkpoint.json

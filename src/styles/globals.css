@@ -96,27 +96,15 @@
   }
 
   /*
-   * Editors paste bare URLs into rich text, and a long one is a single
-   * unbreakable word: on a 390px viewport one IHG booking link stretched the
-   * page to 681px and scrolled the whole body sideways. Applied to .prose so
-   * every page rendering CMS content is covered, not just the one that broke.
-   *
-   * `break-word` rather than `anywhere`: the two break at identical points, but
-   * `anywhere` also feeds those break opportunities into min-content sizing.
-   * `break-word` is the narrower change and is sufficient here (verified down
-   * to a 320px viewport). If a URL inside a flex or grid track ever overflows
-   * again, `anywhere` is the fix — that is the case `break-word` cannot cover.
+   * A pasted bare URL is one unbreakable word and scrolled the whole body
+   * sideways on mobile. `anywhere` is the fix if one inside a flex or grid
+   * track ever overflows too — `break-word` cannot cover that case.
    */
   .prose :is(a, code, pre) {
     overflow-wrap: break-word;
   }
 
-  /*
-   * Tailwind v4's preflight sets buttons to `cursor: default`, so every button
-   * on the site — weekday tabs, the copy-link button — read as non-interactive
-   * while anchors got the pointer. Restore it once here rather than sprinkling
-   * `cursor-pointer` on each call site. Disabled controls keep the default.
-   */
+  /* Tailwind v4 preflight sets buttons to `cursor: default`; undo it once here. */
   button:not(:disabled),
   [role="button"]:not([aria-disabled="true"]),
   [role="tab"]:not([aria-disabled="true"]) {

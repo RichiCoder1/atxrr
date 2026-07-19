@@ -1,16 +1,9 @@
 ---
 /**
- * Site-wide Portable Text renderer.
+ * Site-wide Portable Text renderer; styling comes from a surrounding `prose`.
  *
- * Wraps EmDash's PortableText component. Styling comes from the
- * surrounding `prose` wrapper (Tailwind typography), matching how the
- * old Directus HTML was rendered.
- *
- * Security note: `htmlBlock` nodes (raw HTML migrated from Directus)
- * are rendered by EmDash's built-in HtmlBlock component, which runs
- * sanitize-html with a strict tag/attribute allowlist (iframes limited
- * to YouTube/Vimeo hosts). Treat htmlBlock content as trusted-admin-only
- * regardless.
+ * `htmlBlock` nodes carry raw HTML migrated from Directus. EmDash sanitises
+ * them, but treat the content as trusted-admin-only regardless.
  */
 import type { PortableTextBlock } from "emdash";
 import { PortableText } from "emdash/ui";

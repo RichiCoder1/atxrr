@@ -12,15 +12,9 @@ import { Check, Link2, Search } from "lucide-react";
 import { useEffect, useMemo, useState } from "react";
 
 /**
- * Event times are stored as naive wall-clock at the venue ("2026-02-20T18:00:00",
- * no zone). `new Date` reads those as the *runtime's* local zone, so the server
- * (UTC) and the browser (Central) built different instants and rendered
- * different text — the React #418 hydration mismatch on this page.
- *
- * Parsing as UTC and formatting in UTC round-trips the stored wall clock
- * verbatim and identically in both places. That is also the behaviour an
- * attendee wants: doors at 6 PM means 6 PM in Austin, not shifted into
- * whatever zone they happen to be browsing from.
+ * Times are stored as naive venue wall-clock. Reading them as UTC keeps server
+ * and browser identical (they disagreed before, hydration mismatch #418) and
+ * means 6 PM stays 6 PM in Austin whatever zone the reader is in.
  */
 function parseEventTime(value: string): Date {
 	const hasZone = /([Zz]|[+-]\d{2}:?\d{2})$/.test(value);
@@ -152,10 +146,9 @@ const $router = createRouter(
 );
 
 export function Calendar({ events, params: astroParams }: CalendarProps) {
-	// Search stays in component state rather than the URL. Workers Cache keys on
-	// the full query string, so syncing every keystroke would mint an unbounded
-	// number of cache entries for what is throwaway UI state. Sharing a specific
-	// event is handled by `?event=`, which is a bounded, meaningful set of URLs.
+	// Deliberately not in the URL: Workers Cache keys on the query string, so
+	// syncing keystrokes would mint unbounded cache entries. `?event=` is fine —
+	// that set is bounded.
 	const [query, setQuery] = useState("");
 
 	const allEvents = useMemo(
@@ -191,16 +184,9 @@ export function Calendar({ events, params: astroParams }: CalendarProps) {
 	);
 
 	const page = useStore($router);
-	// Params come from Astro until hydration finishes, then from the router.
-	//
-	// Both halves matter. Merging the two (`{...astroParams, ...page.search}`)
-	// makes params sticky — spreading can add or override a key but never remove
-	// one, so clearing `?event=` left the server-rendered value in place and the
-	// filter never lifted. But reading the router straight away does not work
-	// either: during SSR it yields an *empty* search rather than undefined, which
-	// silently dropped the deep link from the no-JS render and then mismatched on
-	// hydration. Deferring the handover keeps the first client render identical
-	// to the server's.
+	// Hand over from Astro's params to the router only after hydration. Merging
+	// the two makes params sticky (clearing `?event=` never lifts the filter);
+	// reading the router immediately mismatches, since it is empty during SSR.
 	const [hydrated, setHydrated] = useState(false);
 	useEffect(() => setHydrated(true), []);
 	const merged = hydrated ? (page?.search ?? {}) : astroParams;

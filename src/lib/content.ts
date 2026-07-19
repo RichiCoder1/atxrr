@@ -7,10 +7,8 @@ import {
 	type PortableTextBlock,
 } from "emdash";
 
-// Data shapes for the EmDash collections created by scripts/migrate.
-// Once the schema exists in an instance, the dev server regenerates
-// emdash-env.d.ts from it; these interfaces are the hand-maintained
-// equivalent so the explicit generics below stay accurate either way.
+// Hand-maintained equivalents of the generated emdash-env.d.ts shapes, so the
+// explicit generics below stay accurate before the schema exists in an instance.
 
 interface BaseEntryData {
 	/**
@@ -117,11 +115,7 @@ export function bySort<T extends { data: { sort?: number } }>(a: T, b: T) {
 	return (a.data.sort ?? 0) - (b.data.sort ?? 0);
 }
 
-/**
- * Public cache headers for content pages. Never overwrites an existing
- * Cache-Control (e.g. one EmDash set for preview/edit responses) and is
- * skipped entirely for preview renders.
- */
+/** Public cache headers, unless EmDash already set one or this is a preview. */
 export function setContentCacheHeaders(
 	astro: AstroGlobal,
 	opts?: { isPreview?: boolean },
