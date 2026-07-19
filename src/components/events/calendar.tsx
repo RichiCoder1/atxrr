@@ -316,9 +316,11 @@ export function Calendar({ events, params: astroParams }: CalendarProps) {
 							<TabsTrigger
 								key={weekday}
 								id={weekday}
-								// The dark: pair is needed to beat tabs.tsx's own
-								// dark:data-selected:*; tailwind-merge won't dedupe across it.
-								className="px-3 py-1.5 text-base data-selected:text-primary dark:data-selected:text-primary"
+								// The dark: pairs are needed to beat tabs.tsx's own
+								// dark:data-selected:*; tailwind-merge won't dedupe across
+								// it. Its default leaves near-white on amber at 1.8:1;
+								// primary-foreground is 5.5:1 light / 4.5:1 dark.
+								className="px-3 py-1.5 text-base data-selected:bg-primary data-selected:text-primary-foreground dark:data-selected:bg-primary dark:data-selected:text-primary-foreground"
 							>
 								{weekday}
 							</TabsTrigger>

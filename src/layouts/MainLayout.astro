@@ -1,6 +1,5 @@
 ---
 import '@/styles/globals.css';
-import DarkMode from '@/components/DarkMode.astro';
 import Navbar from '@/components/Navbar.astro';
 import Footer from '@/components/Footer.astro';
 import LargeSummaryImage from '../images/large-summary.png';
@@ -22,7 +21,9 @@ const description = Astro.props.description
 const canonicalURL = new URL(Astro.url.pathname, Astro.site);
 ---
 
-<html lang="en" prefix="og: http://ogp.me/ns#">
+<!-- The site is dark-only. Set here rather than by script so there is no
+     light flash before hydration and no dependency on JS. -->
+<html lang="en" class="dark" style="color-scheme: dark" prefix="og: http://ogp.me/ns#">
 	<head>
 		<meta charset="utf-8" />
 		<link rel="icon" type="image/svg+xml" href="/favicon.svg" />
@@ -51,8 +52,6 @@ const canonicalURL = new URL(Astro.url.pathname, Astro.site);
 		<meta name="twitter:description" content={description} />
 		<meta name="twitter:image" content={new URL(LargeSummaryImage.src, Astro.site)} />
 		<meta name="twitter:image:alt" content="Austin Rubber Roundup Summary Card Image" />
-
-		<DarkMode />
 
 		<slot name="head" />
 	</head>
