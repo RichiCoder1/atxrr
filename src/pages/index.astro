@@ -2,7 +2,7 @@
 import MainLayout from "@/layouts/MainLayout.astro";
 import { eventDates } from "@/consts";
 import Bull from "../../public/bull.svg";
-import { Button } from "@/components/ui/button";
+import { LinkButton } from "@/components/ui/button";
 import { bySort, getCollection, setContentCacheHeaders } from "@/lib/content";
 import { fitHeight } from "@/lib/utils";
 import { Image as MediaImage } from "emdash/ui";
@@ -48,14 +48,13 @@ const dateFormat = new Intl.DateTimeFormat("en", {
       </h3>
     </div>
     <div class="mt-[10vh]">
-      <a href="/attend/register">
-        <Button
-          variant="outline"
-          className="border-primary text-xl text-primary"
-        >
-          Register Here!
-        </Button></a
+      <LinkButton
+        href="/attend/register"
+        variant="outline"
+        className="border-primary text-xl text-primary"
       >
+        Register Here!
+      </LinkButton>
     </div>
   </div>
 

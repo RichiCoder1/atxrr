@@ -1,10 +1,10 @@
-import { Button as ButtonPrimitive } from "@/components/ui/button";
+import { LinkButton } from "@/components/ui/button";
 import { cn } from "@/lib/utils";
 import { ExternalLink } from "lucide-react";
-import * as React from "react";
+import type * as React from "react";
 
 export type NavProps = Omit<
-	React.ComponentPropsWithoutRef<typeof ButtonPrimitive> & {
+	React.ComponentPropsWithoutRef<typeof LinkButton> & {
 		label: string;
 		href: string;
 		external?: boolean;
@@ -12,15 +12,19 @@ export type NavProps = Omit<
 	"children"
 >;
 
-const NavButton = React.forwardRef<
-	React.ComponentRef<typeof ButtonPrimitive>,
-	NavProps
->(({ href, external, className, label, ...props }, ref) => (
-	<a href={href} tabIndex={-1}>
-		<ButtonPrimitive
+/**
+ * Previously this wrapped a <button> in an <a href> and gave the anchor
+ * `tabIndex={-1}` so the pair exposed a single tab stop. React Aria's
+ * `LinkButton` renders a real anchor that is already styled and focusable as
+ * one control, so the wrapper — and the nested-interactive-element it created —
+ * is no longer needed.
+ */
+function NavButton({ href, external, className, label, ...props }: NavProps) {
+	return (
+		<LinkButton
+			href={href}
 			variant="ghost"
 			size="lg"
-			ref={ref}
 			className={cn(
 				"w-full justify-start lg:w-[unset] lg:justify-center",
 				className,
@@ -30,14 +34,13 @@ const NavButton = React.forwardRef<
 			{label}
 			{!!external && (
 				<ExternalLink
+					data-icon="inline-end"
 					className="inline-block pl-1 text-foreground/50"
 					size="1rem"
 				/>
 			)}
-		</ButtonPrimitive>
-	</a>
-));
-
-NavButton.displayName = "NavButton";
+		</LinkButton>
+	);
+}
 
 export { NavButton };

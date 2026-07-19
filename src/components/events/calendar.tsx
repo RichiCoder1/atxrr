@@ -37,6 +37,65 @@ const timeFormatter = new Intl.DateTimeFormat("en-US", {
 });
 
 /**
+ * Split an event's time range into the large start label and the smaller end
+ * label shown beside it.
+ *
+ * The subtlety is `formatRange`: given a range that stays inside one day it
+ * collapses the shared meridiem ("6:00 – 8:00 PM"), but the moment the range
+ * crosses midnight it silently switches to including the *calendar date* on
+ * both sides — "2/20/2026, 10:00 PM – 2/21/2026, 2:00 AM" — even though this
+ * formatter only asked for `timeStyle`. That string is roughly three times
+ * longer than the same-day one and blew out the fixed `auto` time column.
+ *
+ * So the collapsing path is used only when it is actually safe (same day), and
+ * day-crossing events format each endpoint on its own. `crossesMidnight` is
+ * returned so the caller can label the end time as landing on the next day —
+ * dropping the date entirely would otherwise make a 10 PM–2 AM party read as a
+ * sixteen-hour one.
+ */
+function formatTimeRange(start: Date, end: Date) {
+	// Compared in UTC because event times are parsed as UTC wall-clock; see
+	// `parseEventTime`. Using local getters here would reintroduce the drift.
+	const crossesMidnight =
+		start.toISOString().slice(0, 10) !== end.toISOString().slice(0, 10);
+	const isInstant = start.getTime() === end.getTime();
+
+	if (crossesMidnight || isInstant) {
+		return {
+			startPart: timeFormatter.format(start),
+			// A zero-length event has no meaningful end to show. `formatRange`
+			// used to emit the whole range here, leaving the start label as a
+			// bare " PM", because its start-of-range lookup found no hour part.
+			endPart: isInstant ? "" : `– ${timeFormatter.format(end)}`,
+			crossesMidnight,
+		};
+	}
+
+	const timeParts = timeFormatter.formatRangeToParts(start, end);
+	const dayPeriod = timeParts.find(
+		(part) => part.type === "dayPeriod" && part.source === "shared",
+	)?.value;
+	const timeStart = timeParts.findIndex(
+		(part) => part.type === "hour" && part.source === "startRange",
+	);
+	timeParts.splice(0, timeStart);
+
+	return {
+		startPart:
+			timeParts
+				.filter((part) => part.source === "startRange")
+				.map((part) => part.value)
+				.join("") + (dayPeriod ? ` ${dayPeriod}` : ""),
+		endPart: timeParts
+			.filter((part) => part.source !== "startRange")
+			.map((part) => part.value)
+			.join("")
+			.trim(),
+		crossesMidnight,
+	};
+}
+
+/**
  * Flatten Portable Text to plain text so descriptions are searchable. Only
  * span children carry text; anything else (images, embeds) has nothing to match.
  */
@@ -94,6 +153,8 @@ type CalendarEvent = CalendarEventItem & {
 	end: Date;
 	startPart: string;
 	endPart: string;
+	/** End time lands on the day after the start; the card labels it as such. */
+	crossesMidnight: boolean;
 	/** Pre-lowercased haystack for filtering. */
 	searchText: string;
 };
@@ -121,16 +182,10 @@ export function Calendar({ events, params: astroParams }: CalendarProps) {
 					parseEventTime(event.event_end),
 				];
 				const parts = dateFormatter.formatToParts(start);
-				const timeParts = timeFormatter.formatRangeToParts(start, end);
-
-				const dayPeriod = timeParts.find(
-					(part) => part.type === "dayPeriod" && part.source === "shared",
-				)?.value;
-
-				const timeStart = timeParts.findIndex(
-					(part) => part.type === "hour" && part.source === "startRange",
+				const { startPart, endPart, crossesMidnight } = formatTimeRange(
+					start,
+					end,
 				);
-				timeParts.splice(0, timeStart);
 
 				return {
 					...event,
@@ -138,15 +193,9 @@ export function Calendar({ events, params: astroParams }: CalendarProps) {
 					timeDisplay: timeFormatter.formatRange(start, end),
 					start,
 					end,
-					startPart:
-						timeParts
-							.filter((part) => part.source === "startRange")!
-							.map((part) => part.value)
-							.join("") + (dayPeriod ? ` ${dayPeriod}` : ""),
-					endPart: timeParts
-						.filter((part) => part.source !== "startRange")!
-						.map((part) => part.value)
-						.join(""),
+					startPart,
+					endPart,
+					crossesMidnight,
 					searchText: [
 						event.name,
 						event.venueTitle,
@@ -282,15 +331,20 @@ export function Calendar({ events, params: astroParams }: CalendarProps) {
 				</p>
 			) : (
 				<Tabs
-					value={selectedWeekday}
-					onValueChange={(newValue) =>
-						openPage($router, "events", {}, defined({ ...merged, day: newValue }))
+					selectedKey={selectedWeekday ?? null}
+					onSelectionChange={(key) =>
+						openPage(
+							$router,
+							"events",
+							{},
+							defined({ ...merged, day: String(key) }),
+						)
 					}
 					className="flex w-full flex-col items-center"
 				>
 					<TabsList>
 						{weekdayKeys.map((weekday) => (
-							<TabsTrigger key={weekday} value={weekday}>
+							<TabsTrigger key={weekday} id={weekday}>
 								{weekday}
 							</TabsTrigger>
 						))}
@@ -357,27 +411,46 @@ function CalendarWeekday({
 	weekday: string;
 }) {
 	return (
-		<TabsContent value={weekday} className="flex flex-col gap-2 w-full">
+		<TabsContent id={weekday} className="flex flex-col gap-2 w-full">
 			{events.map((event) => (
 				<Card
 					key={event.id}
 					className="w-full rounded-sm p-4 grid grid-cols-[auto_1fr] gap-x-4 gap-y-1"
 				>
-					<div>
-						<div className="text-primary leading-none text-2xl font-semibold">
+					{/* `min-w-0` lets this track shrink instead of forcing the card
+					    wider than its container on narrow viewports. */}
+					<div className="min-w-0">
+						<div className="text-primary leading-none text-2xl font-semibold whitespace-nowrap">
 							{event.startPart}
 						</div>
-						<div className="text-sm font-light">{event.endPart}</div>
+						<div className="text-sm font-light whitespace-nowrap">
+							{event.endPart}
+							{event.crossesMidnight && (
+								<>
+									{" "}
+									<span
+										// Visually terse so the column stays narrow; the full
+										// wording is what assistive tech announces.
+										aria-hidden="true"
+										title="Ends the next day"
+										className="text-muted-foreground"
+									>
+										+1d
+									</span>
+									<span className="sr-only"> the next day</span>
+								</>
+							)}
+						</div>
 					</div>
 					<div>
 						<div className="flex items-start justify-between gap-2">
 							<CardTitle>{event.name}</CardTitle>
 							<CopyEventLink slug={event.id} name={event.name} />
 						</div>
-						{/* CardDescription already renders a <p>; nesting another inside it
-						    is invalid HTML, and the parser's fixup made the client DOM
-						    diverge from the SSR markup (React #418). These children are
-						    inline, so they belong directly in the description. */}
+						{/* Children stay inline here. CardDescription renders a <div> as
+						    of the React Aria rewrite, so the old invalid-nested-<p> hazard
+						    (React #418) is gone, but there is still nothing to gain from
+						    wrapping these in a block element. */}
 						<CardDescription className="pt-1">
 							{event.venueTitle ? (
 								<a href={`/attend/getting-around#${slugify(event.venueTitle)}`}>

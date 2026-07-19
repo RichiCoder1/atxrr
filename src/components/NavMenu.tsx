@@ -64,7 +64,12 @@ export function MobileMenu({ path, items }: NavMenuProps) {
 			<Button
 				className="inline-block lg:hidden"
 				variant="ghost"
-				title={!open ? "Expand Navigation Menu" : "Collapse Navigation Menu"}
+				// React Aria's Button has no `title` passthrough. `aria-label` is the
+				// better fit regardless: this button's only content is an icon, so it
+				// needs an accessible name rather than a hover tooltip.
+				aria-label={
+					!open ? "Expand Navigation Menu" : "Collapse Navigation Menu"
+				}
 				onClick={() => setOpen(true)}
 			>
 				{open == false ? <Burger /> : <X />}
