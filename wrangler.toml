@@ -12,6 +12,17 @@ upload_source_maps = true
 [placement]
 mode = "smart"
 
+# Workers Cache serves public pages from cache and collapses concurrent misses
+# into a single origin render. It is driven entirely by Cache-Control, which the
+# app already sets: setContentCacheHeaders emits
+# `public, max-age=300, stale-while-revalidate=3600` on content pages, while
+# EmDash sends `private, no-store` for admin, API and preview responses (and
+# opts previews out of the route cache), so drafts and authenticated pages are
+# never cached. The editor toolbar is client-delivered for this reason — public
+# HTML is identical for every visitor.
+[cache]
+enabled = true
+
 [[d1_databases]]
 binding = "DB"
 database_name = "atxrr-cms"
@@ -79,4 +90,11 @@ bucket_name = "atxrr-media"
 name = "EMAIL"
 
 [observability]
+enabled = true
+
+# Traces are opt-in separately from logs — `observability.enabled` covers logs
+# only while automatic tracing is in beta. No head_sampling_rate: this site's
+# traffic is low enough that 100% (the default) is affordable and far more
+# useful for diagnosing one-off slow requests than a sampled subset.
+[observability.traces]
 enabled = true
