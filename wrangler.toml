@@ -1,10 +1,12 @@
 name = "atxrr"
 main = "@astrojs/cloudflare/entrypoints/server"
-compatibility_date = "2025-12-01"
-# disable_nodejs_process_v2: workerd's process v2 shim makes Astro think it's
-# on Node and emit async-iterable bodies, which workerd renders as
-# "[object Object]" (withastro/astro#15434).
-compatibility_flags = ["nodejs_compat", "global_fetch_strictly_public", "disable_nodejs_process_v2"]
+# Keep at or below the date the pinned workerd supports, or local dev fails to
+# boot ("newest date supported by this server binary").
+compatibility_date = "2026-07-17"
+# The async-iterable body bug that rendered "[object Object]"
+# (withastro/astro#15434) is fixed in recent workerd, so the
+# disable_nodejs_process_v2 opt-out this used to carry is no longer needed.
+compatibility_flags = ["nodejs_compat", "global_fetch_strictly_public"]
 upload_source_maps = true
 
 [placement]
@@ -16,6 +18,29 @@ database_name = "atxrr-cms"
 database_id = "b80b0d9b-7344-44d3-a656-041d813ec560"
 
 [[r2_buckets]]
+binding = "MEDIA"
+bucket_name = "atxrr-media"
+
+# Staging mirrors production and shares its D1/R2 so the content only has to be
+# migrated once. It lives on a subdomain of the apex on purpose: WebAuthn ties a
+# passkey to the rpId derived from SITE_URL, so a workers.dev host could never
+# share credentials with the live site. SITE_URL stays the apex (that *is* the
+# rpId) and staging's own origin is allowed alongside it.
+[env.staging.vars]
+SITE_URL = "https://staging.atxrubberroundup.com"
+EMDASH_ALLOWED_ORIGINS = "https://staging.atxrubberroundup.com"
+IS_STAGING = "true"
+
+[[env.staging.routes]]
+pattern = "staging.atxrubberroundup.com"
+custom_domain = true
+
+[[env.staging.d1_databases]]
+binding = "DB"
+database_name = "atxrr-cms"
+database_id = "b80b0d9b-7344-44d3-a656-041d813ec560"
+
+[[env.staging.r2_buckets]]
 binding = "MEDIA"
 bucket_name = "atxrr-media"
 
