@@ -10,11 +10,29 @@ import slugify from "@sindresorhus/slugify";
 import { groupBy, sortBy } from "lodash-es";
 import { useMemo } from "react";
 
-const dateFormatter = new Intl.DateTimeFormat(undefined, {
+/**
+ * Event times are stored as naive wall-clock at the venue ("2026-02-20T18:00:00",
+ * no zone). `new Date` reads those as the *runtime's* local zone, so the server
+ * (UTC) and the browser (Central) built different instants and rendered
+ * different text — the React #418 hydration mismatch on this page.
+ *
+ * Parsing as UTC and formatting in UTC round-trips the stored wall clock
+ * verbatim and identically in both places. That is also the behaviour an
+ * attendee wants: doors at 6 PM means 6 PM in Austin, not shifted into
+ * whatever zone they happen to be browsing from.
+ */
+function parseEventTime(value: string): Date {
+	const hasZone = /([Zz]|[+-]\d{2}:?\d{2})$/.test(value);
+	return new Date(hasZone ? value : `${value}Z`);
+}
+
+const dateFormatter = new Intl.DateTimeFormat("en-US", {
 	weekday: "long",
+	timeZone: "UTC",
 });
-const timeFormatter = new Intl.DateTimeFormat(undefined, {
+const timeFormatter = new Intl.DateTimeFormat("en-US", {
 	timeStyle: "short",
+	timeZone: "UTC",
 });
 
 const richTextComponents: PortableTextComponents = {
@@ -72,8 +90,8 @@ export function Calendar({ events, params: astroParams }: CalendarProps) {
 		const extendedEvents = sortBy(events, (event) => event.event_start).map(
 			(event) => {
 				const [start, end] = [
-					new Date(event.event_start),
-					new Date(event.event_end),
+					parseEventTime(event.event_start),
+					parseEventTime(event.event_end),
 				];
 				const parts = dateFormatter.formatToParts(start);
 				const timeParts = timeFormatter.formatRangeToParts(start, end);
@@ -164,15 +182,17 @@ function CalendarWeekday({
 					</div>
 					<div>
 						<CardTitle>{event.name}</CardTitle>
+						{/* CardDescription already renders a <p>; nesting another inside it
+						    is invalid HTML, and the parser's fixup made the client DOM
+						    diverge from the SSR markup (React #418). These children are
+						    inline, so they belong directly in the description. */}
 						<CardDescription className="pt-1">
-							<p>
-								{event.venueTitle ? (
-									<a href={`/attend/getting-around#${slugify(event.venueTitle)}`}>
-										{event.venueTitle}
-									</a>
-								) : null}
-								{event.location ? <span> | {event.location}</span> : null}
-							</p>
+							{event.venueTitle ? (
+								<a href={`/attend/getting-around#${slugify(event.venueTitle)}`}>
+									{event.venueTitle}
+								</a>
+							) : null}
+							{event.location ? <span> | {event.location}</span> : null}
 						</CardDescription>
 					</div>
 					<CardContent className="pl-0 col-start-auto col-span-2 md:col-start-2 md:col-span-1">
