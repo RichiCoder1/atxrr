@@ -1,10 +1,10 @@
 ---
-import { Image } from "astro:assets";
 import MainLayout from "@/layouts/MainLayout.astro";
 import { eventDates } from "@/consts";
 import Bull from "../../public/bull.svg";
 import { Button } from "@/components/ui/button";
 import { bySort, getCollection, setContentCacheHeaders } from "@/lib/content";
+import { fitHeight } from "@/lib/utils";
 import { Image as MediaImage } from "emdash/ui";
 
 const sponsors = (await getCollection("sponsors"))
@@ -25,11 +25,12 @@ const dateFormat = new Intl.DateTimeFormat("en", {
     <div
       class="flex flex-col items-center justify-center text-center lg:items-start lg:text-start"
     >
-      <Image
-        src={Bull}
+      <img
+        src={Bull.src}
         alt="Bull icon"
         class="-mb-4 -mt-16 w-[16rem] self-center"
         width={300}
+        height={300}
       />
       <h2 class="text-2xl font-semibold uppercase lg:pl-6 lg:text-4xl">
         Austin
@@ -75,17 +76,17 @@ const dateFormat = new Intl.DateTimeFormat("en", {
       Presenting Sponsors
     </h2>
     <div
-      class="mx-auto mt-8 grid max-w-[80vw] items-center justify-center gap-8 align-middle sm:grid-cols-2 md:mt-0 md:grid-flow-col lg:max-w-5xl"
+      class="mx-auto mt-8 flex max-w-[80vw] justify-center gap-12 flex-col items-center sm:flex-row lg:max-w-5xl"
     >
       {
         sponsors.map((sponsor) => (
-          <a href={sponsor.data.website} class="flex justify-center">
+          <a href={sponsor.data.website}>
             <MediaImage
-              class={`max-h-[20vh] ${
+              class={`max-h-[20vh] w-auto ${
                 sponsor.data.invert_logo ? "invert" : "invert-0"
               }`}
               image={sponsor.data.logo}
-              width={600}
+              {...fitHeight(sponsor.data.logo, 200)}
               alt={sponsor.data.name}
             />
           </a>

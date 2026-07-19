@@ -1,5 +1,4 @@
 ---
-import { Image } from 'astro:assets';
 import Logo from '@/../public/logo.svg';
 
 import { DesktopMenu, MobileMenu } from './NavMenu';
@@ -15,7 +14,7 @@ const menuItems = menu?.items ?? [];
 	<nav class="container flex h-full flex-row gap-x-4">
 		<div class="flex shrink-0">
 			<a href="/">
-				<Image src={Logo} alt="Austin Rubber Roundup Logo" class="-my-1 h-12 w-12" />
+				<img src={Logo.src} alt="Austin Rubber Roundup Logo" class="-my-1 h-12 w-12" />
 			</a>
 			<span class="sr-only text-2xl"> Austin Rubber Roundup</span>
 		</div>

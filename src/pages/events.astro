@@ -9,9 +9,10 @@ const [events, venues] = await Promise.all([
   getCollection("venues"),
 ]);
 
-// Reference fields store raw entry ids — join venues manually.
+// Reference fields store raw entry ids — join venues manually. Note the id must
+// come from `data.id`: the entry-level `id` is the slug, not the ULID.
 const venueTitleById = new Map(
-  venues.map((venue) => [venue.id, venue.data.title]),
+  venues.map((venue) => [venue.data.id, venue.data.title]),
 );
 
 const calendarEvents: CalendarEventItem[] = events.map((event) => ({

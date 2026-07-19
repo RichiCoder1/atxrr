@@ -1,0 +1,507 @@
+{
+ "$schema": "https://emdashcms.com/seed.schema.json",
+ "version": "1",
+ "meta": {
+  "name": "Exported Seed",
+  "description": "Exported from existing EmDash database"
+ },
+ "settings": {
+  "title": "ATX Rubber Roundup",
+  "tagline": ""
+ },
+ "collections": [
+  {
+   "slug": "events",
+   "label": "Events",
+   "labelSingular": "Event",
+   "supports": [
+    "drafts",
+    "revisions"
+   ],
+   "fields": [
+    {
+     "slug": "name",
+     "label": "Name",
+     "type": "string",
+     "required": true
+    },
+    {
+     "slug": "event_start",
+     "label": "Start",
+     "type": "datetime",
+     "required": true
+    },
+    {
+     "slug": "event_end",
+     "label": "End",
+     "type": "datetime",
+     "required": true
+    },
+    {
+     "slug": "venue",
+     "label": "Venue",
+     "type": "reference",
+     "options": {
+      "collection": "venues"
+     }
+    },
+    {
+     "slug": "location",
+     "label": "Location",
+     "type": "string"
+    },
+    {
+     "slug": "description",
+     "label": "Description",
+     "type": "portableText"
+    },
+    {
+     "slug": "tags",
+     "label": "Tags",
+     "type": "multiSelect",
+     "options": {
+      "options": [
+       "balloon",
+       "champ",
+       "class",
+       "discussion",
+       "education",
+       "educational",
+       "kink",
+       "latex",
+       "panel",
+       "poc",
+       "presentation",
+       "workshop"
+      ]
+     }
+    },
+    {
+     "slug": "sort",
+     "label": "Sort",
+     "type": "integer"
+    },
+    {
+     "slug": "directus_id",
+     "label": "Directus ID",
+     "type": "integer"
+    }
+   ]
+  },
+  {
+   "slug": "pages",
+   "label": "Pages",
+   "labelSingular": "Page",
+   "supports": [
+    "drafts",
+    "revisions",
+    "search"
+   ],
+   "fields": [
+    {
+     "slug": "title",
+     "label": "Title",
+     "type": "string",
+     "required": true,
+     "searchable": true
+    },
+    {
+     "slug": "content",
+     "label": "Content",
+     "type": "portableText",
+     "searchable": true
+    }
+   ]
+  },
+  {
+   "slug": "people",
+   "label": "People",
+   "labelSingular": "Person",
+   "supports": [
+    "drafts",
+    "revisions"
+   ],
+   "fields": [
+    {
+     "slug": "display_name",
+     "label": "Display Name",
+     "type": "string",
+     "required": true
+    },
+    {
+     "slug": "bio",
+     "label": "Bio",
+     "type": "text"
+    },
+    {
+     "slug": "profile_pic",
+     "label": "Profile Picture",
+     "type": "image"
+    },
+    {
+     "slug": "tags",
+     "label": "Tags",
+     "type": "multiSelect",
+     "options": {
+      "options": [
+       "PoC",
+       "artist",
+       "chairman",
+       "creative",
+       "demo",
+       "educator",
+       "founder",
+       "latex",
+       "liquid latex",
+       "panelist",
+       "pup",
+       "repair",
+       "rope",
+       "rubber",
+       "rubber repair",
+       "staff"
+      ]
+     }
+    },
+    {
+     "slug": "sort",
+     "label": "Sort",
+     "type": "integer"
+    },
+    {
+     "slug": "directus_id",
+     "label": "Directus ID",
+     "type": "integer"
+    }
+   ]
+  },
+  {
+   "slug": "posts",
+   "label": "Posts",
+   "labelSingular": "Post",
+   "supports": [
+    "drafts",
+    "revisions",
+    "search"
+   ],
+   "fields": [
+    {
+     "slug": "title",
+     "label": "Title",
+     "type": "string",
+     "required": true,
+     "searchable": true
+    },
+    {
+     "slug": "featured_image",
+     "label": "Featured Image",
+     "type": "image"
+    },
+    {
+     "slug": "content",
+     "label": "Content",
+     "type": "portableText",
+     "searchable": true
+    },
+    {
+     "slug": "excerpt",
+     "label": "Excerpt",
+     "type": "text"
+    }
+   ]
+  },
+  {
+   "slug": "qna",
+   "label": "Q&A",
+   "labelSingular": "Q&A",
+   "supports": [
+    "drafts",
+    "revisions"
+   ],
+   "fields": [
+    {
+     "slug": "question",
+     "label": "Question",
+     "type": "string",
+     "required": true
+    },
+    {
+     "slug": "answer",
+     "label": "Answer",
+     "type": "portableText"
+    },
+    {
+     "slug": "sort",
+     "label": "Sort",
+     "type": "integer"
+    },
+    {
+     "slug": "directus_id",
+     "label": "Directus ID",
+     "type": "integer"
+    }
+   ]
+  },
+  {
+   "slug": "sponsors",
+   "label": "Sponsors",
+   "labelSingular": "Sponsor",
+   "supports": [
+    "drafts",
+    "revisions"
+   ],
+   "fields": [
+    {
+     "slug": "name",
+     "label": "Name",
+     "type": "string",
+     "required": true
+    },
+    {
+     "slug": "website",
+     "label": "Website",
+     "type": "url"
+    },
+    {
+     "slug": "logo",
+     "label": "Logo",
+     "type": "image"
+    },
+    {
+     "slug": "info",
+     "label": "Info",
+     "type": "portableText"
+    },
+    {
+     "slug": "invert_logo",
+     "label": "Invert Logo",
+     "type": "boolean"
+    },
+    {
+     "slug": "tags",
+     "label": "Tags",
+     "type": "multiSelect",
+     "options": {
+      "options": [
+       "primary"
+      ]
+     }
+    },
+    {
+     "slug": "sort",
+     "label": "Sort",
+     "type": "integer"
+    },
+    {
+     "slug": "directus_id",
+     "label": "Directus ID",
+     "type": "integer"
+    }
+   ]
+  },
+  {
+   "slug": "vendors",
+   "label": "Vendors",
+   "labelSingular": "Vendor",
+   "supports": [
+    "drafts",
+    "revisions"
+   ],
+   "fields": [
+    {
+     "slug": "name",
+     "label": "Name",
+     "type": "string",
+     "required": true
+    },
+    {
+     "slug": "website",
+     "label": "Website",
+     "type": "url"
+    },
+    {
+     "slug": "logo",
+     "label": "Logo",
+     "type": "image"
+    },
+    {
+     "slug": "info",
+     "label": "Info",
+     "type": "portableText"
+    },
+    {
+     "slug": "sort",
+     "label": "Sort",
+     "type": "integer"
+    },
+    {
+     "slug": "directus_id",
+     "label": "Directus ID",
+     "type": "integer"
+    }
+   ]
+  },
+  {
+   "slug": "venues",
+   "label": "Venues",
+   "labelSingular": "Venue",
+   "supports": [
+    "drafts",
+    "revisions"
+   ],
+   "fields": [
+    {
+     "slug": "title",
+     "label": "Title",
+     "type": "string",
+     "required": true
+    },
+    {
+     "slug": "body",
+     "label": "Body",
+     "type": "portableText"
+    },
+    {
+     "slug": "address",
+     "label": "Address",
+     "type": "string"
+    },
+    {
+     "slug": "maps_embed",
+     "label": "Maps Embed URL",
+     "type": "url"
+    },
+    {
+     "slug": "sort",
+     "label": "Sort",
+     "type": "integer"
+    },
+    {
+     "slug": "directus_id",
+     "label": "Directus ID",
+     "type": "integer"
+    }
+   ]
+  }
+ ],
+ "defaultLocale": "en",
+ "taxonomies": [
+  {
+   "id": "tax:category",
+   "name": "category",
+   "label": "Categories",
+   "labelSingular": "Category",
+   "hierarchical": true,
+   "collections": [
+    "posts"
+   ]
+  },
+  {
+   "id": "tax:tag",
+   "name": "tag",
+   "label": "Tags",
+   "labelSingular": "Tag",
+   "hierarchical": false,
+   "collections": [
+    "posts"
+   ]
+  }
+ ],
+ "menus": [
+  {
+   "id": "menu:primary",
+   "name": "primary",
+   "label": "Primary Navigation",
+   "items": [
+    {
+     "type": "custom",
+     "label": "Home",
+     "url": "/"
+    },
+    {
+     "type": "custom",
+     "label": "Attend",
+     "url": "/",
+     "children": [
+      {
+       "type": "custom",
+       "label": "Getting Around",
+       "url": "/attend/getting-around"
+      },
+      {
+       "type": "custom",
+       "label": "Hotel Reservations",
+       "url": "https://tinyurl.com/ARR2026RoomBlock",
+       "target": "_blank"
+      },
+      {
+       "type": "custom",
+       "label": "Tickets (Weekend/Fri Party/Day)",
+       "url": "/attend/register"
+      }
+     ]
+    },
+    {
+     "type": "custom",
+     "label": "Demos and Education",
+     "url": "/",
+     "children": [
+      {
+       "type": "custom",
+       "label": "Schedule",
+       "url": "/events"
+      },
+      {
+       "type": "custom",
+       "label": "Educators and Presenters",
+       "url": "/people"
+      }
+     ]
+    },
+    {
+     "type": "custom",
+     "label": "Ways to Connect and Help",
+     "url": "/",
+     "children": [
+      {
+       "type": "custom",
+       "label": "Volunteer Signup",
+       "url": "https://signup.com/go/xXGTWqp",
+       "target": "_blank"
+      },
+      {
+       "type": "custom",
+       "label": "Contact Us",
+       "url": "/contact"
+      },
+      {
+       "type": "custom",
+       "label": "Sponsorship",
+       "url": "https://drive.google.com/file/d/1rg0pW7QTQv8BmONkIUm9v60xepJ6sL91/view",
+       "target": "_blank"
+      },
+      {
+       "type": "custom",
+       "label": "Donate!",
+       "url": "https://www.paypal.com/donate/?hosted_button_id=N4QT9Q6D8FGCG",
+       "target": "_blank",
+       "titleAttr": "Donations through Paypal."
+      }
+     ]
+    },
+    {
+     "type": "custom",
+     "label": "About Us/FAQs",
+     "url": "/about"
+    },
+    {
+     "type": "custom",
+     "label": "Sponsors",
+     "url": "/sponsors",
+     "titleAttr": "Those providing services or panels!"
+    }
+   ]
+  }
+ ],
+ "widgetAreas": []
+}

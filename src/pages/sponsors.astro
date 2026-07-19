@@ -3,6 +3,7 @@ import { PageHeader } from '@/components/PageHeader';
 import RichText from '@/components/RichText.astro';
 import MainLayout from '@/layouts/MainLayout.astro';
 import { bySort, getCollection, getPage, setContentCacheHeaders } from '@/lib/content';
+import { fitWidth } from '@/lib/utils';
 import { Image as MediaImage } from 'emdash/ui';
 
 const { page: sponsorProse, isPreview } = await getPage('sponsors');
@@ -25,7 +26,7 @@ setContentCacheHeaders(Astro, { isPreview });
 							<MediaImage
 								class={`max-h-[300px] rounded-sm ${sponsor.data.invert_logo ? 'invert' : 'invert-0'}`}
 								image={sponsor.data.logo}
-								width={600}
+								{...fitWidth(sponsor.data.logo, 600)}
 								alt={`${sponsor.data.name} logo`}
 							/>
 						</a>

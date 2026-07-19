@@ -21,16 +21,16 @@ setContentCacheHeaders(Astro);
       {
         people.map((person) => (
           <li id={slugify(person.data.display_name)}>
-            <div>
+            <div {...person.edit}>
               <MediaImage
                 image={person.data.profile_pic}
-                width={480}
                 alt={person.data.display_name}
+								{...person.edit.profile_pic}
                 class="float-left mb-2 mr-8 mt-4 max-w-[min(25vw,15rem)] rounded-2xl border-2 border-primary shadow-[1rem_-1rem_0_0_var(--tw-shadow)] shadow-alternate"
               />
               <h2 class="text-2xl font-bold">{person.data.display_name}</h2>
-              <hr class="my-4 h-[2px] bg-white" />
-              <span class="prose-base">{person.data.bio}</span>
+              <hr class="my-4 h-0.5 bg-white" />
+              <span class="prose-base" {...person.edit.bio}>{person.data.bio}</span>
             </div>
           </li>
         ))

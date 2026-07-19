@@ -13,6 +13,12 @@ import {
 // equivalent so the explicit generics below stay accurate either way.
 
 interface BaseEntryData {
+	/**
+	 * The entry's ULID — this is what reference fields point at. Note it differs
+	 * from the entry-level `entry.id`, which is the slug; joining on that one
+	 * silently yields no matches.
+	 */
+	id: string;
 	slug: string | null;
 	status: string;
 	sort?: number;

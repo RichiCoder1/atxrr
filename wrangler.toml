@@ -1,7 +1,10 @@
 name = "atxrr"
 main = "@astrojs/cloudflare/entrypoints/server"
 compatibility_date = "2025-12-01"
-compatibility_flags = ["nodejs_compat", "global_fetch_strictly_public"]
+# disable_nodejs_process_v2: workerd's process v2 shim makes Astro think it's
+# on Node and emit async-iterable bodies, which workerd renders as
+# "[object Object]" (withastro/astro#15434).
+compatibility_flags = ["nodejs_compat", "global_fetch_strictly_public", "disable_nodejs_process_v2"]
 upload_source_maps = true
 
 [placement]
@@ -10,7 +13,7 @@ mode = "smart"
 [[d1_databases]]
 binding = "DB"
 database_name = "atxrr-cms"
-database_id = "00000000-0000-0000-0000-000000000000" # placeholder — replaced after `wrangler d1 create atxrr-cms`
+database_id = "b80b0d9b-7344-44d3-a656-041d813ec560"
 
 [[r2_buckets]]
 binding = "MEDIA"
@@ -22,7 +25,7 @@ SITE_URL = "https://atxrubberroundup.com"
 [[env.production.d1_databases]]
 binding = "DB"
 database_name = "atxrr-cms"
-database_id = "00000000-0000-0000-0000-000000000000" # placeholder — replaced after `wrangler d1 create atxrr-cms`
+database_id = "b80b0d9b-7344-44d3-a656-041d813ec560"
 
 [[env.production.r2_buckets]]
 binding = "MEDIA"

@@ -8,6 +8,7 @@ import {
   getPage,
   setContentCacheHeaders,
 } from "@/lib/content";
+import { fitWidth } from "@/lib/utils";
 import { Image as MediaImage } from "emdash/ui";
 
 const { page: vendorProse, isPreview } = await getPage("market");
@@ -32,7 +33,7 @@ setContentCacheHeaders(Astro, { isPreview });
               <MediaImage
                 class="max-h-[300px] rounded-sm"
                 image={vendor.data.logo}
-                width={600}
+                {...fitWidth(vendor.data.logo, 600)}
                 alt={`${vendor.data.name} logo`}
               />
             </a>

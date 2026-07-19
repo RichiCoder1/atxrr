@@ -2,10 +2,15 @@
 import { PageHeader } from "@/components/PageHeader";
 import RichText from "@/components/RichText.astro";
 import MainLayout from "@/layouts/MainLayout.astro";
-import { getCollection, getPage, setContentCacheHeaders } from "@/lib/content";
+import {
+  bySort,
+  getCollection,
+  getPage,
+  setContentCacheHeaders,
+} from "@/lib/content";
 
 const { page: about, isPreview } = await getPage("about");
-const questions = await getCollection("qna");
+const questions = (await getCollection("qna")).sort(bySort);
 
 setContentCacheHeaders(Astro, { isPreview });
 ---
