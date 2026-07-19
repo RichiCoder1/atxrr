@@ -21,11 +21,19 @@ database_id = "b80b0d9b-7344-44d3-a656-041d813ec560"
 binding = "MEDIA"
 bucket_name = "atxrr-media"
 
+# Magic-link login, team invites and comment notifications. Bindings are not
+# inherited by named environments, so this is repeated per env below.
+[[send_email]]
+name = "EMAIL"
+
 # Staging mirrors production and shares its D1/R2 so the content only has to be
-# migrated once. It lives on a subdomain of the apex on purpose: WebAuthn ties a
-# passkey to the rpId derived from SITE_URL, so a workers.dev host could never
-# share credentials with the live site. SITE_URL stays the apex (that *is* the
-# rpId) and staging's own origin is allowed alongside it.
+# migrated once.
+#
+# SITE_URL points at staging itself. It is tempting to set the apex here so one
+# passkey covers both hosts (WebAuthn derives rpId from SITE_URL), but siteUrl
+# also absolutizes media URLs — every image then resolves against the apex,
+# which 404s HTML and gets ORB-blocked by the browser. Working images win; the
+# tradeoff is a separate passkey per host.
 [env.staging.vars]
 SITE_URL = "https://staging.atxrubberroundup.com"
 EMDASH_ALLOWED_ORIGINS = "https://staging.atxrubberroundup.com"
@@ -44,6 +52,9 @@ database_id = "b80b0d9b-7344-44d3-a656-041d813ec560"
 binding = "MEDIA"
 bucket_name = "atxrr-media"
 
+[[env.staging.send_email]]
+name = "EMAIL"
+
 [env.production.vars]
 SITE_URL = "https://atxrubberroundup.com"
 
@@ -55,6 +66,9 @@ database_id = "b80b0d9b-7344-44d3-a656-041d813ec560"
 [[env.production.r2_buckets]]
 binding = "MEDIA"
 bucket_name = "atxrr-media"
+
+[[env.production.send_email]]
+name = "EMAIL"
 
 [observability]
 enabled = true

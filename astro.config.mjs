@@ -1,6 +1,7 @@
 import cloudflare from "@astrojs/cloudflare";
 import react from "@astrojs/react";
 import { d1, r2 } from "@emdash-cms/cloudflare";
+import { cloudflareEmail } from "@emdash-cms/cloudflare/plugins";
 import tailwindcss from "@tailwindcss/vite";
 import { defineConfig } from "astro/config";
 import emdash from "emdash/astro";
@@ -17,6 +18,18 @@ export default defineConfig({
 			storage: r2({ binding: "MEDIA" }),
 			// Client-delivered editor toolbar so public HTML stays cacheable.
 			toolbar: "client",
+			plugins: [
+				// Sends from a dedicated subdomain rather than the apex: the apex
+				// already runs Email Routing, and onboarding it for sending would
+				// rewrite the SPF record that inbound forwarding depends on.
+				cloudflareEmail({
+					from: {
+						email: "cms@mail.atxrubberroundup.com",
+						name: "ATX Rubber Roundup",
+					},
+					replyTo: "info@atxrubberroundup.com",
+				}),
+			],
 		}),
 	],
 	output: "server",
