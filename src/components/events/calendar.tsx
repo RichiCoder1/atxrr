@@ -8,7 +8,8 @@ import { PortableText, type PortableTextComponents } from "@portabletext/react";
 import type { TypedObject } from "@portabletext/types";
 import slugify from "@sindresorhus/slugify";
 import { groupBy, sortBy } from "lodash-es";
-import { useMemo } from "react";
+import { Check, Link2, Search } from "lucide-react";
+import { useEffect, useMemo, useState } from "react";
 
 /**
  * Event times are stored as naive wall-clock at the venue ("2026-02-20T18:00:00",
@@ -34,6 +35,24 @@ const timeFormatter = new Intl.DateTimeFormat("en-US", {
 	timeStyle: "short",
 	timeZone: "UTC",
 });
+
+/**
+ * Flatten Portable Text to plain text so descriptions are searchable. Only
+ * span children carry text; anything else (images, embeds) has nothing to match.
+ */
+function blocksToPlainText(blocks: TypedObject[] | undefined): string {
+	if (!Array.isArray(blocks)) return "";
+	const parts: string[] = [];
+	for (const block of blocks) {
+		const children = (block as { children?: unknown }).children;
+		if (!Array.isArray(children)) continue;
+		for (const child of children) {
+			const text = (child as { text?: unknown }).text;
+			if (typeof text === "string") parts.push(text);
+		}
+	}
+	return parts.join(" ");
+}
 
 const richTextComponents: PortableTextComponents = {
 	marks: {
@@ -75,6 +94,8 @@ type CalendarEvent = CalendarEventItem & {
 	end: Date;
 	startPart: string;
 	endPart: string;
+	/** Pre-lowercased haystack for filtering. */
+	searchText: string;
 };
 
 const $router = createRouter(
@@ -86,9 +107,15 @@ const $router = createRouter(
 );
 
 export function Calendar({ events, params: astroParams }: CalendarProps) {
-	const weekdays = useMemo(() => {
-		const extendedEvents = sortBy(events, (event) => event.event_start).map(
-			(event) => {
+	// Search stays in component state rather than the URL. Workers Cache keys on
+	// the full query string, so syncing every keystroke would mint an unbounded
+	// number of cache entries for what is throwaway UI state. Sharing a specific
+	// event is handled by `?event=`, which is a bounded, meaningful set of URLs.
+	const [query, setQuery] = useState("");
+
+	const allEvents = useMemo(
+		() =>
+			sortBy(events, (event) => event.event_start).map((event) => {
 				const [start, end] = [
 					parseEventTime(event.event_start),
 					parseEventTime(event.event_end),
@@ -120,43 +147,205 @@ export function Calendar({ events, params: astroParams }: CalendarProps) {
 						.filter((part) => part.source !== "startRange")!
 						.map((part) => part.value)
 						.join(""),
+					searchText: [
+						event.name,
+						event.venueTitle,
+						event.location,
+						blocksToPlainText(event.description),
+					]
+						.filter(Boolean)
+						.join(" ")
+						.toLowerCase(),
 				} satisfies CalendarEvent;
-			},
-		);
-		return groupBy(extendedEvents, (event) => event.weekday);
-	}, [events]);
-	const weekdayKeys = Object.keys(weekdays);
+			}),
+		[events],
+	);
 
 	const page = useStore($router);
-	const merged = { ...astroParams, ...page?.search };
+	// Params come from Astro until hydration finishes, then from the router.
+	//
+	// Both halves matter. Merging the two (`{...astroParams, ...page.search}`)
+	// makes params sticky — spreading can add or override a key but never remove
+	// one, so clearing `?event=` left the server-rendered value in place and the
+	// filter never lifted. But reading the router straight away does not work
+	// either: during SSR it yields an *empty* search rather than undefined, which
+	// silently dropped the deep link from the no-JS render and then mismatched on
+	// hydration. Deferring the handover keeps the first client render identical
+	// to the server's.
+	const [hydrated, setHydrated] = useState(false);
+	useEffect(() => setHydrated(true), []);
+	const merged = hydrated ? (page?.search ?? {}) : astroParams;
+	const focusedSlug = merged.event;
+
+	const visibleEvents = useMemo(() => {
+		let list = allEvents;
+		if (focusedSlug) {
+			list = list.filter((event) => event.id === focusedSlug);
+		}
+		const trimmed = query.trim().toLowerCase();
+		if (trimmed) {
+			// Every term must match somewhere, so "demo friday" narrows rather than
+			// widens — closer to what people expect than matching the raw string.
+			const terms = trimmed.split(/\s+/);
+			list = list.filter((event) =>
+				terms.every((term) => event.searchText.includes(term)),
+			);
+		}
+		return list;
+	}, [allEvents, focusedSlug, query]);
+
+	const weekdays = useMemo(
+		() => groupBy(visibleEvents, (event) => event.weekday),
+		[visibleEvents],
+	);
+	const weekdayKeys = Object.keys(weekdays);
+
+	// Tabs must be controlled: filtering changes which weekdays exist, and an
+	// uncontrolled `defaultValue` would keep pointing at a tab that no longer
+	// renders. Falling back to the first available day means a search that only
+	// matches Sunday switches to Sunday instead of showing an empty Friday.
 	const selectedWeekday =
-		merged.day && weekdayKeys.includes(merged.day)
-			? merged.day
-			: weekdayKeys[0];
+		merged.day && weekdayKeys.includes(merged.day) ? merged.day : weekdayKeys[0];
+
+	// `merged` can carry undefined values (Astro params are optional); the router
+	// only accepts defined ones.
+	const defined = (input: Record<string, string | undefined>) =>
+		Object.fromEntries(
+			Object.entries(input).filter(
+				(entry): entry is [string, string] => entry[1] !== undefined,
+			),
+		);
+
+	const clearFocus = () => {
+		const { event: _event, ...rest } = merged;
+		openPage($router, "events", {}, defined(rest));
+	};
 
 	return (
-		<Tabs
-			defaultValue={selectedWeekday}
-			onValueChange={(newValue) =>
-				openPage($router, "events", {}, { ...page?.search, day: newValue })
-			}
-			className="flex flex-col items-center my-4"
+		<div className="my-4 flex w-full flex-col items-center gap-4">
+			<div className="flex w-full max-w-md flex-col gap-2">
+				<div className="relative">
+					<Search
+						aria-hidden="true"
+						className="pointer-events-none absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2 opacity-60"
+					/>
+					<input
+						type="search"
+						value={query}
+						onChange={(event) => setQuery(event.target.value)}
+						placeholder="Search events, venues, descriptions…"
+						aria-label="Search events"
+						className="w-full rounded-sm border border-input bg-background py-2 pl-9 pr-3 text-sm placeholder:text-muted-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary"
+					/>
+				</div>
+				{focusedSlug ? (
+					<div className="flex items-center justify-between gap-2 text-sm">
+						<span>Showing a single event.</span>
+						<button
+							type="button"
+							onClick={clearFocus}
+							className={cn(
+								buttonVariants({ variant: "link" }),
+								"h-[unset] p-0 underline",
+							)}
+						>
+							Show all events
+						</button>
+					</div>
+				) : null}
+				{/* Announce result counts to screen readers as the list narrows. */}
+				<p aria-live="polite" className="sr-only">
+					{visibleEvents.length} event{visibleEvents.length === 1 ? "" : "s"}{" "}
+					shown
+				</p>
+			</div>
+
+			{visibleEvents.length === 0 ? (
+				<p className="py-8 text-center">
+					{focusedSlug && !query ? (
+						<>
+							No event matches that link.{" "}
+							<button
+								type="button"
+								onClick={clearFocus}
+								className={cn(
+									buttonVariants({ variant: "link" }),
+									"h-[unset] p-0 underline",
+								)}
+							>
+								Show all events
+							</button>
+						</>
+					) : (
+						<>No events match “{query.trim()}”.</>
+					)}
+				</p>
+			) : (
+				<Tabs
+					value={selectedWeekday}
+					onValueChange={(newValue) =>
+						openPage($router, "events", {}, defined({ ...merged, day: newValue }))
+					}
+					className="flex w-full flex-col items-center"
+				>
+					<TabsList>
+						{weekdayKeys.map((weekday) => (
+							<TabsTrigger key={weekday} value={weekday}>
+								{weekday}
+							</TabsTrigger>
+						))}
+					</TabsList>
+					{weekdayKeys.map((weekday) => (
+						<CalendarWeekday
+							key={weekday}
+							weekday={weekday}
+							events={weekdays[weekday]}
+						/>
+					))}
+				</Tabs>
+			)}
+		</div>
+	);
+}
+
+function CopyEventLink({ slug, name }: { slug: string; name: string }) {
+	const [state, setState] = useState<"idle" | "copied" | "failed">("idle");
+
+	const copy = async () => {
+		// Built at click time, not render: reading `location` during render would
+		// differ between the server and the browser.
+		const url = `${window.location.origin}/events?event=${encodeURIComponent(slug)}`;
+		try {
+			await navigator.clipboard.writeText(url);
+			setState("copied");
+		} catch {
+			// Clipboard access can be refused (permissions, insecure context).
+			setState("failed");
+		}
+		window.setTimeout(() => setState("idle"), 2000);
+	};
+
+	return (
+		<button
+			type="button"
+			onClick={copy}
+			aria-label={`Copy link to ${name}`}
+			title={state === "failed" ? "Copy failed" : "Copy link to this event"}
+			className="shrink-0 rounded-sm p-1 opacity-60 transition-opacity hover:opacity-100 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary"
 		>
-			<TabsList>
-				{weekdayKeys.map((weekday) => (
-					<TabsTrigger key={weekday} value={weekday}>
-						{weekday}
-					</TabsTrigger>
-				))}
-			</TabsList>
-			{weekdayKeys.map((weekday) => (
-				<CalendarWeekday
-					key={weekday}
-					weekday={weekday}
-					events={weekdays[weekday]}
-				/>
-			))}
-		</Tabs>
+			{state === "copied" ? (
+				<Check aria-hidden="true" className="h-4 w-4 text-primary" />
+			) : (
+				<Link2 aria-hidden="true" className="h-4 w-4" />
+			)}
+			<span aria-live="polite" className="sr-only">
+				{state === "copied"
+					? "Link copied"
+					: state === "failed"
+						? "Copy failed"
+						: ""}
+			</span>
+		</button>
 	);
 }
 
@@ -181,7 +370,10 @@ function CalendarWeekday({
 						<div className="text-sm font-light">{event.endPart}</div>
 					</div>
 					<div>
-						<CardTitle>{event.name}</CardTitle>
+						<div className="flex items-start justify-between gap-2">
+							<CardTitle>{event.name}</CardTitle>
+							<CopyEventLink slug={event.id} name={event.name} />
+						</div>
 						{/* CardDescription already renders a <p>; nesting another inside it
 						    is invalid HTML, and the parser's fixup made the client DOM
 						    diverge from the SSR markup (React #418). These children are

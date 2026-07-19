@@ -103,4 +103,16 @@
   .prose :is(a, code, pre) {
     overflow-wrap: break-word;
   }
+
+  /*
+   * Tailwind v4's preflight sets buttons to `cursor: default`, so every button
+   * on the site — weekday tabs, the copy-link button — read as non-interactive
+   * while anchors got the pointer. Restore it once here rather than sprinkling
+   * `cursor-pointer` on each call site. Disabled controls keep the default.
+   */
+  button:not(:disabled),
+  [role="button"]:not([aria-disabled="true"]),
+  [role="tab"]:not([aria-disabled="true"]) {
+    cursor: pointer;
+  }
 }
