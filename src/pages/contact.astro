@@ -10,9 +10,9 @@ setContentCacheHeaders(Astro, { isPreview });
 ---
 
 <MainLayout title="About" description="About">
-  <div class="container max-w-2xl">
-    <PageHeader>Contact Us</PageHeader>
-    <div class="prose mx-auto mt-10 dark:prose-invert">
+  <div class="container max-w-2xl" {...contactPage.edit}>
+    <PageHeader {...contactPage.edit.title}>{contactPage.data.title}</PageHeader>
+    <div class="prose mx-auto mt-10 dark:prose-invert" {...contactPage.edit.content}>
       <RichText value={contactPage.data.content} />
     </div>
   </div>

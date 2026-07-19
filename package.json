@@ -9,6 +9,7 @@
     "preview": "astro preview",
     "astro": "astro",
     "migrate:content": "tsx scripts/migrate/index.ts",
+    "seed:sync": "tsx scripts/sync-seed.ts",
     "migrate:test": "vitest run scripts/migrate",
     "pages:dev": "wrangler pages dev --compatibility-date=2024-01-17 -- astro dev"
   },
