@@ -48,12 +48,8 @@ const dateFormat = new Intl.DateTimeFormat("en", {
       </h3>
     </div>
     <div class="mt-[10vh]">
-      {/* Two things need overriding on the current outline variant. Size: the
-          default button is now h-8/px-2.5, which crams the text-xl label. And
-          colour: the variant's `dark:border-input` / `dark:bg-input/30` win over
-          a bare `border-primary`, because tailwind-merge does not dedupe across
-          the `dark:` boundary — which is what turned the amber outline into a
-          faint grey one. Hence the explicit dark: pairs. */}
+      {/* The dark: pairs are needed to beat the outline variant's own
+          dark:border-input/dark:bg-input/30; tailwind-merge won't dedupe across it. */}
       <LinkButton
         href="/attend/register"
         variant="outline"

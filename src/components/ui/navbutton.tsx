@@ -12,13 +12,6 @@ export type NavProps = Omit<
 	"children"
 >;
 
-/**
- * Previously this wrapped a <button> in an <a href> and gave the anchor
- * `tabIndex={-1}` so the pair exposed a single tab stop. React Aria's
- * `LinkButton` renders a real anchor that is already styled and focusable as
- * one control, so the wrapper — and the nested-interactive-element it created —
- * is no longer needed.
- */
 function NavButton({ href, external, className, label, ...props }: NavProps) {
 	return (
 		<LinkButton

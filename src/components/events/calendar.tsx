@@ -36,16 +36,8 @@ const timeFormatter = new Intl.DateTimeFormat("en-US", {
 	timeZone: "UTC",
 });
 
-/**
- * Split an event's time range into the large start label and the smaller end
- * label shown beside it.
- */
+/** Splits an event's time range into the large start label and smaller end label. */
 function formatTimeRange(start: Date, end: Date, eventName: string) {
-	// Every event is required to have a real duration. A missing or malformed
-	// `event_end` parses to an instant equal to (or before) the start, which
-	// used to render as a bare " PM" with no end time — a broken card that
-	// looked like a styling bug rather than the content error it is. Fail loudly
-	// so it surfaces at the source instead.
 	if (!(end.getTime() > start.getTime())) {
 		throw new Error(
 			`Event "${eventName}" has no duration: event_end (${end.toISOString()}) ` +
@@ -53,20 +45,16 @@ function formatTimeRange(start: Date, end: Date, eventName: string) {
 		);
 	}
 
-	// Compared in UTC because event times are parsed as UTC wall-clock; see
-	// `parseEventTime`. Using local getters here would reintroduce the drift.
+	// UTC to match `parseEventTime`; local getters would reintroduce the drift.
 	const crossesMidnight =
 		start.toISOString().slice(0, 10) !== end.toISOString().slice(0, 10);
 
 	if (crossesMidnight) {
-		// `formatRange` starts including the calendar date once a range spans a
-		// day boundary — "2/21/2026, 2:00 AM" — even though this formatter only
-		// asked for `timeStyle`. That is ~3x longer than the same-day string and
-		// overflowed the fixed time column, so format each endpoint separately.
+		// Across a day boundary `formatRange` also emits the calendar date
+		// ("2/21/2026, 2:00 AM"), which overflows the time column.
 		return {
 			startPart: timeFormatter.format(start),
 			endPart: `– ${timeFormatter.format(end)}`,
-			crossesMidnight,
 		};
 	}
 
@@ -90,7 +78,6 @@ function formatTimeRange(start: Date, end: Date, eventName: string) {
 			.map((part) => part.value)
 			.join("")
 			.trim(),
-		crossesMidnight,
 	};
 }
 
@@ -152,8 +139,6 @@ type CalendarEvent = CalendarEventItem & {
 	end: Date;
 	startPart: string;
 	endPart: string;
-	/** End time lands on the day after the start; the card labels it as such. */
-	crossesMidnight: boolean;
 	/** Pre-lowercased haystack for filtering. */
 	searchText: string;
 };
@@ -181,11 +166,7 @@ export function Calendar({ events, params: astroParams }: CalendarProps) {
 					parseEventTime(event.event_end),
 				];
 				const parts = dateFormatter.formatToParts(start);
-				const { startPart, endPart, crossesMidnight } = formatTimeRange(
-					start,
-					end,
-					event.name,
-				);
+				const { startPart, endPart } = formatTimeRange(start, end, event.name);
 
 				return {
 					...event,
@@ -195,7 +176,6 @@ export function Calendar({ events, params: astroParams }: CalendarProps) {
 					end,
 					startPart,
 					endPart,
-					crossesMidnight,
 					searchText: [
 						event.name,
 						event.venueTitle,
@@ -344,19 +324,14 @@ export function Calendar({ events, params: astroParams }: CalendarProps) {
 					}
 					className="flex w-full flex-col items-center"
 				>
-					{/* The shadcn defaults are sized for dense app chrome — an h-8 strip
-					    of text-sm. This is the primary control on the page, so it gets
-					    the roomier sizing the Radix version had, and the selected day
-					    picks up the same amber as the event times beside it. */}
+					{/* Roomier than the shadcn default, which is sized for app chrome. */}
 					<TabsList className="h-10 p-1">
 						{weekdayKeys.map((weekday) => (
 							<TabsTrigger
 								key={weekday}
 								id={weekday}
-								// The dark: pair is required: tabs.tsx carries
-								// `dark:data-selected:text-foreground`, and tailwind-merge
-								// does not dedupe across the `dark:` boundary, so a bare
-								// `data-selected:text-primary` loses in dark mode.
+								// The dark: pair is needed to beat tabs.tsx's own
+								// dark:data-selected:*; tailwind-merge won't dedupe across it.
 								className="px-3 py-1.5 text-base data-selected:text-primary dark:data-selected:text-primary"
 							>
 								{weekday}
@@ -431,29 +406,13 @@ function CalendarWeekday({
 					key={event.id}
 					className="w-full rounded-sm p-4 grid grid-cols-[auto_1fr] gap-x-4 gap-y-1"
 				>
-					{/* `min-w-0` lets this track shrink instead of forcing the card
-					    wider than its container on narrow viewports. */}
+					{/* min-w-0 lets this track shrink rather than widen the card. */}
 					<div className="min-w-0">
 						<div className="text-primary leading-none text-2xl font-semibold whitespace-nowrap">
 							{event.startPart}
 						</div>
 						<div className="text-sm font-light whitespace-nowrap">
 							{event.endPart}
-							{event.crossesMidnight && (
-								<>
-									{" "}
-									<span
-										// Visually terse so the column stays narrow; the full
-										// wording is what assistive tech announces.
-										aria-hidden="true"
-										title="Ends the next day"
-										className="text-muted-foreground"
-									>
-										+1d
-									</span>
-									<span className="sr-only"> the next day</span>
-								</>
-							)}
 						</div>
 					</div>
 					<div>
@@ -461,10 +420,6 @@ function CalendarWeekday({
 							<CardTitle>{event.name}</CardTitle>
 							<CopyEventLink slug={event.id} name={event.name} />
 						</div>
-						{/* Children stay inline here. CardDescription renders a <div> as
-						    of the React Aria rewrite, so the old invalid-nested-<p> hazard
-						    (React #418) is gone, but there is still nothing to gain from
-						    wrapping these in a block element. */}
 						<CardDescription className="pt-1">
 							{event.venueTitle ? (
 								<a href={`/attend/getting-around#${slugify(event.venueTitle)}`}>
