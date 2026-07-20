@@ -1,47 +1,81 @@
-# Astro Starter Kit: Minimal
+# atxrubberroundup.com
+
+Astro site for the Austin Rubber Roundup, rendered on Cloudflare Workers with
+[EmDash](https://docs.emdashcms.com) as the CMS (D1 for content, R2 for media).
+
+## Commands
+
+| Command | Action |
+| :------ | :----- |
+| `pnpm dev` | Dev server on `localhost:4321` (admin at `/_emdash/admin`) |
+| `pnpm build` | `astro check` then a production build into `./dist/` |
+| `pnpm test` | Component tests (Vitest browser mode, real Chromium) |
+| `pnpm test:e2e` | End-to-end smoke test (Playwright, starts its own dev server) |
+| `pnpm seed:sync` | Pull the live D1 schema into `.emdash/seed.json` |
+
+Node and pnpm are pinned by `.node-version` and `packageManager`; CI honours both.
+
+## Environments
+
+Both environments share one D1 database and one R2 bucket, so content migrated
+once is visible from both.
+
+| Worker | Domain |
+| :----- | :----- |
+| `atxrr-production` | `atxrubberroundup.com`, `www.atxrubberroundup.com` |
+| `atxrr-staging` | `staging.atxrubberroundup.com` |
+
+## Deploying
+
+The environment must be chosen at **build** time, not deploy time:
 
 ```sh
-npm create astro@latest -- --template minimal
+CLOUDFLARE_ENV=production SITE_URL=https://atxrubberroundup.com pnpm build
+pnpm exec wrangler deploy
 ```
 
-[![Open in StackBlitz](https://developer.stackblitz.com/img/open_in_stackblitz.svg)](https://stackblitz.com/github/withastro/astro/tree/latest/examples/minimal)
-[![Open with CodeSandbox](https://assets.codesandbox.io/github/button-edit-lime.svg)](https://codesandbox.io/p/sandbox/github/withastro/astro/tree/latest/examples/minimal)
-[![Open in GitHub Codespaces](https://github.com/codespaces/badge.svg)](https://codespaces.new/withastro/astro?devcontainer_path=.devcontainer/minimal/devcontainer.json)
+`wrangler deploy --env production` does **not** work. The Astro Cloudflare
+adapter writes `dist/server/wrangler.json` and points wrangler at it via
+`.wrangler/deploy/config.json`; that generated file is already flattened to one
+resolved environment, so `--env` has nothing to select and is ignored. The
+deploy silently lands on the default `atxrr` worker with empty `vars` and no
+custom domain, while still reporting success.
 
-> 🧑‍🚀 **Seasoned astronaut?** Delete this file. Have fun!
+`SITE_URL` is needed at build time too — it becomes Astro's `site`, so canonical
+URLs and OG tags bake it in. It is separate from the runtime `SITE_URL` var in
+`wrangler.toml`.
 
-## 🚀 Project Structure
+Before deploying, confirm the generated config resolved correctly:
 
-Inside of your Astro project, you'll see the following folders and files:
-
-```text
-/
-├── public/
-├── src/
-│   └── pages/
-│       └── index.astro
-└── package.json
+```sh
+node -e "const c=require('./dist/server/wrangler.json');console.log(c.name,c.vars,c.routes)"
 ```
 
-Astro looks for `.astro` or `.md` files in the `src/pages/` directory. Each page is exposed as a route based on its file name.
+### Cache turnover after a deploy
 
-There's nothing special about `src/components/`, but that's where we like to put any Astro/React/Vue/Svelte/Preact components.
+Content pages are served `public, max-age=300, stale-while-revalidate=3600`, and
+asset filenames are content-hashed. For up to ~5 minutes after a deploy the edge
+can still serve HTML from the previous build, whose `_astro/*.js` URLs no longer
+exist — pages render and links work, but the hydrated islands (day tabs, event
+search, mobile nav, FAQ) stay inert until the cache turns over. It resolves on
+its own; a cache purge would avoid it, which needs an API token with
+`Zone:Cache Purge`.
 
-Any static assets, like images, can be placed in the `public/` directory.
+## Automatic deploys (Workers Builds)
 
-## 🧞 Commands
+Each Worker is connected to this repository separately, under **Settings →
+Builds** for that Worker in the Cloudflare dashboard. Because the environment is
+selected at build time, it is carried by a build variable rather than a flag:
 
-All commands are run from the root of the project, from a terminal:
+| Setting | `atxrr-production` | `atxrr-staging` |
+| :------ | :----------------- | :-------------- |
+| Build command | `pnpm build` | `pnpm build` |
+| Deploy command | `pnpm exec wrangler deploy` | `pnpm exec wrangler deploy` |
+| Build variables | `CLOUDFLARE_ENV=production`, `SITE_URL=https://atxrubberroundup.com` | `CLOUDFLARE_ENV=staging`, `SITE_URL=https://staging.atxrubberroundup.com` |
 
-| Command                   | Action                                           |
-| :------------------------ | :----------------------------------------------- |
-| `npm install`             | Installs dependencies                            |
-| `npm run dev`             | Starts local dev server at `localhost:4321`      |
-| `npm run build`           | Build your production site to `./dist/`          |
-| `npm run preview`         | Preview your build locally, before deploying     |
-| `npm run astro ...`       | Run CLI commands like `astro add`, `astro check` |
-| `npm run astro -- --help` | Get help using the Astro CLI                     |
+Leave the deploy command bare, for the same reason `--env` is not used above.
 
-## 👀 Want to learn more?
-
-Feel free to check [our documentation](https://docs.astro.build) or jump into our [Discord server](https://astro.build/chat).
+If Cloudflare offers a pull request renaming `name` in `wrangler.toml` to match
+the dashboard Worker, decline it. The top-level name is `atxrr` and the
+per-environment names (`atxrr-production`, `atxrr-staging`) are derived from it;
+rewriting it breaks that derivation for the other environment.
