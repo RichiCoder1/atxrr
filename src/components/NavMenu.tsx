@@ -27,30 +27,43 @@ export type NavMenuProps = {
 	items: NavItem[];
 };
 
+/**
+ * A parent whose url is just "/" is a grouping label, not a destination — the
+ * CMS has no "no link" option, so "/" stands in for one. Dropping the href
+ * makes the trigger open its menu on click instead of navigating home.
+ */
+function parentHref(item: NavItem) {
+	if (item.children.length > 0 && item.url === "/") return undefined;
+	return item.url;
+}
+
 export function DesktopMenu({ path, items }: NavMenuProps) {
 	return (
 		<>
 			<Menubar className="hidden lg:flex">
-				{items.map((item) => (
-					<Menu
-						key={item.id}
-						href={item.url}
-						label={item.label}
-						aria-current={item.url != null && path === item.url ? "page" : undefined}
-					>
-						{item?.children.length === 0
-							? undefined
-							: item.children?.map((child) => (
-									<MenuItem
-										key={child.id}
-										href={child.url}
-										label={child.label}
-										description={child.titleAttr}
-										external={child.target === "_blank"}
-									/>
-								))}
-					</Menu>
-				))}
+				{items.map((item) => {
+					const href = parentHref(item);
+					return (
+						<Menu
+							key={item.id}
+							href={href}
+							label={item.label}
+							aria-current={href != null && path === href ? "page" : undefined}
+						>
+							{item?.children.length === 0
+								? undefined
+								: item.children?.map((child) => (
+										<MenuItem
+											key={child.id}
+											href={child.url}
+											label={child.label}
+											description={child.titleAttr}
+											external={child.target === "_blank"}
+										/>
+									))}
+						</Menu>
+					);
+				})}
 			</Menubar>
 		</>
 	);

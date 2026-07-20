@@ -70,6 +70,42 @@ describe("DesktopMenu", () => {
 			.not.toHaveAttribute("aria-current");
 	});
 
+	// The CMS has no "no link" option, so grouping parents are stored with "/".
+	it("does not link a parent whose url is just /", async () => {
+		const screen = await render(<DesktopMenu path="/" items={items} />);
+
+		await expect
+			.element(screen.getByRole("menuitem", { name: "Attend" }))
+			.not.toHaveAttribute("href");
+	});
+
+	it("still links a leaf pointing at / ", async () => {
+		const screen = await render(<DesktopMenu path="/about" items={items} />);
+
+		await expect
+			.element(screen.getByRole("menuitem", { name: "Home" }))
+			.toHaveAttribute("href", "/");
+	});
+
+	it("leaves an unlinked parent unmarked on the home page", async () => {
+		const screen = await render(<DesktopMenu path="/" items={items} />);
+
+		await expect
+			.element(screen.getByRole("menuitem", { name: "Attend" }))
+			.not.toHaveAttribute("aria-current");
+		await expect
+			.element(screen.getByRole("menuitem", { name: "Home" }))
+			.toHaveAttribute("aria-current", "page");
+	});
+
+	it("opens the menu on click instead of navigating", async () => {
+		const screen = await render(<DesktopMenu path="/" items={items} />);
+
+		await screen.getByRole("menuitem", { name: "Attend" }).click();
+
+		await expect.element(screen.getByText("Getting Around")).toBeVisible();
+	});
+
 	it("reveals child items when a parent menu opens", async () => {
 		const screen = await render(<DesktopMenu path="/" items={items} />);
 		await expect
