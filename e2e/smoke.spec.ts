@@ -1,4 +1,4 @@
-import { expect, test } from "@playwright/test";
+import { expect, test, type Page } from "@playwright/test";
 
 const ADMIN = "/_emdash/admin";
 // Signs in as a seeded admin, skipping passkey setup. Dev-only — see the
@@ -6,55 +6,52 @@ const ADMIN = "/_emdash/admin";
 const BYPASS = "/_emdash/api/setup/dev-bypass?redirect=/_emdash/admin";
 
 /**
- * Islands hydrate after load, so an interaction can land before React attaches
- * and be silently lost. Repeat it until the effect shows up; every `act` passed
- * here is idempotent.
+ * Open the schedule and wait for its island to hydrate — Astro drops the `ssr`
+ * attribute once it has — so a click can't land before React attaches and be
+ * silently dropped. Scoped to this one island on purpose: the mobile nav is
+ * `client:visible` and never hydrates at a desktop viewport, so waiting on
+ * every island would hang.
  */
-async function retryUntil(act: () => Promise<void>, settled: () => Promise<boolean>) {
-	await expect
-		.poll(async () => {
-			await act();
-			return settled();
-		})
-		.toBe(true);
+async function gotoSchedule(page: Page) {
+	await page.goto("/events");
+	await page
+		.locator("astro-island:not([ssr])")
+		.filter({ has: page.getByRole("tablist") })
+		.waitFor();
 }
 
 test.describe("event schedule", () => {
 	test("renders a tab per event day, with the first selected", async ({ page }) => {
-		await page.goto("/events");
+		await gotoSchedule(page);
 
+		expect(await page.getByRole("tab").count()).toBeGreaterThan(0);
 		await expect(page.getByRole("tab").first()).toHaveAttribute(
 			"aria-selected",
 			"true",
 		);
-		expect(await page.getByRole("tab").count()).toBeGreaterThan(0);
-		expect(await page.locator("[data-slot=card]").count()).toBeGreaterThan(0);
+		await expect(page.locator("[data-slot=card]").first()).toBeVisible();
 	});
 
 	test("swaps the visible events when another day is selected", async ({ page }) => {
-		await page.goto("/events");
-		const before = await page.getByRole("tabpanel").innerText();
+		await gotoSchedule(page);
+		const panel = page.getByRole("tabpanel");
+		const before = await panel.innerText();
 
 		const second = page.getByRole("tab").nth(1);
-		await retryUntil(
-			() => second.click(),
-			async () => (await second.getAttribute("aria-selected")) === "true",
-		);
+		await second.click();
 
-		expect(await page.getByRole("tabpanel").innerText()).not.toBe(before);
+		await expect(second).toHaveAttribute("aria-selected", "true");
+		await expect(panel).not.toHaveText(before);
 	});
 
 	test("filters events by search and reports an empty result", async ({ page }) => {
-		await page.goto("/events");
+		await gotoSchedule(page);
 		const cards = page.locator("[data-slot=card]");
 		expect(await cards.count()).toBeGreaterThan(0);
 
-		const search = page.getByRole("searchbox", { name: "Search events" });
-		await retryUntil(
-			() => search.fill("zzzznope"),
-			async () => (await cards.count()) === 0,
-		);
+		await page.getByRole("searchbox", { name: "Search events" }).fill("zzzznope");
 
+		await expect(cards).toHaveCount(0);
 		await expect(page.getByText(/No events match/)).toBeVisible();
 	});
 });
