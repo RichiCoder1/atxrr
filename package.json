@@ -11,9 +11,7 @@
     "test:watch": "vitest",
     "test:e2e": "playwright test",
     "astro": "astro",
-    "migrate:content": "tsx scripts/migrate/index.ts",
     "seed:sync": "tsx scripts/sync-seed.ts",
-    "migrate:test": "vitest run scripts/migrate",
     "pages:dev": "wrangler pages dev --compatibility-date=2024-01-17 -- astro dev"
   },
   "dependencies": {
@@ -49,7 +47,6 @@
   },
   "devDependencies": {
     "@cloudflare/workers-types": "^5.20260719.1",
-    "@emdash-cms/gutenberg-to-portable-text": "0.29.0",
     "@flydotio/dockerfile": "^0.7.10",
     "@playwright/test": "1.61.1",
     "@portabletext/types": "^4.0.2",
@@ -59,7 +56,6 @@
     "@vercel/og": "^0.11.1",
     "@vitest/browser": "^4.1.10",
     "@vitest/browser-playwright": "^4.1.10",
-    "marked": "^18.0.6",
     "playwright": "^1.61.1",
     "prettier": "^3.9.5",
     "prettier-plugin-astro": "^0.14.1",
