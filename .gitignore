@@ -25,6 +25,10 @@ pnpm-debug.log*
 # local wrangler/miniflare state
 .wrangler/
 
+# playwright e2e artifacts
+test-results/
+playwright-report/
+
 # claude code / agent tooling
 .claude/
 .agents/
