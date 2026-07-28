@@ -1,4 +1,5 @@
 /// <reference types="vitest/config" />
+import react from "@astrojs/react";
 import tailwindcss from "@tailwindcss/vite";
 import { playwright } from "@vitest/browser-playwright";
 import { fileURLToPath } from "node:url";
@@ -15,7 +16,7 @@ import { defineConfig } from "vitest/config";
  * Tailwind plugin is required for that last part — see src/test-setup.ts.
  */
 export default defineConfig({
-	plugins: [tailwindcss()],
+	plugins: [tailwindcss(), react()],
 	resolve: {
 		alias: { "@": fileURLToPath(new URL("./src", import.meta.url)) },
 	},

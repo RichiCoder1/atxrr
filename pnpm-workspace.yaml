@@ -4,4 +4,4 @@ onlyBuiltDependencies:
   - workerd
 
 patchedDependencies:
-  emdash@0.29.0: patches/emdash@0.29.0.patch
+  emdash@0.31.1: patches/emdash@0.31.1.patch
