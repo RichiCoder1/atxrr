@@ -1,5 +1,6 @@
 import cloudflare from "@astrojs/cloudflare";
 import react from "@astrojs/react";
+import { google } from "emdash/auth/providers/google";
 import { d1, r2 } from "@emdash-cms/cloudflare";
 import { cloudflareEmail } from "@emdash-cms/cloudflare/plugins";
 import { atxrrExtensions } from "./src/plugins/atxrr-extensions/index.ts";
