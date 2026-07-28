@@ -37,6 +37,10 @@ bucket_name = "atxrr-media"
 [[send_email]]
 name = "EMAIL"
 
+# Resizes R2-backed CMS media.
+[images]
+binding = "IMAGES"
+
 # Staging mirrors production and shares its D1/R2 so the content only has to be
 # migrated once.
 #
@@ -66,6 +70,9 @@ bucket_name = "atxrr-media"
 [[env.staging.send_email]]
 name = "EMAIL"
 
+[env.staging.images]
+binding = "IMAGES"
+
 [env.production.vars]
 SITE_URL = "https://atxrubberroundup.com"
 
@@ -88,6 +95,9 @@ bucket_name = "atxrr-media"
 
 [[env.production.send_email]]
 name = "EMAIL"
+
+[env.production.images]
+binding = "IMAGES"
 
 [observability]
 enabled = true

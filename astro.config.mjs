@@ -38,7 +38,10 @@ export default defineConfig({
 	],
 	output: "server",
 	adapter: cloudflare({
-		imageService: "compile",
+		// Bundled assets pre-optimized at build; CMS media resized at runtime.
+		// Plain "compile" provisions no IMAGES binding in production, so EmDash
+		// streams R2 originals unresized.
+		imageService: { runtime: "cloudflare-binding" },
 	}),
 	site:
 		process.env.SITE_URL ??
