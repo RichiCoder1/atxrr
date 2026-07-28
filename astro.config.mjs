@@ -8,6 +8,10 @@ import tailwindcss from "@tailwindcss/vite";
 import { defineConfig } from "astro/config";
 import emdash from "emdash/astro";
 
+// Only when actually set: baking a localhost siteUrl into the config would
+// override the runtime SITE_URL var, which getPublicOrigin prefers.
+const siteUrl = process.env.SITE_URL ?? process.env.CF_PAGES_URL;
+
 // https://astro.build/config
 export default defineConfig({
 	integrations: [
@@ -18,6 +22,9 @@ export default defineConfig({
 			// SSR hangs; see emdash-cms/emdash#1273).
 			database: d1({ binding: "DB" }),
 			storage: r2({ binding: "MEDIA" }),
+			// Registers the media-proxy remote pattern so astro:assets will
+			// optimize CMS images instead of emitting a plain <img>.
+			...(siteUrl ? { siteUrl } : {}),
 			// Client-delivered editor toolbar so public HTML stays cacheable.
 			toolbar: "client",
 			authProviders: [google()],
@@ -43,10 +50,7 @@ export default defineConfig({
 		// streams R2 originals unresized.
 		imageService: { runtime: "cloudflare-binding" },
 	}),
-	site:
-		process.env.SITE_URL ??
-		process.env.CF_PAGES_URL ??
-		"http://localhost:4321/",
+	site: siteUrl ?? "http://localhost:4321/",
 	vite: {
 		resolve: {
 			alias: import.meta.env.PROD && {
