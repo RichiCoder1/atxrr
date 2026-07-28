@@ -19,6 +19,7 @@ export default defineConfig({
 			storage: r2({ binding: "MEDIA" }),
 			// Client-delivered editor toolbar so public HTML stays cacheable.
 			toolbar: "client",
+			authProviders: [google()],
 			plugins: [
 				atxrrExtensions(),
 				// Sends from a dedicated subdomain rather than the apex: the apex
