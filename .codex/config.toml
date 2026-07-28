@@ -1,0 +1,12 @@
+[mcp_servers.cloudflare]
+url = "https://mcp.cloudflare.com/mcp"
+
+[mcp_servers.directus]
+url = "https://directus.atxrubberroundup.com/mcp"
+
+[mcp_servers.directus.http_headers]
+Authorization = "Bearer N7r-MrzA5tVjk_2z_6qPPou7qylA4J9K"
+
+[mcp_servers.playwright]
+command = "npx"
+args = ["@playwright/mcp@latest"]

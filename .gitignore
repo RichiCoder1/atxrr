@@ -32,9 +32,11 @@ pnpm-debug.log*
 test-results/
 playwright-report/
 
-# claude code / agent tooling
+# agent tooling
 .claude/
+.codex/
 .agents/
 .playwright-mcp/
 skills-lock.json
+.plans/
 
